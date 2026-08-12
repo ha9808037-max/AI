@@ -1,1 +1,1258 @@
-123
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 讓手機瀏覽器正確縮放，避免水平捲軸 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>剩食料理推薦 — 把剩食變成下一道美味</title>
+
+  <style>
+    /* ================================================
+       全域重置與基礎設定
+       ================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* CSS 自訂變數：色彩系統 */
+    :root {
+      --green-dark:   #2d6a4f; /* 深綠：標題、強調 */
+      --green-mid:    #40916c; /* 中綠：按鈕、標籤 */
+      --green-light:  #d8f3dc; /* 淺綠：背景、hover */
+      --yellow:       #f4a261; /* 暖黃：標籤、亮點 */
+      --yellow-light: #fff3e0; /* 淡黃：卡片背景 */
+      --cream:        #fefae0; /* 米色：頁面背景 */
+      --white:        #ffffff;
+      --text-dark:    #1b2e22; /* 主要文字 */
+      --text-mid:     #4a6357; /* 次要文字 */
+      --text-muted:   #7a9186; /* 說明文字 */
+      --border:       #b7d9c5;
+      --shadow:       rgba(45, 106, 79, 0.12);
+      --radius-sm:    8px;
+      --radius-md:    14px;
+      --radius-lg:    20px;
+    }
+
+    html {
+      /* 讓 scroll-behavior: smooth 能在「開始使用」按鈕生效 */
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC",
+                   system-ui, -apple-system, sans-serif;
+      background-color: var(--cream);
+      color: var(--text-dark);
+      font-size: 16px;
+      line-height: 1.7;
+      /* 防止任何內容超寬造成水平捲軸 */
+      overflow-x: hidden;
+    }
+
+    /* ================================================
+       通用元件
+       ================================================ */
+
+    /* 版面容器：桌電版限制最大寬度並置中 */
+    .container {
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* 區塊標題 */
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-mid);
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    /* 主要按鈕（深綠底） */
+    .btn-primary {
+      display: inline-block;
+      background-color: var(--green-mid);
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px 28px;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      text-decoration: none;
+    }
+    .btn-primary:hover  { background-color: var(--green-dark); }
+    .btn-primary:active { transform: scale(0.97); }
+    /* 鍵盤焦點可見框 */
+    .btn-primary:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    /* 次要按鈕（邊框樣式） */
+    .btn-secondary {
+      display: inline-block;
+      background-color: transparent;
+      color: var(--green-dark);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border: 2px solid var(--green-mid);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover {
+      background-color: var(--green-light);
+    }
+    .btn-secondary:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    /* 卡片通用樣式 */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 16px var(--shadow);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* ================================================
+       一、首頁主視覺區（Hero）
+       ================================================ */
+    #hero {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 72px 20px 80px;
+      text-align: center;
+    }
+
+    #hero .hero-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 12px;
+      display: block;
+      /* emoji 本身已有語義，用 aria-hidden 讓螢幕閱讀器跳過 */
+    }
+
+    #hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    #hero .hero-sub {
+      font-size: 1.05rem;
+      opacity: 0.92;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    /* Hero 按鈕用白底綠字，讓對比度足夠 */
+    #hero .btn-hero {
+      display: inline-block;
+      background-color: var(--white);
+      color: var(--green-dark);
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 14px 36px;
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      text-decoration: none;
+    }
+    #hero .btn-hero:hover  { background-color: var(--green-light); }
+    #hero .btn-hero:active { transform: scale(0.97); }
+    #hero .btn-hero:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    /* ================================================
+       二、食材輸入區
+       ================================================ */
+    #input-section {
+      padding: 48px 0 32px;
+    }
+
+    /* 輸入列：輸入框 + 新增按鈕並排 */
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    /* label 需顯示，方便無障礙但不佔視覺空間 */
+    .input-label {
+      display: block;
+      font-weight: 600;
+      color: var(--green-dark);
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+
+    .ingredient-input {
+      flex: 1;
+      padding: 11px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      color: var(--text-dark);
+      background: var(--white);
+      transition: border-color 0.2s;
+      /* 確保在手機上不會超出容器 */
+      min-width: 0;
+    }
+    .ingredient-input:focus {
+      outline: none;
+      border-color: var(--green-mid);
+      box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.18);
+    }
+
+    /* 快速標籤區 */
+    .tag-label {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    /* 快速食材標籤 */
+    .quick-tag {
+      padding: 7px 16px;
+      border-radius: 99px;
+      border: 2px solid var(--green-mid);
+      background: var(--white);
+      color: var(--green-dark);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s;
+      /* 讓標籤成為可按下的按鈕，方便鍵盤操作 */
+      user-select: none;
+    }
+    /* 已選取狀態：填滿綠色 */
+    .quick-tag.selected {
+      background-color: var(--green-mid);
+      color: var(--white);
+    }
+    .quick-tag:hover:not(.selected) {
+      background-color: var(--green-light);
+    }
+    .quick-tag:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 2px;
+    }
+
+    /* 已選食材清單 */
+    .selected-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+    }
+
+    .selected-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 36px;
+      margin-bottom: 24px;
+    }
+
+    /* 已選食材項目，帶有「✕」移除鈕 */
+    .selected-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background-color: var(--yellow-light);
+      border: 1.5px solid var(--yellow);
+      border-radius: 99px;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-mid);
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 2px;
+      border-radius: 50%;
+      transition: color 0.15s, background-color 0.15s;
+    }
+    .remove-btn:hover {
+      color: #c0392b;
+      background-color: #fde8e8;
+    }
+    .remove-btn:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 1px;
+    }
+
+    /* 提醒訊息（無選食材時） */
+    .warning-msg {
+      display: none; /* 預設隱藏 */
+      background-color: #fff3cd;
+      border: 1.5px solid #f4a261;
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      color: #7d4e00;
+      margin-bottom: 16px;
+    }
+    /* 使用 .show class 顯示提醒 */
+    .warning-msg.show { display: block; }
+
+    /* 生成按鈕置中 */
+    .generate-wrap {
+      text-align: center;
+    }
+
+    /* ================================================
+       三、食譜推薦區
+       ================================================ */
+    #recipes-section {
+      padding: 16px 0 40px;
+    }
+
+    /* 安全提醒橫幅 */
+    .safety-notice {
+      background-color: #fff3cd;
+      border-left: 5px solid var(--yellow);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: #7d4e00;
+      margin-bottom: 24px;
+      /* 文字說明安全事項，對比度足夠、非僅靠顏色傳遞 */
+    }
+    .safety-notice strong { display: block; margin-bottom: 2px; }
+
+    /* AI 靈感標籤 */
+    .ai-badge {
+      display: inline-block;
+      background-color: var(--green-light);
+      color: var(--green-dark);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    /* 食譜卡片標題 */
+    .recipe-name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 6px;
+    }
+
+    /* 難度與時間標籤列 */
+    .meta-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .meta-badge {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 3px 12px;
+      border-radius: 99px;
+    }
+    .badge-time {
+      background: #e0f7ee;
+      color: var(--green-dark);
+    }
+    .badge-difficulty {
+      background: var(--yellow-light);
+      color: #7d4e00;
+    }
+
+    /* 使用的剩餘食材列表 */
+    .recipe-ingredients {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .recipe-ingredients span {
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 0.83rem;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    /* 亮點區 */
+    .highlight-box {
+      background: var(--yellow-light);
+      border-left: 4px solid var(--yellow);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      color: #7d4e00;
+      margin-bottom: 16px;
+    }
+    .highlight-box strong { color: #5c3600; }
+
+    /* 步驟列表 */
+    .steps-title {
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .steps-list {
+      list-style: none;
+      padding: 0;
+      counter-reset: step-counter;
+    }
+    .steps-list li {
+      counter-increment: step-counter;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      font-size: 0.93rem;
+    }
+    /* 步驟圓形數字 */
+    .steps-list li::before {
+      content: counter(step-counter);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 26px;
+      background-color: var(--green-mid);
+      color: var(--white);
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* 分隔線 */
+    .card-divider {
+      border: none;
+      border-top: 1.5px solid #e8f4ee;
+      margin: 18px 0;
+    }
+
+    /* ================================================
+       四、互動回饋區
+       ================================================ */
+
+    /* 星級評分 */
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .rating-label {
+      font-size: 0.88rem;
+      color: var(--text-mid);
+      font-weight: 600;
+    }
+    .stars {
+      display: flex;
+      gap: 4px;
+    }
+    /* 每顆星：用 button 確保鍵盤可操作 */
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #ccc;
+      padding: 0 2px;
+      transition: color 0.1s, transform 0.1s;
+      line-height: 1;
+    }
+    .star-btn.active { color: #f4a261; }
+    .star-btn:hover  { transform: scale(1.2); color: #f4a261; }
+    .star-btn:focus-visible {
+      outline: 3px solid var(--green-mid);
+      border-radius: 4px;
+    }
+    .rating-text {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+    }
+
+    /* 回饋按鈕列 */
+    .feedback-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .feedback-btn {
+      background-color: var(--green-mid);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 9px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .feedback-btn:hover { background-color: var(--green-dark); }
+    .feedback-btn:active { transform: scale(0.97); }
+    /* 已回饋狀態：灰色，不可再按 */
+    .feedback-btn.done {
+      background-color: #a0b8a8;
+      cursor: not-allowed;
+    }
+    .feedback-btn:focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+    }
+
+    .feedback-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ================================================
+       五、減碳小知識區
+       ================================================ */
+    #eco-section {
+      padding: 16px 0 60px;
+    }
+
+    .eco-card {
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      border: 2px solid #b2dfdb;
+      border-radius: var(--radius-lg);
+      padding: 28px 28px 24px;
+      text-align: center;
+    }
+
+    .eco-card .eco-icon {
+      font-size: 2.4rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .eco-slogan {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      margin-bottom: 14px;
+    }
+
+    /* 碳排估算區塊 */
+    .carbon-box {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 14px 0;
+      border: 1.5px solid #b2dfdb;
+    }
+
+    .carbon-number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 4px;
+    }
+
+    .carbon-desc {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+    }
+
+    /* 免責聲明（小字） */
+    .carbon-disclaimer {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    /* ================================================
+       頁尾
+       ================================================ */
+    footer {
+      background-color: var(--green-dark);
+      color: rgba(255,255,255,0.75);
+      text-align: center;
+      padding: 20px;
+      font-size: 0.83rem;
+    }
+
+    /* ================================================
+       響應式設計：手機版調整
+       ================================================ */
+    @media (max-width: 600px) {
+      .input-row {
+        flex-direction: column;
+      }
+      .eco-card {
+        padding: 20px 16px;
+      }
+      .card {
+        padding: 18px 16px;
+      }
+    }
+
+    /* ================================================
+       動畫：食譜卡片淡入
+       ================================================ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .recipe-card-anim {
+      animation: fadeInUp 0.35s ease both;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================
+       一、首頁主視覺區（Hero Section）
+       ==================================================== -->
+  <header id="hero" role="banner">
+    <span class="hero-emoji" aria-hidden="true">🌱</span>
+    <h1>把剩食變成下一道美味</h1>
+    <p class="hero-sub">選擇家中剩餘食材，探索簡單又實用的料理靈感。</p>
+    <!-- 點擊後平滑捲動到食材輸入區 -->
+    <a href="#input-section" class="btn-hero" role="button">
+      ✨ 開始使用
+    </a>
+  </header>
+
+  <!-- ====================================================
+       二、食材輸入區（Ingredient Input Section）
+       ==================================================== -->
+  <section id="input-section" aria-labelledby="input-title">
+    <div class="container">
+      <div class="card">
+        <h2 class="section-title" id="input-title">🥦 選擇你的剩食食材</h2>
+        <p class="section-desc">勾選快速標籤，或自行輸入食材，系統將為你推薦料理靈感。</p>
+
+        <!-- 輸入框：自行輸入食材 -->
+        <label class="input-label" for="custom-ingredient">自行輸入食材</label>
+        <div class="input-row">
+          <input
+            type="text"
+            id="custom-ingredient"
+            class="ingredient-input"
+            placeholder="例如：剩豆腐、玉米、薑..."
+            maxlength="20"
+            aria-label="輸入自訂食材名稱"
+          />
+          <!-- 點擊新增或按 Enter 均可加入食材 -->
+          <button class="btn-primary" id="add-btn" onclick="addCustomIngredient()">
+            ＋ 新增
+          </button>
+        </div>
+
+        <!-- 快速食材標籤 -->
+        <p class="tag-label">⚡ 常用食材快速選取</p>
+        <div class="tags-container" id="quick-tags" role="group" aria-label="常用食材快速選取">
+          <!-- 標籤由 JavaScript 動態產生，方便維護 -->
+        </div>
+
+        <!-- 已選食材清單 -->
+        <p class="selected-title" aria-live="polite">
+          已選食材（<span id="selected-count">0</span> 項）：
+        </p>
+        <div class="selected-list" id="selected-list" aria-label="已選取的食材清單">
+          <!-- 已選食材由 JavaScript 動態加入 -->
+        </div>
+
+        <!-- 未選食材時的友善提醒（預設隱藏） -->
+        <div class="warning-msg" id="warning-msg" role="alert">
+          ⚠️ 請先選擇或輸入至少一項食材，再生成料理推薦喔！
+        </div>
+
+        <!-- 生成按鈕 -->
+        <div class="generate-wrap">
+          <button class="btn-primary" id="generate-btn" onclick="generateRecipes()" style="font-size:1.05rem; padding:14px 40px;">
+            🍳 生成剩食料理
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       三、食譜推薦區（Recipe Recommendation Section）
+       ==================================================== -->
+  <section id="recipes-section" aria-labelledby="recipes-title" aria-live="polite">
+    <div class="container" id="recipes-container">
+      <!-- 食譜卡片由 JavaScript 動態插入 -->
+    </div>
+  </section>
+
+  <!-- ====================================================
+       五、減碳小知識區（Eco Section）
+       ==================================================== -->
+  <section id="eco-section" aria-labelledby="eco-title">
+    <div class="container">
+      <div class="eco-card">
+        <span class="eco-icon" aria-hidden="true">🌍</span>
+        <h2 class="eco-slogan" id="eco-title">
+          每一次把剩食變成料理，<br>都是替地球多留下一點資源。
+        </h2>
+
+        <!-- 展示用碳排估算 -->
+        <div class="carbon-box">
+          <p class="carbon-desc" style="margin-bottom:6px;">本次選擇的食材，示意上避免了約</p>
+          <p class="carbon-number" id="carbon-number">— kg CO₂e</p>
+          <p class="carbon-desc">的食物浪費排放（展示用估算）</p>
+        </div>
+
+        <p class="carbon-disclaimer">
+          ⚠️ 此數值為展示用估算，實際結果會因食材種類、重量、運輸與處理方式而不同，不代表科學精確測量。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       頁尾
+       ==================================================== -->
+  <footer>
+    <p>🌿 剩食料理推薦 &nbsp;|&nbsp; 推廣永續飲食，從家中剩食開始</p>
+    <p style="margin-top:6px; opacity:0.6; font-size:0.75rem;">靈感示範用途，食材安全請自行評估。</p>
+  </footer>
+
+
+  <!-- ====================================================
+       JavaScript：所有互動邏輯
+       ==================================================== -->
+  <script>
+
+    /* ====================================================
+       食材資料庫
+       每個快速標籤對應一個物件，包含標籤名稱與碳排估算係數
+       ==================================================== */
+    const QUICK_INGREDIENTS = [
+      { name: "過熟香蕉", carbon: 0.18 },
+      { name: "剩米飯",   carbon: 0.22 },
+      { name: "菜梗",     carbon: 0.10 },
+      { name: "熟肉",     carbon: 0.32 },
+      { name: "麵包",     carbon: 0.14 },
+      { name: "蛋",       carbon: 0.16 },
+      { name: "蔬菜",     carbon: 0.12 },
+      { name: "水果",     carbon: 0.15 },
+    ];
+
+    /* ====================================================
+       食譜資料庫
+       每道食譜包含：觸發食材關鍵字、名稱、食材列表、
+       亮點、步驟、時間、難度
+       ==================================================== */
+    const RECIPES = [
+      {
+        /* 觸發關鍵字：只要已選食材中包含這些字，就可能推薦此食譜 */
+        keywords: ["過熟香蕉", "香蕉"],
+        name: "香蕉燕麥煎餅",
+        ingredients: ["過熟香蕉", "燕麥片", "雞蛋"],
+        highlight: "過熟香蕉甜度更高，無需額外加糖，天然甜味直接帶出煎餅香氣！",
+        steps: [
+          "將過熟香蕉用叉子壓成泥狀。",
+          "加入2大匙燕麥片與1顆蛋，攪拌均勻。",
+          "平底鍋開中小火，塗少許油，舀入麵糊。",
+          "每面煎約2–3分鐘至金黃，起鍋即可享用。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "簡單",
+      },
+      {
+        keywords: ["剩米飯", "米飯", "蔬菜", "蛋"],
+        name: "蔬菜蛋炒飯",
+        ingredients: ["剩米飯", "蔬菜（任意）", "雞蛋", "醬油"],
+        highlight: "隔夜飯水分較少，炒出來粒粒分明，是最適合剩飯的零浪費料理！",
+        steps: [
+          "剩米飯稍微撥散，避免結塊。",
+          "鍋中倒油熱鍋，先炒打散的蛋液。",
+          "加入蔬菜（如高麗菜、胡蘿蔔丁）翻炒。",
+          "放入米飯大火翻炒，加醬油、少許鹽調味。",
+          "炒至均勻，盛盤即完成。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "簡單",
+      },
+      {
+        keywords: ["菜梗", "蔬菜"],
+        name: "香蒜炒菜梗",
+        ingredients: ["菜梗（各種皆可）", "蒜頭", "鹽", "米酒"],
+        highlight: "菜梗口感爽脆，比葉子更耐炒！加點蒜末就能變身下飯小菜。",
+        steps: [
+          "菜梗洗淨，切成約 4 公分長段。",
+          "蒜頭拍扁切末，備用。",
+          "鍋中熱油，爆香蒜末至微金黃。",
+          "下菜梗大火快炒，加鹽與少許米酒。",
+          "炒約 3 分鐘，菜梗稍軟即可起鍋。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "簡單",
+      },
+      {
+        keywords: ["熟肉", "肉", "蔬菜", "剩米飯", "米飯"],
+        name: "剩肉蔬菜拌飯",
+        ingredients: ["熟肉（任意）", "蔬菜", "白飯", "醬油", "芝麻油"],
+        highlight: "熟肉不需再花時間煮熟，切碎拌飯，幾分鐘就能端上桌！",
+        steps: [
+          "熟肉切成小丁或剝絲，備用。",
+          "蔬菜（如小黃瓜、燙青菜）切丁或切絲。",
+          "準備醬汁：醬油1匙、芝麻油半匙、糖少許，攪拌均勻。",
+          "白飯盛入碗中，鋪上肉丁與蔬菜。",
+          "淋上醬汁，攪拌均勻即可享用。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "非常簡單",
+      },
+      {
+        keywords: ["麵包"],
+        name: "香煎麵包丁沙拉",
+        ingredients: ["硬麵包", "生菜", "番茄", "橄欖油", "鹽"],
+        highlight: "老麵包烤成麵包丁，香脆有嚼勁，讓沙拉增加層次感！",
+        steps: [
+          "硬麵包切成 1.5 公分小方丁。",
+          "平底鍋倒橄欖油，放入麵包丁中火翻炒至金黃酥脆。",
+          "生菜撕成一口大小，番茄切塊，盛盤。",
+          "撒上麵包丁，淋少許橄欖油與鹽，拌勻即完成。",
+        ],
+        time: "約 12 分鐘",
+        difficulty: "簡單",
+      },
+      {
+        keywords: ["蛋"],
+        name: "日式玉子燒",
+        ingredients: ["蛋（2–3顆）", "醬油", "味醂或糖", "蔥花（可選）"],
+        highlight: "打散的蛋加少許甜味，用玉子燒鍋（或一般平底鍋）捲出層次感！",
+        steps: [
+          "蛋打散，加1小匙醬油、半匙糖或味醂，攪拌均勻。",
+          "平底鍋熱鍋塗油，倒入1/3蛋液，半凝固時往前捲起。",
+          "再倒入蛋液，半凝固後與第一層一起捲。",
+          "重複一次，整形後切片盛盤。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "普通",
+      },
+      {
+        keywords: ["水果", "香蕉", "過熟香蕉"],
+        name: "水果優格冰沙",
+        ingredients: ["熟透水果（任意）", "原味優格", "蜂蜜（可選）"],
+        highlight: "熟透的水果甜度最高、香氣最濃，打成冰沙省力又美味！",
+        steps: [
+          "水果去皮切塊，可先冷凍 1 小時更濃稠。",
+          "放入果汁機，加入優格（約 3–4 大匙）。",
+          "視口味加少許蜂蜜，攪打至滑順。",
+          "倒入杯中，立即享用或冷藏保存。",
+        ],
+        time: "約 8 分鐘",
+        difficulty: "非常簡單",
+      },
+      {
+        /* 通用備用食譜：什錦蔬菜湯 */
+        keywords: ["__fallback__"],
+        name: "什錦剩食蔬菜清湯",
+        ingredients: ["各種剩餘蔬菜", "水或高湯", "鹽", "薑片（可選）"],
+        highlight: "任何剩餘蔬菜、根莖類都能入湯，零浪費的溫暖料理！",
+        steps: [
+          "將剩餘蔬菜洗淨，切成適口大小。",
+          "鍋中加水（約 600 ml），加薑片煮滾。",
+          "放入較硬的根莖類，煮 5 分鐘。",
+          "加入葉菜類，續煮 2–3 分鐘。",
+          "加鹽調味，盛碗即完成。",
+        ],
+        time: "約 20 分鐘",
+        difficulty: "簡單",
+      },
+    ];
+
+    /* ====================================================
+       狀態管理：用 Set 儲存已選食材，方便去重
+       ==================================================== */
+    const selectedIngredients = new Set();
+
+    /* ====================================================
+       初始化：產生快速標籤按鈕
+       ==================================================== */
+    function initQuickTags() {
+      const container = document.getElementById("quick-tags");
+      QUICK_INGREDIENTS.forEach(item => {
+        const btn = document.createElement("button");
+        btn.textContent = item.name;
+        btn.className = "quick-tag";
+        btn.setAttribute("type", "button");
+        /* aria-pressed 讓螢幕閱讀器知道這是切換型按鈕 */
+        btn.setAttribute("aria-pressed", "false");
+        btn.dataset.name = item.name;
+        btn.addEventListener("click", () => toggleTag(btn, item.name));
+        /* 也支援 Enter 鍵觸發 */
+        btn.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleTag(btn, item.name);
+          }
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    /* ====================================================
+       切換快速標籤的選取狀態
+       ==================================================== */
+    function toggleTag(btnEl, name) {
+      if (selectedIngredients.has(name)) {
+        selectedIngredients.delete(name);
+        btnEl.classList.remove("selected");
+        btnEl.setAttribute("aria-pressed", "false");
+      } else {
+        selectedIngredients.add(name);
+        btnEl.classList.add("selected");
+        btnEl.setAttribute("aria-pressed", "true");
+      }
+      renderSelectedList();
+      updateCarbonEstimate();
+    }
+
+    /* ====================================================
+       新增自訂食材
+       ==================================================== */
+    function addCustomIngredient() {
+      const input = document.getElementById("custom-ingredient");
+      const name = input.value.trim();
+      if (!name) return; /* 空輸入不處理 */
+      selectedIngredients.add(name);
+      input.value = "";
+      renderSelectedList();
+      updateCarbonEstimate();
+      /* 將焦點移回輸入框，方便連續輸入 */
+      input.focus();
+    }
+
+    /* ====================================================
+       Enter 鍵也能新增食材
+       ==================================================== */
+    document.getElementById("custom-ingredient")
+      .addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addCustomIngredient();
+        }
+      });
+
+    /* ====================================================
+       移除已選食材
+       ==================================================== */
+    function removeIngredient(name) {
+      selectedIngredients.delete(name);
+      /* 同步更新快速標籤的視覺狀態 */
+      document.querySelectorAll(".quick-tag").forEach(btn => {
+        if (btn.dataset.name === name) {
+          btn.classList.remove("selected");
+          btn.setAttribute("aria-pressed", "false");
+        }
+      });
+      renderSelectedList();
+      updateCarbonEstimate();
+    }
+
+    /* ====================================================
+       渲染已選食材清單
+       ==================================================== */
+    function renderSelectedList() {
+      const list = document.getElementById("selected-list");
+      const countEl = document.getElementById("selected-count");
+
+      list.innerHTML = ""; /* 清空再重繪 */
+      countEl.textContent = selectedIngredients.size;
+
+      selectedIngredients.forEach(name => {
+        const item = document.createElement("div");
+        item.className = "selected-item";
+
+        const label = document.createElement("span");
+        label.textContent = name;
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-btn";
+        removeBtn.innerHTML = "✕";
+        removeBtn.setAttribute("aria-label", `移除 ${name}`);
+        removeBtn.setAttribute("type", "button");
+        removeBtn.addEventListener("click", () => removeIngredient(name));
+
+        item.appendChild(label);
+        item.appendChild(removeBtn);
+        list.appendChild(item);
+      });
+    }
+
+    /* ====================================================
+       更新展示用碳排估算
+       以每個食材 0.12 kg CO₂e 為基礎（示意數值）
+       ==================================================== */
+    function updateCarbonEstimate() {
+      const carbonEl = document.getElementById("carbon-number");
+      const count = selectedIngredients.size;
+
+      if (count === 0) {
+        carbonEl.textContent = "— kg CO₂e";
+        return;
+      }
+
+      /* 計算：先查快速食材的個別係數，其餘用預設值 */
+      let total = 0;
+      selectedIngredients.forEach(name => {
+        const found = QUICK_INGREDIENTS.find(i => i.name === name);
+        total += found ? found.carbon : 0.12; /* 自訂食材用預設值 */
+      });
+
+      carbonEl.textContent = `約 ${total.toFixed(2)} kg CO₂e`;
+    }
+
+    /* ====================================================
+       生成食譜推薦
+       ==================================================== */
+    function generateRecipes() {
+      const container = document.getElementById("recipes-container");
+
+      /* 若無食材，顯示友善提醒 */
+      if (selectedIngredients.size === 0) {
+        const warn = document.getElementById("warning-msg");
+        warn.classList.add("show");
+        /* 捲動到提醒訊息，方便使用者看到 */
+        warn.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      /* 隱藏提醒 */
+      document.getElementById("warning-msg").classList.remove("show");
+
+      /* 找出符合的食譜（根據關鍵字交集） */
+      const selectedArr = Array.from(selectedIngredients);
+      let matched = RECIPES.filter(recipe =>
+        recipe.keywords.some(kw =>
+          selectedArr.some(sel =>
+            sel.includes(kw) || kw.includes(sel)
+          )
+        )
+      );
+
+      /* 排除 fallback 備用食譜（只有在沒有其他結果時才用） */
+      const nonFallback = matched.filter(r => !r.keywords.includes("__fallback__"));
+      if (nonFallback.length > 0) {
+        matched = nonFallback;
+      } else {
+        /* 沒有任何匹配時，使用備用食譜 */
+        matched = RECIPES.filter(r => r.keywords.includes("__fallback__"));
+      }
+
+      /* 最多推薦 2 道，隨機挑選保持趣味性 */
+      const shuffled = matched.sort(() => Math.random() - 0.5);
+      const toShow = shuffled.slice(0, 2);
+
+      /* 清空並插入新卡片 */
+      container.innerHTML = "";
+
+      /* 加入區塊標題 */
+      const header = document.createElement("div");
+      header.innerHTML = `
+        <h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦</h2>
+        <p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>
+      `;
+      container.appendChild(header);
+
+      /* 安全提醒橫幅 */
+      const safety = document.createElement("div");
+      safety.className = "safety-notice";
+      safety.setAttribute("role", "note");
+      safety.innerHTML = `
+        <strong>🔔 食材安全提醒</strong>
+        若食材出現異味、發黴、黏液或保存時間不明，請勿食用。
+      `;
+      container.appendChild(safety);
+
+      /* 逐一渲染食譜卡片 */
+      toShow.forEach((recipe, index) => {
+        const card = createRecipeCard(recipe, index);
+        container.appendChild(card);
+      });
+
+      /* 平滑捲動到食譜區 */
+      container.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    /* ====================================================
+       建立單一食譜卡片 DOM 元素
+       ==================================================== */
+    function createRecipeCard(recipe, index) {
+      const card = document.createElement("article");
+      card.className = "card recipe-card-anim";
+      /* 加入動畫延遲，讓多張卡片依序出現 */
+      card.style.animationDelay = `${index * 0.12}s`;
+      card.setAttribute("aria-label", `食譜卡片：${recipe.name}`);
+
+      /* 食材標籤 HTML */
+      const ingredientTags = recipe.ingredients
+        .map(i => `<span>${i}</span>`)
+        .join("");
+
+      /* 步驟列表 HTML */
+      const stepItems = recipe.steps
+        .map(s => `<li>${s}</li>`)
+        .join("");
+
+      /* 難度對應顏色（文字說明為主，顏色為輔） */
+      const difficultyIcon = {
+        "非常簡單": "🟢",
+        "簡單": "🟡",
+        "普通": "🟠",
+        "稍難": "🔴",
+      }[recipe.difficulty] || "🟡";
+
+      card.innerHTML = `
+        <span class="ai-badge">💡 靈感示範</span>
+        <h3 class="recipe-name">${recipe.name}</h3>
+
+        <!-- 時間與難度徽章 -->
+        <div class="meta-row">
+          <span class="meta-badge badge-time">⏱ ${recipe.time}</span>
+          <span class="meta-badge badge-difficulty">${difficultyIcon} 難度：${recipe.difficulty}</span>
+        </div>
+
+        <!-- 使用食材 -->
+        <p style="font-size:0.85rem; color:var(--text-mid); margin-bottom:6px; font-weight:600;">建議使用食材</p>
+        <div class="recipe-ingredients">${ingredientTags}</div>
+
+        <!-- 食材改造亮點 -->
+        <div class="highlight-box">
+          <strong>✨ 食材改造亮點</strong><br>
+          ${recipe.highlight}
+        </div>
+
+        <!-- 料理步驟 -->
+        <p class="steps-title">📋 簡易料理步驟</p>
+        <ol class="steps-list">${stepItems}</ol>
+
+        <!-- 分隔線 -->
+        <hr class="card-divider">
+
+        <!-- 四、互動回饋區 -->
+        <!-- 星級評分 -->
+        <div class="rating-row">
+          <span class="rating-label">為這道食譜評分：</span>
+          <div class="stars" role="group" aria-label="星級評分">
+            ${[1,2,3,4,5].map(n => `
+              <button
+                class="star-btn"
+                type="button"
+                data-rating="${n}"
+                aria-label="${n} 顆星"
+                onclick="setRating(this, ${n})"
+              >★</button>
+            `).join("")}
+          </div>
+          <span class="rating-text" aria-live="polite"></span>
+        </div>
+
+        <!-- 回饋按鈕 -->
+        <div class="feedback-row">
+          <button
+            class="feedback-btn"
+            type="button"
+            onclick="submitFeedback(this)"
+          >這道菜對我有幫助！</button>
+          <span class="feedback-count" aria-live="polite">回饋次數：0</span>
+        </div>
+      `;
+
+      return card;
+    }
+
+    /* ====================================================
+       星級評分互動
+       ==================================================== */
+    function setRating(clickedStar, rating) {
+      /* 找到同一評分列裡的所有星星 */
+      const starsContainer = clickedStar.closest(".stars");
+      const allStars = starsContainer.querySelectorAll(".star-btn");
+      const ratingText = starsContainer.closest(".rating-row")
+                                       .querySelector(".rating-text");
+
+      /* 更新每顆星的 active 狀態（active = 金色星） */
+      allStars.forEach(star => {
+        const n = parseInt(star.dataset.rating, 10);
+        if (n <= rating) {
+          star.classList.add("active");
+        } else {
+          star.classList.remove("active");
+        }
+      });
+
+      /* 顯示評分結果文字 */
+      const labels = ["", "非常不滿意", "不太滿意", "還可以", "滿意", "非常滿意！"];
+      ratingText.textContent = `${rating} 顆星 — ${labels[rating]}`;
+    }
+
+    /* ====================================================
+       回饋按鈕互動
+       ==================================================== */
+    function submitFeedback(btn) {
+      /* 若已回饋，不重複處理 */
+      if (btn.classList.contains("done")) return;
+
+      btn.textContent = "✅ 已收到你的回饋";
+      btn.classList.add("done");
+      btn.setAttribute("aria-disabled", "true");
+
+      /* 更新回饋次數（只在當前畫面模擬，非資料庫） */
+      const countEl = btn.closest(".feedback-row")
+                         .querySelector(".feedback-count");
+      const current = parseInt(countEl.textContent.replace(/[^0-9]/g, ""), 10) || 0;
+      countEl.textContent = `回饋次數：${current + 1}`;
+    }
+
+    /* ====================================================
+       頁面初始化
+       ==================================================== */
+    initQuickTags();
+
+  </script>
+</body>
+</html>
+
