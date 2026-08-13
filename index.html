@@ -804,7 +804,14 @@
       );
       const nonFallback = matched.filter(r => !r.keywords.includes("__fallback__"));
       matched = nonFallback.length > 0 ? nonFallback : RECIPES.filter(r => r.keywords.includes("__fallback__"));
-      const toShow = matched.sort(() => Math.random() - 0.5).slice(0, 3);
+      // 計算每道食譜匹配到的食材數量，匹配越多排越前面；數量相同時隨機排序
+      matched.sort((a, b) => {
+        const countMatch = r => r.keywords.filter(kw =>
+          selectedArr.some(sel => sel.includes(kw) || kw.includes(sel))
+        ).length;
+        return countMatch(b) - countMatch(a) || Math.random() - 0.5;
+      });
+      const toShow = matched.slice(0, 3);
       container.innerHTML = "";
       const header = document.createElement("div");
       header.innerHTML = '<h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦</h2><p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>';
