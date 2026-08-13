@@ -161,7 +161,7 @@
     .card-divider { border:none; border-top:1.5px solid #e8f4ee; margin:18px 0; }
 
     /* Rating */
-    .rating-row { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .rating-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
     .rating-label { font-size:0.88rem; color:var(--text-mid); font-weight:600; }
     .stars { display:flex; gap:4px; }
     .star-btn {
@@ -172,6 +172,8 @@
     .star-btn:hover  { transform:scale(1.2); color:#f4a261; }
     .star-btn:focus-visible { outline:3px solid var(--green-mid); border-radius:4px; }
     .rating-text { font-size:0.85rem; color:var(--text-mid); }
+    .avg-rating-row { font-size:0.83rem; color:var(--text-muted); margin-bottom:12px; }
+    .avg-stars { color:#f4a261; letter-spacing:1px; }
     .feedback-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .feedback-btn {
       background-color:var(--green-mid); color:var(--white); border:none;
@@ -183,6 +185,17 @@
     .feedback-btn.done { background-color:#a0b8a8; cursor:not-allowed; }
     .feedback-btn:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
     .feedback-count { font-size:0.85rem; color:var(--text-muted); }
+    /* More button */
+    .more-wrap { text-align:center; padding:8px 0 24px; }
+    .btn-more {
+      display:inline-block; background-color:var(--white); color:var(--green-dark);
+      font-size:1rem; font-weight:700; padding:12px 36px;
+      border:2px solid var(--green-mid); border-radius:var(--radius-lg);
+      cursor:pointer; transition:background-color 0.2s,transform 0.1s;
+    }
+    .btn-more:hover  { background-color:var(--green-light); }
+    .btn-more:active { transform:scale(0.97); }
+    .btn-more:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
 
     /* Eco */
     #eco-section { padding:16px 0 60px; }
@@ -811,7 +824,9 @@
         ).length;
         return countMatch(b) - countMatch(a) || Math.random() - 0.5;
       });
-      const toShow = matched.slice(0, 3);
+      // 儲存本次排序結果供「更多料理」使用
+      currentMatched = matched;
+      currentShownCount = 0;
       container.innerHTML = "";
       const header = document.createElement("div");
       header.innerHTML = '<h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦</h2><p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>';
@@ -821,21 +836,84 @@
       safety.setAttribute("role", "note");
       safety.innerHTML = "<strong>🔔 食材安全提醒</strong>若食材出現異味、發黴、黏液或保存時間不明，請勿食用。";
       container.appendChild(safety);
-      toShow.forEach((recipe, index) => container.appendChild(createRecipeCard(recipe, index)));
+      showMoreRecipes();
       container.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    let currentMatched = [];
+    let currentShownCount = 0;
+    const PAGE_SIZE = 3;
+
+    function showMoreRecipes() {
+      const container = document.getElementById("recipes-container");
+      // 移除舊的「更多料理」按鈕（若存在）
+      const oldMore = document.getElementById("more-btn-wrap");
+      if (oldMore) oldMore.remove();
+
+      const batch = currentMatched.slice(currentShownCount, currentShownCount + PAGE_SIZE);
+      batch.forEach((recipe, i) => container.appendChild(createRecipeCard(recipe, currentShownCount + i)));
+      currentShownCount += batch.length;
+
+      // 若還有更多，顯示按鈕
+      if (currentShownCount < currentMatched.length) {
+        const wrap = document.createElement("div");
+        wrap.className = "more-wrap";
+        wrap.id = "more-btn-wrap";
+        const remaining = currentMatched.length - currentShownCount;
+        const btn = document.createElement("button");
+        btn.className = "btn-more";
+        btn.type = "button";
+        btn.textContent = "🍴 更多料理（還有 " + remaining + " 道）";
+        btn.onclick = showMoreRecipes;
+        wrap.appendChild(btn);
+        container.appendChild(wrap);
+      }
+    }
+
+    // ── localStorage 工具函式 ──
+    function getRatingData(recipeName) {
+      try { return JSON.parse(localStorage.getItem("rating_" + recipeName)) || { total: 0, count: 0 }; }
+      catch(e) { return { total: 0, count: 0 }; }
+    }
+    function saveRatingData(recipeName, data) {
+      try { localStorage.setItem("rating_" + recipeName, JSON.stringify(data)); } catch(e) {}
+    }
+    function getFeedbackCount(recipeName) {
+      try { return parseInt(localStorage.getItem("feedback_" + recipeName) || "0", 10); }
+      catch(e) { return 0; }
+    }
+    function saveFeedbackCount(recipeName, count) {
+      try { localStorage.setItem("feedback_" + recipeName, String(count)); } catch(e) {}
+    }
+
+    function renderAvgStars(avg) {
+      if (avg === 0) return "尚無評分";
+      const full  = Math.floor(avg);
+      const half  = avg - full >= 0.5 ? 1 : 0;
+      const empty = 5 - full - half;
+      return "★".repeat(full) + (half ? "½" : "") + "☆".repeat(empty);
     }
 
     function createRecipeCard(recipe, index) {
       const card = document.createElement("article");
       card.className = "card recipe-card-anim";
-      card.style.animationDelay = (index * 0.12) + "s";
+      card.style.animationDelay = ((index % PAGE_SIZE) * 0.12) + "s";
       card.setAttribute("aria-label", "食譜卡片：" + recipe.name);
+
+      const ratingData   = getRatingData(recipe.name);
+      const feedbackCount = getFeedbackCount(recipe.name);
+      const avg = ratingData.count > 0 ? (ratingData.total / ratingData.count) : 0;
+      const avgText = avg > 0
+        ? renderAvgStars(avg) + "  " + avg.toFixed(1) + " 分（共 " + ratingData.count + " 人評分）"
+        : "尚無評分";
+
       const ingredientTags = recipe.ingredients.map(i => "<span>" + i + "</span>").join("");
       const stepItems = recipe.steps.map(s => "<li>" + s + "</li>").join("");
       const difficultyIcon = { "非常簡單": "🟢", "簡單": "🟡", "普通": "🟠", "稍難": "🔴" }[recipe.difficulty] || "🟡";
       const stars = [1,2,3,4,5].map(n =>
         '<button class="star-btn" type="button" data-rating="' + n + '" aria-label="' + n + ' 顆星" onclick="setRating(this,' + n + ')">★</button>'
       ).join("");
+
       card.innerHTML =
         '<span class="ai-badge">💡 靈感示範</span>' +
         '<h3 class="recipe-name">' + recipe.name + '</h3>' +
@@ -848,32 +926,50 @@
         '<ol class="steps-list">' + stepItems + '</ol>' +
         '<hr class="card-divider">' +
         '<div class="rating-row"><span class="rating-label">為這道食譜評分：</span>' +
-        '<div class="stars" role="group" aria-label="星級評分">' + stars + '</div>' +
+        '<div class="stars" role="group" aria-label="星級評分" data-recipe="' + recipe.name + '">' + stars + '</div>' +
         '<span class="rating-text" aria-live="polite"></span></div>' +
+        '<div class="avg-rating-row">📊 平均評分：<span class="avg-stars">' + avgText + '</span></div>' +
         '<div class="feedback-row">' +
-        '<button class="feedback-btn" type="button" onclick="submitFeedback(this)">這道菜對我有幫助！</button>' +
-        '<span class="feedback-count" aria-live="polite">回饋次數：0</span></div>';
+        '<button class="feedback-btn" type="button" data-recipe="' + recipe.name + '" onclick="submitFeedback(this)">這道菜對我有幫助！</button>' +
+        '<span class="feedback-count" aria-live="polite">回饋次數：' + feedbackCount + '</span></div>';
       return card;
     }
 
     function setRating(clickedStar, rating) {
       const starsContainer = clickedStar.closest(".stars");
+      const recipeName = starsContainer.dataset.recipe;
+      // 更新星星顯示
       starsContainer.querySelectorAll(".star-btn").forEach(star => {
         star.classList.toggle("active", parseInt(star.dataset.rating, 10) <= rating);
       });
       const labels = ["","非常不滿意","不太滿意","還可以","滿意","非常滿意！"];
       starsContainer.closest(".rating-row").querySelector(".rating-text").textContent =
         rating + " 顆星 — " + labels[rating];
+      // 儲存評分並更新平均
+      const data = getRatingData(recipeName);
+      data.total += rating;
+      data.count += 1;
+      saveRatingData(recipeName, data);
+      const avg = data.total / data.count;
+      const avgText = renderAvgStars(avg) + "  " + avg.toFixed(1) + " 分（共 " + data.count + " 人評分）";
+      starsContainer.closest("article").querySelector(".avg-stars").textContent = avgText;
+      // 評分後禁用星星避免重複評分
+      starsContainer.querySelectorAll(".star-btn").forEach(s => {
+        s.onclick = null;
+        s.style.cursor = "default";
+      });
     }
 
     function submitFeedback(btn) {
       if (btn.classList.contains("done")) return;
+      const recipeName = btn.dataset.recipe;
       btn.textContent = "✅ 已收到你的回饋";
       btn.classList.add("done");
       btn.setAttribute("aria-disabled", "true");
       const countEl = btn.closest(".feedback-row").querySelector(".feedback-count");
-      const current = parseInt(countEl.textContent.replace(/[^0-9]/g, ""), 10) || 0;
-      countEl.textContent = "回饋次數：" + (current + 1);
+      const newCount = getFeedbackCount(recipeName) + 1;
+      saveFeedbackCount(recipeName, newCount);
+      countEl.textContent = "回饋次數：" + newCount;
     }
 
     initQuickTags();
