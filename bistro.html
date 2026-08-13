@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>享味 Bistro | 互動線上菜單</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+  body { font-family: 'Noto Sans TC', sans-serif; }
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-24">
+
+<!-- 頂部導航欄 -->
+<header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+        <i class="fa-solid fa-utensils"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-slate-900 leading-tight">享味 Bistro</h1>
+        <p class="text-xs text-slate-500">法式美學 × 在地食材</p>
+      </div>
+    </div>
+    <button onclick="toggleCart()" class="relative p-2.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-full transition-all duration-200">
+      <i class="fa-solid fa-basket-shopping text-xl"></i>
+      <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- 主體區域 -->
+<main class="max-w-6xl mx-auto px-4 pt-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div class="relative flex-1">
+      <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input type="text" id="search-input" placeholder="搜尋菜色名稱或關鍵字..."
+        oninput="filterMenu()"
+        class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-sm transition-all">
+    </div>
+    <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar" id="category-tags">
+      <button onclick="setCategory('all')"       class="category-btn active px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-amber-500 text-white shadow-sm shadow-amber-200">全部菜色</button>
+      <button onclick="setCategory('main')"      class="category-btn px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">精選主餐</button>
+      <button onclick="setCategory('appetizer')" class="category-btn px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">開胃前菜</button>
+      <button onclick="setCategory('dessert')"   class="category-btn px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">手作甜點</button>
+      <button onclick="setCategory('drink')"     class="category-btn px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">特調飲品</button>
+      <button onclick="setCategory('soup')"      class="category-btn px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">精燉湯品</button>
+    </div>
+  </div>
+
+  <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  <div id="empty-state" class="hidden text-center py-16">
+    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 text-2xl">
+      <i class="fa-solid fa-utensils"></i>
+    </div>
+    <h3 class="text-lg font-bold text-slate-700">未找到符合條件的菜色</h3>
+    <p class="text-sm text-slate-400 mt-1">請嘗試更換關鍵字或選擇其他分類</p>
+  </div>
+</main>
+
+<!-- 底部結帳列 -->
+<div id="bottom-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-lg z-20 transform translate-y-full transition-transform duration-300">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <div>
+      <span class="text-xs text-slate-500">預計總金額</span>
+      <div class="text-xl font-bold text-amber-600">NT$ <span id="bar-total">0</span></div>
+    </div>
+    <button onclick="toggleCart()" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md transition-all flex items-center space-x-2">
+      <span>查看點餐單</span>
+      <i class="fa-solid fa-chevron-right text-xs"></i>
+    </button>
+  </div>
+</div>
+
+<!-- 菜色詳情 Modal -->
+<div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300">
+  <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative" id="modal-content">
+    <button onclick="closeModal()" class="absolute top-4 right-4 z-10 bg-black/40 hover:bg-black/60 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md transition-all">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <img id="modal-img" src="" alt="" class="w-full h-64 object-cover">
+    <div class="p-6">
+      <div class="flex justify-between items-start mb-2">
+        <h2 id="modal-title" class="text-2xl font-bold text-slate-900"></h2>
+        <span id="modal-price" class="text-xl font-bold text-amber-600"></span>
+      </div>
+      <p id="modal-desc" class="text-slate-600 text-sm mb-4 leading-relaxed"></p>
+      <div class="flex flex-wrap gap-2 mb-6" id="modal-tags"></div>
+      <button id="modal-add-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-plus"></i>
+        <span>加入點餐單</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 購物車 Drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none">
+  <div id="cart-overlay" onclick="toggleCart()" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
+  <div id="cart-panel" class="absolute top-0 right-0 bottom-0 w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col pointer-events-auto">
+    <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+        <i class="fa-solid fa-receipt text-amber-500"></i> 我的點餐單
+      </h2>
+      <button onclick="toggleCart()" class="text-slate-400 hover:text-slate-600 p-2">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scrollbar"></div>
+    <div class="p-5 border-t border-slate-100 bg-slate-50 space-y-4">
+      <div class="flex justify-between text-slate-600 text-sm"><span>小計</span><span>NT$ <span id="cart-subtotal">0</span></span></div>
+      <div class="flex justify-between text-slate-600 text-sm"><span>服務費 (10%)</span><span>NT$ <span id="cart-service">0</span></span></div>
+      <div class="flex justify-between text-slate-900 font-bold text-lg pt-2 border-t border-slate-200">
+        <span>總計</span><span class="text-amber-600">NT$ <span id="cart-total">0</span></span>
+      </div>
+      <button onclick="submitOrder()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-md transition-all text-center">
+        確認送出餐點
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── 菜單資料庫（共 36 道） ──
+  const menuData = [
+    // ── 精選主餐 ──
+    { id:1,  name:'法式熟成舒肥牛排',        category:'main',      price:680, image:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80', description:'採用低溫熟成 36 小時美國特級肋眼，佐法式紅酒醬汁與紅藜麥沙拉。', tags:['人氣推薦','無麩質'] },
+    { id:2,  name:'奶油松露野菇義大利麵',    category:'main',      price:380, image:'https://images.unsplash.com/photo-1621996346565-e3d5d6281288?auto=format&fit=crop&w=800&q=80', description:'濃郁黑松露醬結合多種有機野菇與帕瑪森起司，搭配手工寬麵。', tags:['蛋奶素'] },
+    { id:3,  name:'香煎大西洋鮭魚佐檸檬奶油',category:'main',      price:520, image:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80', description:'外酥內嫩的永續捕撈鮭魚排，搭配新鮮蒔蘿與特製檸檬奶油醬。', tags:['主廚推薦'] },
+    { id:4,  name:'慢燉普羅旺斯燉雞',        category:'main',      price:420, image:'https://images.unsplash.com/photo-1598103442097-8b74394b95c1?auto=format&fit=crop&w=800&q=80', description:'選用放山雞腿配以橄欖、番茄與香草，以白酒慢燉兩小時入味。', tags:['無麩質'] },
+    { id:5,  name:'炙烤美式嫩肩豬肋排',      category:'main',      price:580, image:'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=800&q=80', description:'12 小時低溫煙燻豬肋排，刷自製 BBQ 蜂蜜芥末醬，附薯泥與玉米。', tags:['人氣推薦'] },
+    { id:6,  name:'番紅花海鮮燉飯',          category:'main',      price:460, image:'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80', description:'西班牙進口番紅花浸漬米粒，放入鮮蝦、淡菜與透抽，鑄鐵鍋慢煮。', tags:['主廚推薦','海鮮'] },
+    { id:7,  name:'頂級和牛漢堡排定食',      category:'main',      price:550, image:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80', description:'A4 和牛絞肉手工塑形，搭配熔岩起司、酸黃瓜與私房特調醬。', tags:['人氣推薦'] },
+    { id:8,  name:'白酒淡菜鍋',              category:'main',      price:390, image:'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&fit=crop&w=800&q=80', description:'新鮮紐西蘭淡菜以干白酒、大蒜、洋蔥與百里香蒸煮，附法式長棍。', tags:['海鮮'] },
+    { id:9,  name:'嫩煎鴨胸佐橙香醬',        category:'main',      price:620, image:'https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=800&q=80', description:'法國鴨胸表皮煎至金黃酥脆，內側玫瑰粉嫩，配以手工橙皮果醬。', tags:['主廚推薦'] },
+    { id:10, name:'日式叉燒拉麵',            category:'main',      price:320, image:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80', description:'清雞骨湯底熬製 8 小時，搭配厚切叉燒、溏心蛋與自製筍乾。', tags:['人氣推薦'] },
+    { id:11, name:'摩洛哥香料烤羊架',        category:'main',      price:780, image:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80', description:'法式切割小羊架醃漬香料 24 小時，高溫炙烤，佐薄荷優格醬。', tags:['無麩質','季節限定'] },
+    { id:12, name:'青醬烤雞腿排',            category:'main',      price:360, image:'https://images.unsplash.com/photo-1598103442097-8b74394b95c1?auto=format&fit=crop&w=800&q=80', description:'熱那亞青醬醃製隔夜，皮脆肉嫩，佐烤櫻桃番茄與奶油玉米粒。', tags:['蛋奶素醬'] },
+
+    // ── 開胃前菜 ──
+    { id:13, name:'西班牙蒜味辣椒蝦',        category:'appetizer', price:280, image:'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=800&q=80', description:'鮮甜草蝦以特級初榨橄欖油、切片大蒜與乾辣椒慢火香煎，附烤麵包。', tags:['微辣'] },
+    { id:14, name:'經典凱薩沙拉佐烤雞胸',    category:'appetizer', price:240, image:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80', description:'蘿蔓生菜、帕瑪森起司脆片與特製凱薩醬，搭配嫩煎香草雞胸肉。', tags:['高蛋白'] },
+    { id:15, name:'法式鵝肝醬烤麵包',        category:'appetizer', price:320, image:'https://images.unsplash.com/photo-1541014741259-de529411b96a?auto=format&fit=crop&w=800&q=80', description:'滑順細緻的法國鵝肝醬佐無花果果醬，搭配自製布里歐麵包丁。', tags:['主廚推薦'] },
+    { id:16, name:'炸蒔蘿牛乳起司球',        category:'appetizer', price:220, image:'https://images.unsplash.com/photo-1541014741259-de529411b96a?auto=format&fit=crop&w=800&q=80', description:'外酥內牽絲的莫扎瑞拉起司球裹麵包粉油炸，附自製羅勒番茄醬。', tags:['蛋奶素'] },
+    { id:17, name:'義式生火腿哈密瓜',        category:'appetizer', price:260, image:'https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=800&q=80', description:'24 個月熟成帕瑪火腿薄片配當季哈密瓜，點綴芝麻葉與帕瑪森。', tags:['無麩質'] },
+    { id:18, name:'酥炸軟殼蟹沙拉',          category:'appetizer', price:340, image:'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=800&q=80', description:'整隻軟殼蟹裹天婦羅麵衣油炸，佐芒果莎莎醬與芝麻葉沙拉。', tags:['海鮮','季節限定'] },
+    { id:19, name:'煙燻鮭魚塔塔',            category:'appetizer', price:300, image:'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80', description:'手工切丁煙燻鮭魚混合刺山柑與紅洋蔥，搭配酸奶油與黑麥脆餅。', tags:['主廚推薦'] },
+    { id:20, name:'番茄冷湯佐蝦仁',          category:'appetizer', price:200, image:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80', description:'西班牙傳統冷湯以熟透番茄手工研磨，冷藏後搭配新鮮蝦仁享用。', tags:['微辣','無麩質'] },
+
+    // ── 手作甜點 ──
+    { id:21, name:'法式焦糖布丁（Crème Brûlée）', category:'dessert', price:180, image:'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?auto=format&fit=crop&w=800&q=80', description:'以香草莢浸漬的濃郁蛋奶液慢烤，食前以噴槍炙出薄脆焦糖層。', tags:['人氣推薦'] },
+    { id:22, name:'熔岩巧克力蛋糕',          category:'dessert',   price:200, image:'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80', description:'比利時 70% 黑巧克力製成，外層烤熟內心仍流動，配香草冰淇淋。', tags:['人氣推薦'] },
+    { id:23, name:'千層酥皮拿破崙',          category:'dessert',   price:220, image:'https://images.unsplash.com/photo-1587241321921-91a834d6d191?auto=format&fit=crop&w=800&q=80', description:'手工製作 729 層酥皮，夾入香草卡士達與鮮打鮮奶油，灑糖粉完成。', tags:['主廚推薦'] },
+    { id:24, name:'提拉米蘇',                category:'dessert',   price:190, image:'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=800&q=80', description:'義大利馬斯卡彭乳酪層疊手指餅乾，以濃縮咖啡與可可粉調味。', tags:['蛋奶素'] },
+    { id:25, name:'草莓法式塔',              category:'dessert',   price:210, image:'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?auto=format&fit=crop&w=800&q=80', description:'奶油杏仁塔皮填入香草卡士達，鋪滿當季草莓並刷鏡面果膠。', tags:['季節限定'] },
+    { id:26, name:'抹茶白玉紅豆聖代',        category:'dessert',   price:230, image:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80', description:'頂級宇治抹茶冰淇淋搭配手製白玉麻糬、蜜紅豆與玄米脆餅。', tags:['人氣推薦','蛋奶素'] },
+    { id:27, name:'卡達利那焦糖蘋果塔',      category:'dessert',   price:195, image:'https://images.unsplash.com/photo-1464305795204-6f5bbfc7fb81?auto=format&fit=crop&w=800&q=80', description:'翻轉焦糖蘋果塔以法國品種蘋果製成，附肉桂冰淇淋球享用。', tags:['主廚推薦'] },
+
+    // ── 特調飲品 ──
+    { id:28, name:'玫瑰荔枝氣泡飲',          category:'drink',     price:160, image:'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=80', description:'新鮮荔枝汁與玫瑰糖漿調製，注入進口氣泡水，加入可食玫瑰花瓣裝飾。', tags:['無咖啡因'] },
+    { id:29, name:'手沖精品單品咖啡',        category:'drink',     price:180, image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80', description:'每日精選衣索比亞或哥倫比亞單品豆，V60 手沖，凸顯花果香氣。', tags:['含咖啡因'] },
+    { id:30, name:'抹茶拿鐵',                category:'drink',     price:170, image:'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=80', description:'日本儀式級抹茶以傳統點茶法打泡，注入綿密燕麥奶，溫或冰皆可。', tags:['蛋奶素'] },
+    { id:31, name:'百香果芒果冷萃茶',        category:'drink',     price:155, image:'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=80', description:'精選東方美人茶以冷萃 12 小時，搭配新鮮百香果與芒果果泥。', tags:['無咖啡因','無糖可選'] },
+    { id:32, name:'莫希托（Mojito）',         category:'drink',     price:200, image:'https://images.unsplash.com/photo-1560508180-03f285f67ded?auto=format&fit=crop&w=800&q=80', description:'新鮮薄荷葉、萊姆汁與蔗糖漿搖製，注入蘇打水，可含酒精或無酒精。', tags:['可選無酒精'] },
+    { id:33, name:'黑糖珍珠鮮奶茶',          category:'drink',     price:150, image:'https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=800&q=80', description:'大葉烏龍茶底配手工黑糖珍珠，搭配每日新鮮直送鮮奶，甜度可調。', tags:['人氣推薦','甜度可調'] },
+    { id:34, name:'伯爵奶茶',                category:'drink',     price:145, image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80', description:'正山小種混調佛手柑伯爵茶，以法式奶茶比例沖泡，滑順不苦澀。', tags:['含咖啡因'] },
+
+    // ── 精燉湯品 ──
+    { id:35, name:'法式洋蔥湯',              category:'soup',      price:220, image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', description:'洋蔥慢炒一小時至深琥珀色，以牛骨高湯燉煮，蓋上格律耶爾起司焗烤。', tags:['主廚推薦'] },
+    { id:36, name:'濃縮龍蝦海鮮巧達湯',      category:'soup',      price:280, image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', description:'波士頓龍蝦殼熬製濃湯底，加入干貝、蛤蜊與鮮奶油，灑紅椒粉。', tags:['海鮮','季節限定'] },
+    { id:37, name:'義式蕃茄麵包濃湯',        category:'soup',      price:180, image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', description:'托斯卡尼農家食譜，熟透番茄與昨日麵包燉成濃稠暖湯，淋初榨橄欖油。', tags:['蛋奶素','無麩質可選'] },
+    { id:38, name:'泰式椰漿南瓜濃湯',        category:'soup',      price:190, image:'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', description:'烤南瓜與椰漿打成絲滑濃湯，以香茅與薑黃調味，點綴椰奶漩渦。', tags:['純素','無麩質'] },
+  ];
+
+  // ── 購物車狀態 ──
+  let cart = [];
+  let currentCategory = 'all';
+  let cartOpen = false;
+
+  // ── 初始化 ──
+  function init() {
+    filterMenu();
+  }
+
+  // ── 分類篩選 ──
+  function setCategory(cat) {
+    currentCategory = cat;
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      const isActive = btn.getAttribute('onclick').includes(`'${cat}'`);
+      btn.className = isActive
+        ? 'category-btn active px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-amber-500 text-white shadow-sm shadow-amber-200'
+        : 'category-btn px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-white text-slate-600 hover:bg-slate-100 border border-slate-200';
+    });
+    filterMenu();
+  }
+
+  // ── 搜尋 + 篩選渲染 ──
+  function filterMenu() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const filtered = menuData.filter(item => {
+      const matchCat = currentCategory === 'all' || item.category === currentCategory;
+      const matchSearch = item.name.toLowerCase().includes(query) ||
+                          item.description.toLowerCase().includes(query) ||
+                          item.tags.some(t => t.toLowerCase().includes(query));
+      return matchCat && matchSearch;
+    });
+    renderMenu(filtered);
+  }
+
+  // ── 渲染菜單卡片 ──
+  function renderMenu(items) {
+    const grid = document.getElementById('menu-grid');
+    const empty = document.getElementById('empty-state');
+    if (items.length === 0) {
+      grid.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    grid.innerHTML = items.map(item => {
+      const inCart = cart.find(c => c.id === item.id);
+      return `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group border border-slate-100"
+             onclick="openModal(${item.id})">
+          <div class="relative overflow-hidden h-48">
+            <img src="${item.image}" alt="${item.name}"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute top-3 left-3 flex flex-wrap gap-1">
+              ${item.tags.map(t => `<span class="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-slate-900 text-base mb-1 line-clamp-1">${item.name}</h3>
+            <p class="text-slate-500 text-xs line-clamp-2 mb-3 leading-relaxed">${item.description}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-amber-600 font-bold text-lg">NT$ ${item.price}</span>
+              <button onclick="event.stopPropagation(); addToCart(${item.id})"
+                      class="w-9 h-9 rounded-full flex items-center justify-center transition-all
+                             ${inCart ? 'bg-amber-500 text-white' : 'bg-amber-50 text-amber-600 hover:bg-amber-100'}">
+                <i class="fa-solid ${inCart ? 'fa-check' : 'fa-plus'} text-sm"></i>
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Modal ──
+  function openModal(id) {
+    const item = menuData.find(i => i.id === id);
+    if (!item) return;
+    document.getElementById('modal-img').src = item.image;
+    document.getElementById('modal-title').textContent = item.name;
+    document.getElementById('modal-price').textContent = `NT$ ${item.price}`;
+    document.getElementById('modal-desc').textContent = item.description;
+    document.getElementById('modal-tags').innerHTML =
+      item.tags.map(t => `<span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full font-medium">${t}</span>`).join('');
+    const btn = document.getElementById('modal-add-btn');
+    const inCart = cart.find(c => c.id === id);
+    btn.innerHTML = inCart
+      ? '<i class="fa-solid fa-check"></i><span>已加入點餐單</span>'
+      : '<i class="fa-solid fa-plus"></i><span>加入點餐單</span>';
+    btn.onclick = () => { addToCart(id); updateModalBtn(id); };
+
+    const modal = document.getElementById('detail-modal');
+    modal.classList.remove('opacity-0','pointer-events-none');
+    document.getElementById('modal-content').classList.remove('scale-95');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateModalBtn(id) {
+    const btn = document.getElementById('modal-add-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i><span>已加入點餐單</span>';
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('detail-modal');
+    modal.classList.add('opacity-0','pointer-events-none');
+    document.getElementById('modal-content').classList.add('scale-95');
+    document.body.style.overflow = '';
+  }
+
+  // ── 加入購物車 ──
+  function addToCart(id) {
+    const item = menuData.find(i => i.id === id);
+    if (!item) return;
+    const existing = cart.find(c => c.id === id);
+    if (existing) { existing.qty++; }
+    else { cart.push({ ...item, qty: 1 }); }
+    updateCartUI();
+    filterMenu();
+  }
+
+  // ── 更改數量 ──
+  function changeQty(id, delta) {
+    const idx = cart.findIndex(c => c.id === id);
+    if (idx === -1) return;
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    updateCartUI();
+    filterMenu();
+  }
+
+  // ── 更新購物車 UI ──
+  function updateCartUI() {
+    const totalQty = cart.reduce((s, c) => s + c.qty, 0);
+    const subtotal  = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    const service   = Math.round(subtotal * 0.1);
+    const total     = subtotal + service;
+
+    // count badge
+    const countEl = document.getElementById('cart-count');
+    if (totalQty > 0) { countEl.textContent = totalQty; countEl.classList.remove('hidden'); }
+    else { countEl.classList.add('hidden'); }
+
+    // bottom bar
+    const bar = document.getElementById('bottom-bar');
+    if (totalQty > 0) { bar.classList.remove('translate-y-full'); }
+    else { bar.classList.add('translate-y-full'); }
+    document.getElementById('bar-total').textContent = total;
+
+    // cart panel
+    document.getElementById('cart-subtotal').textContent = subtotal;
+    document.getElementById('cart-service').textContent  = service;
+    document.getElementById('cart-total').textContent    = total;
+
+    const cartItems = document.getElementById('cart-items');
+    if (cart.length === 0) {
+      cartItems.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-full text-slate-400 py-16">
+          <i class="fa-solid fa-basket-shopping text-4xl mb-3 opacity-30"></i>
+          <p class="text-sm">點餐單是空的，快去挑選菜色吧！</p>
+        </div>`;
+    } else {
+      cartItems.innerHTML = cart.map(c => `
+        <div class="flex items-center gap-4 bg-slate-50 rounded-2xl p-3">
+          <img src="${c.image}" alt="${c.name}" class="w-14 h-14 object-cover rounded-xl flex-shrink-0">
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-slate-800 text-sm line-clamp-1">${c.name}</p>
+            <p class="text-amber-600 font-bold text-sm">NT$ ${c.price}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="changeQty(${c.id},-1)" class="w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center text-sm transition-all">
+              <i class="fa-solid fa-minus text-xs"></i>
+            </button>
+            <span class="w-5 text-center font-bold text-slate-800 text-sm">${c.qty}</span>
+            <button onclick="changeQty(${c.id},1)"  class="w-7 h-7 rounded-full bg-amber-100 hover:bg-amber-200 text-amber-700 flex items-center justify-center text-sm transition-all">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+        </div>`).join('');
+    }
+  }
+
+  // ── 購物車抽屜開關 ──
+  function toggleCart() {
+    cartOpen = !cartOpen;
+    const drawer  = document.getElementById('cart-drawer');
+    const overlay = document.getElementById('cart-overlay');
+    const panel   = document.getElementById('cart-panel');
+    if (cartOpen) {
+      drawer.classList.remove('pointer-events-none');
+      overlay.classList.remove('opacity-0');
+      panel.classList.remove('translate-x-full');
+      document.body.style.overflow = 'hidden';
+    } else {
+      drawer.classList.add('pointer-events-none');
+      overlay.classList.add('opacity-0');
+      panel.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // ── 送出訂單 ──
+  function submitOrder() {
+    if (cart.length === 0) return;
+    const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    const total    = subtotal + Math.round(subtotal * 0.1);
+    alert(`✅ 訂單已送出！\n共 ${cart.reduce((s,c)=>s+c.qty,0)} 項菜色\n總金額：NT$ ${total}\n\n感謝光臨享味 Bistro！`);
+    cart = [];
+    updateCartUI();
+    toggleCart();
+    filterMenu();
+  }
+
+  // ── 啟動 ──
+  init();
+</script>
+</body>
+</html>
