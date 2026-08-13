@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -174,6 +174,7 @@
     .rating-text { font-size:0.85rem; color:var(--text-mid); }
     .avg-rating-row { font-size:0.83rem; color:var(--text-muted); margin-bottom:12px; }
     .avg-stars { color:#f4a261; letter-spacing:1px; }
+    .badge-calories { background:#fce4ec; color:#880e4f; }
     .feedback-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .feedback-btn {
       background-color:var(--green-mid); color:var(--white); border:none;
@@ -333,7 +334,7 @@
           "平底鍋開中小火，塗少許油，舀入麵糊。",
           "每面煎約 2–3 分鐘至金黃，起鍋即可享用。",
         ],
-        time: "約 10 分鐘", difficulty: "簡單",
+        time: "約 10 分鐘", difficulty: "簡單", calories: 210,
       },
       {
         keywords: ["過熟香蕉", "香蕉", "麵包"],
@@ -346,7 +347,7 @@
           "平底鍋熱油，中小火將吐司兩面煎至金黃。",
           "盛盤後鋪上香蕉片，可撒少許肉桂粉增香。",
         ],
-        time: "約 12 分鐘", difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
       // ── 剩米飯 ──
       {
@@ -361,7 +362,7 @@
           "放入米飯大火翻炒，加入炒蛋，以醬油與少許鹽調味。",
           "炒至均勻，盛盤即完成。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["剩米飯", "米飯"],
@@ -374,7 +375,7 @@
           "擺上醬菜、梅子或鮭魚鬆。",
           "撒上海苔絲，即可享用。",
         ],
-        time: "約 5 分鐘", difficulty: "非常簡單",
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
       },
       {
         keywords: ["剩米飯", "米飯", "番茄", "蛋"],
@@ -387,7 +388,7 @@
           "蛋打散，繞圈倒入湯中，輕輕攪拌成蛋花。",
           "加鹽調味，盛碗後撒蔥花即完成。",
         ],
-        time: "約 12 分鐘", difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
       // ── 菜梗 / 蔬菜 ──
       {
@@ -402,7 +403,7 @@
           "下菜梗大火快炒，加鹽與少許米酒。",
           "炒約 3 分鐘，菜梗稍軟即可起鍋。",
         ],
-        time: "約 10 分鐘", difficulty: "簡單",
+        time: "約 10 分鐘", difficulty: "簡單", calories: 210,
       },
       {
         keywords: ["蔬菜", "馬鈴薯", "洋蔥"],
@@ -416,7 +417,7 @@
           "倒入牛奶或水，煮滾後轉小火燉 15 分鐘至馬鈴薯軟爛。",
           "用叉子壓碎部分馬鈴薯增加濃稠感，加鹽調味即完成。",
         ],
-        time: "約 25 分鐘", difficulty: "簡單",
+        time: "約 25 分鐘", difficulty: "簡單", calories: 260,
       },
       {
         keywords: ["蔬菜", "番茄", "洋蔥"],
@@ -429,7 +430,7 @@
           "同鍋炒洋蔥至透明，加入番茄翻炒出汁。",
           "放回炒蛋，加鹽少許糖調味拌勻即完成。",
         ],
-        time: "約 12 分鐘", difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
       // ── 熟肉 ──
       {
@@ -444,7 +445,7 @@
           "白飯盛入碗中，鋪上肉丁與蔬菜。",
           "淋上醬汁，攪拌均勻即可享用。",
         ],
-        time: "約 10 分鐘", difficulty: "非常簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
       },
       {
         keywords: ["熟肉", "肉", "麵條"],
@@ -457,7 +458,7 @@
           "碗中加入蒜末、醬油膏、芝麻油、辣油拌勻。",
           "鋪上肉絲，撒蔥花，攪拌均勻即可享用。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       // ── 麵包 ──
       {
@@ -471,7 +472,7 @@
           "生菜撕成一口大小，番茄切塊，盛盤。",
           "撒上麵包丁，淋少許橄欖油與鹽，拌勻即完成。",
         ],
-        time: "約 12 分鐘", difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
       {
         keywords: ["麵包", "蛋"],
@@ -484,7 +485,7 @@
           "烤箱預熱 180°C，放入烤皿烤 25–30 分鐘至表面金黃。",
           "取出稍涼後即可享用，可搭配冰淇淋或鮮奶油。",
         ],
-        time: "約 40 分鐘", difficulty: "普通",
+        time: "約 40 分鐘", difficulty: "普通", calories: 290,
       },
       // ── 蛋 ──
       {
@@ -498,7 +499,7 @@
           "再倒入蛋液，半凝固後與第一層一起捲。",
           "重複一次，整形後切片盛盤。",
         ],
-        time: "約 10 分鐘", difficulty: "普通",
+        time: "約 10 分鐘", difficulty: "普通", calories: 175,
       },
       {
         keywords: ["蛋", "番茄"],
@@ -511,7 +512,7 @@
           "同鍋炒番茄，加少許鹽和糖炒出湯汁。",
           "放回蛋翻炒均勻，撒蔥花起鍋。",
         ],
-        time: "約 10 分鐘", difficulty: "非常簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
       },
       {
         keywords: ["蛋", "豆腐"],
@@ -524,7 +525,7 @@
           "蒸鍋水滾後放入，蓋上保鮮膜或蓋子，中小火蒸 12 分鐘。",
           "取出後淋少許醬油，撒蔥花即完成。",
         ],
-        time: "約 18 分鐘", difficulty: "簡單",
+        time: "約 18 分鐘", difficulty: "簡單", calories: 130,
       },
       // ── 豆腐 ──
       {
@@ -539,7 +540,7 @@
           "放入豆腐，輕輕翻拌，小火煮 3 分鐘入味。",
           "加太白粉水勾薄芡，撒上蔥花即完成。",
         ],
-        time: "約 15 分鐘", difficulty: "普通",
+        time: "約 15 分鐘", difficulty: "普通", calories: 240,
       },
       {
         keywords: ["豆腐"],
@@ -552,7 +553,7 @@
           "混合醬油、薑泥、芝麻油做成醬汁。",
           "豆腐盛盤，淋上醬汁，撒蔥花即完成。",
         ],
-        time: "約 12 分鐘", difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
       // ── 麵條 ──
       {
@@ -566,7 +567,7 @@
           "放入麵條，加醬油、鹽大火翻炒均勻。",
           "起鍋前淋少許香油，盛盤即完成。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["麵條", "蛋"],
@@ -579,7 +580,7 @@
           "麵條撈入碗中，加醬油、胡椒粉調味。",
           "鋪上荷包蛋，撒蔥花即可享用。",
         ],
-        time: "約 12 分鐘", difficulty: "非常簡單",
+        time: "約 12 分鐘", difficulty: "非常簡單", calories: 320,
       },
       // ── 馬鈴薯 ──
       {
@@ -593,7 +594,7 @@
           "平底鍋熱油，舀入薯絲壓扁，中火煎 4–5 分鐘至底部金黃。",
           "翻面再煎 3 分鐘，盛盤搭配番茄醬享用。",
         ],
-        time: "約 20 分鐘", difficulty: "簡單",
+        time: "約 20 分鐘", difficulty: "簡單", calories: 300,
       },
       {
         keywords: ["馬鈴薯", "洋蔥"],
@@ -607,7 +608,7 @@
           "同鍋再下少許油，倒入蛋液，中小火煎 5 分鐘至底部固定。",
           "用盤子輔助翻面，再煎 3 分鐘，盛盤切片享用。",
         ],
-        time: "約 25 分鐘", difficulty: "普通",
+        time: "約 25 分鐘", difficulty: "普通", calories: 310,
       },
       // ── 番茄 ──
       {
@@ -621,7 +622,7 @@
           "冷藏 30 分鐘後倒入碗中。",
           "上桌前淋少許橄欖油，放上羅勒葉點綴。",
         ],
-        time: "約 10 分鐘（+冷藏）", difficulty: "非常簡單",
+        time: "約 10 分鐘（+冷藏）", difficulty: "非常簡單", calories: 70,
       },
       // ── 豆芽 ──
       {
@@ -635,7 +636,7 @@
           "豆芽與醬料充分拌勻。",
           "盛盤後撒上白芝麻即完成。",
         ],
-        time: "約 8 分鐘", difficulty: "非常簡單",
+        time: "約 8 分鐘", difficulty: "非常簡單", calories: 90,
       },
       // ── 洋蔥 ──
       {
@@ -649,7 +650,7 @@
           "倒入蛋液，翻炒至半熟。",
           "加醬油、鹽調味，炒勻起鍋。",
         ],
-        time: "約 10 分鐘", difficulty: "非常簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
       },
       // ── 水果 ──
       {
@@ -663,7 +664,7 @@
           "視口味加少許蜂蜜，攪打至滑順。",
           "倒入杯中，立即享用或冷藏保存。",
         ],
-        time: "約 8 分鐘", difficulty: "非常簡單",
+        time: "約 8 分鐘", difficulty: "非常簡單", calories: 90,
       },
       {
         keywords: ["蛋", "醬油"],
@@ -676,7 +677,7 @@
           "放入剝殼雞蛋，中小火煮滾後轉小火燜 15 分鐘。",
           "關火後讓雞蛋繼續浸泡 30 分鐘以上更入味，即可盛盤。",
         ],
-        time: "約 30 分鐘", difficulty: "簡單",
+        time: "約 30 分鐘", difficulty: "簡單", calories: 320,
       },
       {
         keywords: ["蔬菜", "菜梗", "味噌"],
@@ -690,7 +691,7 @@
           "關小火，將味噌醬用少許湯汁溶開後倒入鍋中，拌勻。",
           "不再沸騰，撒上蔥花即可盛碗（味噌不宜久煮）。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["蔬菜", "小黃瓜", "涼拌"],
@@ -703,7 +704,7 @@
           "將蔬菜盛入碗中，淋上醬汁。",
           "拌勻後靜置 5 分鐘讓食材入味，即可享用。",
         ],
-        time: "約 10 分鐘", difficulty: "非常簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
       },
       {
         keywords: ["剩米飯", "米飯", "肉", "熟肉"],
@@ -716,7 +717,7 @@
           "沖入剛煮好的熱綠茶或高湯（約 150ml）。",
           "可加上梅乾、鮭魚鬆等配料，即可享用。",
         ],
-        time: "約 5 分鐘", difficulty: "非常簡單",
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
       },
       {
         keywords: ["蛋", "番茄"],
@@ -729,7 +730,7 @@
           "原鍋爆香蔥花，加入番茄大火翻炒至出汁。",
           "倒入半熟蛋，加鹽、糖少許調味，翻炒均勻盛盤。",
         ],
-        time: "約 10 分鐘", difficulty: "簡單",
+        time: "約 10 分鐘", difficulty: "簡單", calories: 210,
       },
       {
         keywords: ["麵包", "蛋"],
@@ -742,7 +743,7 @@
           "平底鍋下奶油，中小火煎至兩面金黃。",
           "起鍋後可淋蜂蜜或撒糖粉，即可享用。",
         ],
-        time: "約 10 分鐘", difficulty: "非常簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
       },
       {
         keywords: ["蔬菜", "菜梗", "熟肉", "肉"],
@@ -755,7 +756,7 @@
           "平底鍋熱油，倒入麵糊搖晃均勻成薄皮，煎至半熟。",
           "鋪上蛋液，放上餡料，捲起煎至金黃即完成。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["剩米飯", "米飯", "蛋"],
@@ -768,7 +769,7 @@
           "撒上起司絲，放入烤箱 200°C 烤 8–10 分鐘至起司融化金黃。",
           "取出撒蔥花，即可享用。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["水果", "香蕉", "過熟香蕉", "麵包"],
@@ -781,7 +782,7 @@
           "鋪上水果，蓋上另一片吐司。",
           "切半盛盤，可搭配牛奶當早餐或點心。",
         ],
-        time: "約 5 分鐘", difficulty: "非常簡單",
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
       },
       {
         keywords: ["蔬菜", "熟肉", "肉", "蛋"],
@@ -794,7 +795,7 @@
           "加入葉菜類與泡麵（或冬粉），續煮 2 分鐘。",
           "起鍋前可打入一顆蛋，蓋蓋燜 1 分鐘，即可享用。",
         ],
-        time: "約 15 分鐘", difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["蔬菜", "菜梗"],
@@ -807,7 +808,7 @@
           "油鍋加熱至 170°C，蔬菜沾麵糊下鍋炸 2–3 分鐘至金黃。",
           "撈起瀝油，搭配鹽或醬油享用。",
         ],
-        time: "約 20 分鐘", difficulty: "普通",
+        time: "約 20 分鐘", difficulty: "普通", calories: 280,
       },
       {
         keywords: ["熟肉", "肉", "麵包"],
@@ -820,7 +821,7 @@
           "依序鋪上生菜、番茄片、熟肉。",
           "蓋上另一片吐司，對切盛盤即完成。",
         ],
-        time: "約 5 分鐘", difficulty: "非常簡單",
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
       },
       {
         keywords: ["蛋", "蔬菜"],
@@ -833,7 +834,7 @@
           "倒入蛋液，輕輕搖晃使蛋液流入縫隙。",
           "蓋上鍋蓋，小火燜 5–8 分鐘至蛋液凝固，切片盛盤。",
         ],
-        time: "約 20 分鐘", difficulty: "普通",
+        time: "約 20 分鐘", difficulty: "普通", calories: 280,
       },
       // ── 高麗菜 ──
       { keywords: ["高麗菜", "蔬菜"], name: "高麗菜炒蛋",
@@ -1041,7 +1042,7 @@
           "加入葉菜類，續煮 2–3 分鐘。",
           "加鹽調味，盛碗即完成。",
         ],
-        time: "約 20 分鐘", difficulty: "簡單",
+        time: "約 20 分鐘", difficulty: "簡單", calories: 300,
       },
       {
         keywords: ["__fallback__"],
@@ -1055,7 +1056,7 @@
           "撥到鍋邊，倒入蛋液炒散，再與食材混合翻炒。",
           "加醬油與鹽調味，起鍋盛盤。",
         ],
-        time: "約 12 分鐘", difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
     ];
 
@@ -1264,11 +1265,16 @@
         '<button class="star-btn" type="button" data-rating="' + n + '" aria-label="' + n + ' 顆星" onclick="setRating(this,' + n + ')">★</button>'
       ).join("");
 
+      const caloriesBadge = recipe.calories
+        ? '<span class="meta-badge badge-calories">🔥 約 ' + recipe.calories + ' 大卡</span>'
+        : '';
+
       card.innerHTML =
         '<span class="ai-badge">💡 靈感示範</span>' +
         '<h3 class="recipe-name">' + recipe.name + '</h3>' +
         '<div class="meta-row"><span class="meta-badge badge-time">⏱ ' + recipe.time + '</span>' +
-        '<span class="meta-badge badge-difficulty">' + difficultyIcon + ' 難度：' + recipe.difficulty + '</span></div>' +
+        '<span class="meta-badge badge-difficulty">' + difficultyIcon + ' 難度：' + recipe.difficulty + '</span>' +
+        caloriesBadge + '</div>' +
         '<p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:6px;font-weight:600;">建議使用食材</p>' +
         '<div class="recipe-ingredients">' + ingredientTags + '</div>' +
         '<div class="highlight-box"><strong>✨ 食材改造亮點</strong><br>' + recipe.highlight + '</div>' +
