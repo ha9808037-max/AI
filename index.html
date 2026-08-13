@@ -1,731 +1,284 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <!-- 讓手機瀏覽器正確縮放，避免水平捲軸 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>剩食料理推薦 — 把剩食變成下一道美味</title>
-
   <style>
-    /* ================================================
-       全域重置與基礎設定
-       ================================================ */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* CSS 自訂變數：色彩系統 */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --green-dark:   #2d6a4f; /* 深綠：標題、強調 */
-      --green-mid:    #40916c; /* 中綠：按鈕、標籤 */
-      --green-light:  #d8f3dc; /* 淺綠：背景、hover */
-      --yellow:       #f4a261; /* 暖黃：標籤、亮點 */
-      --yellow-light: #fff3e0; /* 淡黃：卡片背景 */
-      --cream:        #fefae0; /* 米色：頁面背景 */
+      --green-dark:   #2d6a4f;
+      --green-mid:    #40916c;
+      --green-light:  #d8f3dc;
+      --yellow:       #f4a261;
+      --yellow-light: #fff3e0;
+      --cream:        #fefae0;
       --white:        #ffffff;
-      --text-dark:    #1b2e22; /* 主要文字 */
-      --text-mid:     #4a6357; /* 次要文字 */
-      --text-muted:   #7a9186; /* 說明文字 */
+      --text-dark:    #1b2e22;
+      --text-mid:     #4a6357;
+      --text-muted:   #7a9186;
       --border:       #b7d9c5;
-      --shadow:       rgba(45, 106, 79, 0.12);
+      --shadow:       rgba(45,106,79,0.12);
       --radius-sm:    8px;
       --radius-md:    14px;
       --radius-lg:    20px;
     }
-
-    html {
-      /* 讓 scroll-behavior: smooth 能在「開始使用」按鈕生效 */
-      scroll-behavior: smooth;
-    }
-
+    html { scroll-behavior: smooth; }
     body {
-      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC",
-                   system-ui, -apple-system, sans-serif;
+      font-family: "PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
       background-color: var(--cream);
       color: var(--text-dark);
       font-size: 16px;
       line-height: 1.7;
-      /* 防止任何內容超寬造成水平捲軸 */
       overflow-x: hidden;
     }
+    .container { width:100%; max-width:820px; margin:0 auto; padding:0 20px; }
+    .section-title { font-size:1.4rem; font-weight:700; color:var(--green-dark); margin-bottom:8px; }
+    .section-desc  { color:var(--text-mid); margin-bottom:20px; font-size:0.95rem; }
 
-    /* ================================================
-       通用元件
-       ================================================ */
-
-    /* 版面容器：桌電版限制最大寬度並置中 */
-    .container {
-      width: 100%;
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* 區塊標題 */
-    .section-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-
-    .section-desc {
-      color: var(--text-mid);
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
-
-    /* 主要按鈕（深綠底） */
     .btn-primary {
-      display: inline-block;
-      background-color: var(--green-mid);
-      color: var(--white);
-      font-size: 1rem;
-      font-weight: 600;
-      padding: 12px 28px;
-      border: none;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-      text-decoration: none;
+      display:inline-block; background-color:var(--green-mid); color:var(--white);
+      font-size:1rem; font-weight:600; padding:12px 28px; border:none;
+      border-radius:var(--radius-md); cursor:pointer;
+      transition:background-color 0.2s,transform 0.1s; text-decoration:none;
     }
-    .btn-primary:hover  { background-color: var(--green-dark); }
-    .btn-primary:active { transform: scale(0.97); }
-    /* 鍵盤焦點可見框 */
-    .btn-primary:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
-    }
+    .btn-primary:hover  { background-color:var(--green-dark); }
+    .btn-primary:active { transform:scale(0.97); }
+    .btn-primary:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
 
-    /* 次要按鈕（邊框樣式） */
-    .btn-secondary {
-      display: inline-block;
-      background-color: transparent;
-      color: var(--green-dark);
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 8px 18px;
-      border: 2px solid var(--green-mid);
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    .btn-secondary:hover {
-      background-color: var(--green-light);
-    }
-    .btn-secondary:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
-    }
-
-    /* 卡片通用樣式 */
     .card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px var(--shadow);
-      padding: 24px;
-      margin-bottom: 24px;
+      background:var(--white); border-radius:var(--radius-lg);
+      box-shadow:0 4px 16px var(--shadow); padding:24px; margin-bottom:24px;
     }
 
-    /* ================================================
-       一、首頁主視覺區（Hero）
-       ================================================ */
+    /* Hero */
     #hero {
-      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
-      color: var(--white);
-      padding: 72px 20px 80px;
-      text-align: center;
+      background:linear-gradient(135deg,var(--green-dark) 0%,var(--green-mid) 100%);
+      color:var(--white); padding:72px 20px 80px; text-align:center;
     }
-
-    #hero .hero-emoji {
-      font-size: 3.5rem;
-      margin-bottom: 12px;
-      display: block;
-      /* emoji 本身已有語義，用 aria-hidden 讓螢幕閱讀器跳過 */
-    }
-
-    #hero h1 {
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      margin-bottom: 16px;
-      line-height: 1.3;
-    }
-
-    #hero .hero-sub {
-      font-size: 1.05rem;
-      opacity: 0.92;
-      max-width: 480px;
-      margin: 0 auto 32px;
-    }
-
-    /* Hero 按鈕用白底綠字，讓對比度足夠 */
+    #hero .hero-emoji { font-size:3.5rem; margin-bottom:12px; display:block; }
+    #hero h1 { font-size:clamp(1.8rem,5vw,2.6rem); font-weight:800; margin-bottom:16px; line-height:1.3; }
+    #hero .hero-sub { font-size:1.05rem; opacity:0.92; max-width:480px; margin:0 auto 32px; }
     #hero .btn-hero {
-      display: inline-block;
-      background-color: var(--white);
-      color: var(--green-dark);
-      font-size: 1.05rem;
-      font-weight: 700;
-      padding: 14px 36px;
-      border: none;
-      border-radius: var(--radius-lg);
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-      text-decoration: none;
+      display:inline-block; background-color:var(--white); color:var(--green-dark);
+      font-size:1.05rem; font-weight:700; padding:14px 36px; border:none;
+      border-radius:var(--radius-lg); cursor:pointer;
+      transition:background-color 0.2s,transform 0.1s; text-decoration:none;
     }
-    #hero .btn-hero:hover  { background-color: var(--green-light); }
-    #hero .btn-hero:active { transform: scale(0.97); }
-    #hero .btn-hero:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
-    }
+    #hero .btn-hero:hover  { background-color:var(--green-light); }
+    #hero .btn-hero:active { transform:scale(0.97); }
+    #hero .btn-hero:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
 
-    /* ================================================
-       二、食材輸入區
-       ================================================ */
-    #input-section {
-      padding: 48px 0 32px;
-    }
-
-    /* 輸入列：輸入框 + 新增按鈕並排 */
-    .input-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    /* label 需顯示，方便無障礙但不佔視覺空間 */
-    .input-label {
-      display: block;
-      font-weight: 600;
-      color: var(--green-dark);
-      margin-bottom: 6px;
-      font-size: 0.95rem;
-    }
-
+    /* Input */
+    #input-section { padding:48px 0 32px; }
+    .input-row { display:flex; gap:10px; margin-bottom:16px; }
+    .input-label { display:block; font-weight:600; color:var(--green-dark); margin-bottom:6px; font-size:0.95rem; }
     .ingredient-input {
-      flex: 1;
-      padding: 11px 16px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      color: var(--text-dark);
-      background: var(--white);
-      transition: border-color 0.2s;
-      /* 確保在手機上不會超出容器 */
-      min-width: 0;
+      flex:1; padding:11px 16px; border:2px solid var(--border);
+      border-radius:var(--radius-md); font-size:1rem; color:var(--text-dark);
+      background:var(--white); transition:border-color 0.2s; min-width:0;
     }
     .ingredient-input:focus {
-      outline: none;
-      border-color: var(--green-mid);
-      box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.18);
+      outline:none; border-color:var(--green-mid);
+      box-shadow:0 0 0 3px rgba(64,145,108,0.18);
     }
-
-    /* 快速標籤區 */
-    .tag-label {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    .tags-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    /* 快速食材標籤 */
+    .tag-label { font-size:0.9rem; color:var(--text-mid); margin-bottom:10px; font-weight:600; }
+    .tags-container { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
     .quick-tag {
-      padding: 7px 16px;
-      border-radius: 99px;
-      border: 2px solid var(--green-mid);
-      background: var(--white);
-      color: var(--green-dark);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.15s, color 0.15s;
-      /* 讓標籤成為可按下的按鈕，方便鍵盤操作 */
-      user-select: none;
+      padding:7px 16px; border-radius:99px; border:2px solid var(--green-mid);
+      background:var(--white); color:var(--green-dark); font-size:0.9rem;
+      font-weight:600; cursor:pointer; transition:background-color 0.15s,color 0.15s; user-select:none;
     }
-    /* 已選取狀態：填滿綠色 */
-    .quick-tag.selected {
-      background-color: var(--green-mid);
-      color: var(--white);
-    }
-    .quick-tag:hover:not(.selected) {
-      background-color: var(--green-light);
-    }
-    .quick-tag:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 2px;
-    }
+    .quick-tag.selected { background-color:var(--green-mid); color:var(--white); }
+    .quick-tag:hover:not(.selected) { background-color:var(--green-light); }
+    .quick-tag:focus-visible { outline:3px solid var(--yellow); outline-offset:2px; }
 
-    /* 已選食材清單 */
-    .selected-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-mid);
-      margin-bottom: 8px;
+    .selected-title { font-size:0.9rem; font-weight:600; color:var(--text-mid); margin-bottom:8px; }
+    .selected-list  { display:flex; flex-wrap:wrap; gap:8px; min-height:36px; margin-bottom:24px; }
+    .selected-item  {
+      display:flex; align-items:center; gap:6px; padding:5px 12px;
+      background-color:var(--yellow-light); border:1.5px solid var(--yellow);
+      border-radius:99px; font-size:0.9rem; color:var(--text-dark);
     }
-
-    .selected-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-height: 36px;
-      margin-bottom: 24px;
-    }
-
-    /* 已選食材項目，帶有「✕」移除鈕 */
-    .selected-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      background-color: var(--yellow-light);
-      border: 1.5px solid var(--yellow);
-      border-radius: 99px;
-      font-size: 0.9rem;
-      color: var(--text-dark);
-    }
-
     .remove-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-mid);
-      font-size: 1rem;
-      line-height: 1;
-      padding: 0 2px;
-      border-radius: 50%;
-      transition: color 0.15s, background-color 0.15s;
+      background:none; border:none; cursor:pointer; color:var(--text-mid);
+      font-size:1rem; line-height:1; padding:0 2px; border-radius:50%;
+      transition:color 0.15s,background-color 0.15s;
     }
-    .remove-btn:hover {
-      color: #c0392b;
-      background-color: #fde8e8;
-    }
-    .remove-btn:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 1px;
-    }
+    .remove-btn:hover { color:#c0392b; background-color:#fde8e8; }
+    .remove-btn:focus-visible { outline:3px solid var(--yellow); outline-offset:1px; }
 
-    /* 提醒訊息（無選食材時） */
     .warning-msg {
-      display: none; /* 預設隱藏 */
-      background-color: #fff3cd;
-      border: 1.5px solid #f4a261;
-      border-radius: var(--radius-sm);
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      color: #7d4e00;
-      margin-bottom: 16px;
+      display:none; background-color:#fff3cd; border:1.5px solid #f4a261;
+      border-radius:var(--radius-sm); padding:10px 16px; font-size:0.9rem;
+      color:#7d4e00; margin-bottom:16px;
     }
-    /* 使用 .show class 顯示提醒 */
-    .warning-msg.show { display: block; }
+    .warning-msg.show { display:block; }
+    .generate-wrap { text-align:center; }
 
-    /* 生成按鈕置中 */
-    .generate-wrap {
-      text-align: center;
-    }
-
-    /* ================================================
-       三、食譜推薦區
-       ================================================ */
-    #recipes-section {
-      padding: 16px 0 40px;
-    }
-
-    /* 安全提醒橫幅 */
+    /* Recipes */
+    #recipes-section { padding:16px 0 40px; }
     .safety-notice {
-      background-color: #fff3cd;
-      border-left: 5px solid var(--yellow);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      font-size: 0.88rem;
-      color: #7d4e00;
-      margin-bottom: 24px;
-      /* 文字說明安全事項，對比度足夠、非僅靠顏色傳遞 */
+      background-color:#fff3cd; border-left:5px solid var(--yellow);
+      border-radius:var(--radius-sm); padding:12px 16px; font-size:0.88rem;
+      color:#7d4e00; margin-bottom:24px;
     }
-    .safety-notice strong { display: block; margin-bottom: 2px; }
-
-    /* AI 靈感標籤 */
+    .safety-notice strong { display:block; margin-bottom:2px; }
     .ai-badge {
-      display: inline-block;
-      background-color: var(--green-light);
-      color: var(--green-dark);
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 99px;
-      margin-bottom: 14px;
-      letter-spacing: 0.05em;
+      display:inline-block; background-color:var(--green-light); color:var(--green-dark);
+      font-size:0.78rem; font-weight:700; padding:3px 10px; border-radius:99px;
+      margin-bottom:14px; letter-spacing:0.05em;
     }
-
-    /* 食譜卡片標題 */
-    .recipe-name {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      margin-bottom: 6px;
-    }
-
-    /* 難度與時間標籤列 */
-    .meta-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .meta-badge {
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 3px 12px;
-      border-radius: 99px;
-    }
-    .badge-time {
-      background: #e0f7ee;
-      color: var(--green-dark);
-    }
-    .badge-difficulty {
-      background: var(--yellow-light);
-      color: #7d4e00;
-    }
-
-    /* 使用的剩餘食材列表 */
-    .recipe-ingredients {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
+    .recipe-name { font-size:1.3rem; font-weight:800; color:var(--green-dark); margin-bottom:6px; }
+    .meta-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+    .meta-badge { font-size:0.82rem; font-weight:600; padding:3px 12px; border-radius:99px; }
+    .badge-time       { background:#e0f7ee; color:var(--green-dark); }
+    .badge-difficulty { background:var(--yellow-light); color:#7d4e00; }
+    .recipe-ingredients { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
     .recipe-ingredients span {
-      background: var(--green-light);
-      color: var(--green-dark);
-      font-size: 0.83rem;
-      padding: 3px 10px;
-      border-radius: 99px;
+      background:var(--green-light); color:var(--green-dark);
+      font-size:0.83rem; padding:3px 10px; border-radius:99px;
     }
-
-    /* 亮點區 */
     .highlight-box {
-      background: var(--yellow-light);
-      border-left: 4px solid var(--yellow);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      padding: 10px 14px;
-      font-size: 0.92rem;
-      color: #7d4e00;
-      margin-bottom: 16px;
+      background:var(--yellow-light); border-left:4px solid var(--yellow);
+      border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+      padding:10px 14px; font-size:0.92rem; color:#7d4e00; margin-bottom:16px;
     }
-    .highlight-box strong { color: #5c3600; }
-
-    /* 步驟列表 */
-    .steps-title {
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .steps-list {
-      list-style: none;
-      padding: 0;
-      counter-reset: step-counter;
-    }
+    .highlight-box strong { color:#5c3600; }
+    .steps-title { font-weight:700; color:var(--green-dark); margin-bottom:8px; font-size:0.95rem; }
+    .steps-list { list-style:none; padding:0; counter-reset:step-counter; }
     .steps-list li {
-      counter-increment: step-counter;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 8px;
-      font-size: 0.93rem;
+      counter-increment:step-counter; display:flex; gap:12px;
+      align-items:flex-start; margin-bottom:8px; font-size:0.93rem;
     }
-    /* 步驟圓形數字 */
     .steps-list li::before {
-      content: counter(step-counter);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 26px;
-      height: 26px;
-      background-color: var(--green-mid);
-      color: var(--white);
-      font-size: 0.8rem;
-      font-weight: 700;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 2px;
+      content:counter(step-counter); display:flex; align-items:center;
+      justify-content:center; min-width:26px; height:26px;
+      background-color:var(--green-mid); color:var(--white);
+      font-size:0.8rem; font-weight:700; border-radius:50%;
+      flex-shrink:0; margin-top:2px;
     }
+    .card-divider { border:none; border-top:1.5px solid #e8f4ee; margin:18px 0; }
 
-    /* 分隔線 */
-    .card-divider {
-      border: none;
-      border-top: 1.5px solid #e8f4ee;
-      margin: 18px 0;
-    }
-
-    /* ================================================
-       四、互動回饋區
-       ================================================ */
-
-    /* 星級評分 */
-    .rating-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .rating-label {
-      font-size: 0.88rem;
-      color: var(--text-mid);
-      font-weight: 600;
-    }
-    .stars {
-      display: flex;
-      gap: 4px;
-    }
-    /* 每顆星：用 button 確保鍵盤可操作 */
+    /* Rating */
+    .rating-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+    .rating-label { font-size:0.88rem; color:var(--text-mid); font-weight:600; }
+    .stars { display:flex; gap:4px; }
     .star-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.5rem;
-      color: #ccc;
-      padding: 0 2px;
-      transition: color 0.1s, transform 0.1s;
-      line-height: 1;
+      background:none; border:none; cursor:pointer; font-size:1.5rem;
+      color:#ccc; padding:0 2px; transition:color 0.1s,transform 0.1s; line-height:1;
     }
-    .star-btn.active { color: #f4a261; }
-    .star-btn:hover  { transform: scale(1.2); color: #f4a261; }
-    .star-btn:focus-visible {
-      outline: 3px solid var(--green-mid);
-      border-radius: 4px;
-    }
-    .rating-text {
-      font-size: 0.85rem;
-      color: var(--text-mid);
-    }
-
-    /* 回饋按鈕列 */
-    .feedback-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
+    .star-btn.active { color:#f4a261; }
+    .star-btn:hover  { transform:scale(1.2); color:#f4a261; }
+    .star-btn:focus-visible { outline:3px solid var(--green-mid); border-radius:4px; }
+    .rating-text { font-size:0.85rem; color:var(--text-mid); }
+    .avg-rating-row { font-size:0.83rem; color:var(--text-muted); margin-bottom:12px; }
+    .avg-stars { color:#f4a261; letter-spacing:1px; }
+    .badge-calories { background:#fce4ec; color:#880e4f; }
+    .feedback-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .feedback-btn {
-      background-color: var(--green-mid);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-md);
-      padding: 9px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
+      background-color:var(--green-mid); color:var(--white); border:none;
+      border-radius:var(--radius-md); padding:9px 20px; font-size:0.9rem;
+      font-weight:600; cursor:pointer; transition:background-color 0.2s,transform 0.1s;
     }
-    .feedback-btn:hover { background-color: var(--green-dark); }
-    .feedback-btn:active { transform: scale(0.97); }
-    /* 已回饋狀態：灰色，不可再按 */
-    .feedback-btn.done {
-      background-color: #a0b8a8;
-      cursor: not-allowed;
+    .feedback-btn:hover { background-color:var(--green-dark); }
+    .feedback-btn:active { transform:scale(0.97); }
+    .feedback-btn.done { background-color:#a0b8a8; cursor:not-allowed; }
+    .feedback-btn:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
+    .feedback-count { font-size:0.85rem; color:var(--text-muted); }
+    /* More button */
+    .more-wrap { text-align:center; padding:8px 0 24px; }
+    .btn-more {
+      display:inline-block; background-color:var(--white); color:var(--green-dark);
+      font-size:1rem; font-weight:700; padding:12px 36px;
+      border:2px solid var(--green-mid); border-radius:var(--radius-lg);
+      cursor:pointer; transition:background-color 0.2s,transform 0.1s;
     }
-    .feedback-btn:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
-    }
+    .btn-more:hover  { background-color:var(--green-light); }
+    .btn-more:active { transform:scale(0.97); }
+    .btn-more:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
 
-    .feedback-count {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* ================================================
-       五、減碳小知識區
-       ================================================ */
-    #eco-section {
-      padding: 16px 0 60px;
-    }
-
+    /* Eco */
+    #eco-section { padding:16px 0 60px; }
     .eco-card {
-      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-      border: 2px solid #b2dfdb;
-      border-radius: var(--radius-lg);
-      padding: 28px 28px 24px;
-      text-align: center;
+      background:linear-gradient(135deg,#e8f5e9,#f1f8e9);
+      border:2px solid #b2dfdb; border-radius:var(--radius-lg);
+      padding:28px 28px 24px; text-align:center;
     }
-
-    .eco-card .eco-icon {
-      font-size: 2.4rem;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .eco-slogan {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 14px;
-    }
-
-    /* 碳排估算區塊 */
+    .eco-card .eco-icon { font-size:2.4rem; display:block; margin-bottom:10px; }
+    .eco-slogan { font-size:1.1rem; font-weight:700; color:var(--green-dark); margin-bottom:14px; }
     .carbon-box {
-      background: var(--white);
-      border-radius: var(--radius-md);
-      padding: 16px 20px;
-      margin: 14px 0;
-      border: 1.5px solid #b2dfdb;
+      background:var(--white); border-radius:var(--radius-md);
+      padding:16px 20px; margin:14px 0; border:1.5px solid #b2dfdb;
     }
+    .carbon-number { font-size:1.8rem; font-weight:800; color:var(--green-dark); margin-bottom:4px; }
+    .carbon-desc { font-size:0.9rem; color:var(--text-mid); }
+    .carbon-disclaimer { font-size:0.78rem; color:var(--text-muted); margin-top:12px; font-style:italic; }
 
-    .carbon-number {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      margin-bottom: 4px;
-    }
-
-    .carbon-desc {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-    }
-
-    /* 免責聲明（小字） */
-    .carbon-disclaimer {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 12px;
-      font-style: italic;
-    }
-
-    /* ================================================
-       頁尾
-       ================================================ */
+    /* Footer */
     footer {
-      background-color: var(--green-dark);
-      color: rgba(255,255,255,0.75);
-      text-align: center;
-      padding: 20px;
-      font-size: 0.83rem;
+      background-color:var(--green-dark); color:rgba(255,255,255,0.75);
+      text-align:center; padding:20px; font-size:0.83rem;
     }
 
-    /* ================================================
-       響應式設計：手機版調整
-       ================================================ */
-    @media (max-width: 600px) {
-      .input-row {
-        flex-direction: column;
-      }
-      .eco-card {
-        padding: 20px 16px;
-      }
-      .card {
-        padding: 18px 16px;
-      }
+    @media (max-width:600px) {
+      .input-row { flex-direction:column; }
+      .eco-card  { padding:20px 16px; }
+      .card      { padding:18px 16px; }
     }
-
-    /* ================================================
-       動畫：食譜卡片淡入
-       ================================================ */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity:0; transform:translateY(16px); }
+      to   { opacity:1; transform:translateY(0); }
     }
-    .recipe-card-anim {
-      animation: fadeInUp 0.35s ease both;
-    }
-
+    .recipe-card-anim { animation:fadeInUp 0.35s ease both; }
   </style>
 </head>
 <body>
 
-  <!-- ====================================================
-       一、首頁主視覺區（Hero Section）
-       ==================================================== -->
   <header id="hero" role="banner">
     <span class="hero-emoji" aria-hidden="true">🌱</span>
     <h1>把剩食變成下一道美味</h1>
     <p class="hero-sub">選擇家中剩餘食材，探索簡單又實用的料理靈感。</p>
-    <!-- 點擊後平滑捲動到食材輸入區 -->
-    <a href="#input-section" class="btn-hero" role="button">
-      ✨ 開始使用
-    </a>
+    <a href="#input-section" class="btn-hero" role="button">✨ 開始使用</a>
   </header>
 
-  <!-- ====================================================
-       二、食材輸入區（Ingredient Input Section）
-       ==================================================== -->
   <section id="input-section" aria-labelledby="input-title">
     <div class="container">
       <div class="card">
         <h2 class="section-title" id="input-title">🥦 選擇你的剩食食材</h2>
         <p class="section-desc">勾選快速標籤，或自行輸入食材，系統將為你推薦料理靈感。</p>
 
-        <!-- 輸入框：自行輸入食材 -->
         <label class="input-label" for="custom-ingredient">自行輸入食材</label>
         <div class="input-row">
-          <input
-            type="text"
-            id="custom-ingredient"
-            class="ingredient-input"
-            placeholder="例如：剩豆腐、玉米、薑..."
-            maxlength="20"
-            aria-label="輸入自訂食材名稱"
-          />
-          <!-- 點擊新增或按 Enter 均可加入食材 -->
-          <button class="btn-primary" id="add-btn" onclick="addCustomIngredient()">
-            ＋ 新增
-          </button>
+          <input type="text" id="custom-ingredient" class="ingredient-input"
+            placeholder="例如：剩豆腐、玉米、薑..." maxlength="20" aria-label="輸入自訂食材名稱" />
+          <button class="btn-primary" id="add-btn" onclick="addCustomIngredient()">＋ 新增</button>
         </div>
 
-        <!-- 快速食材標籤 -->
         <p class="tag-label">⚡ 常用食材快速選取</p>
-        <div class="tags-container" id="quick-tags" role="group" aria-label="常用食材快速選取">
-          <!-- 標籤由 JavaScript 動態產生，方便維護 -->
-        </div>
+        <div class="tags-container" id="quick-tags" role="group" aria-label="常用食材快速選取"></div>
 
-        <!-- 已選食材清單 -->
         <p class="selected-title" aria-live="polite">
           已選食材（<span id="selected-count">0</span> 項）：
         </p>
-        <div class="selected-list" id="selected-list" aria-label="已選取的食材清單">
-          <!-- 已選食材由 JavaScript 動態加入 -->
-        </div>
+        <div class="selected-list" id="selected-list" aria-label="已選取的食材清單"></div>
 
-        <!-- 未選食材時的友善提醒（預設隱藏） -->
         <div class="warning-msg" id="warning-msg" role="alert">
           ⚠️ 請先選擇或輸入至少一項食材，再生成料理推薦喔！
         </div>
 
-        <!-- 生成按鈕 -->
         <div class="generate-wrap">
-          <button class="btn-primary" id="generate-btn" onclick="generateRecipes()" style="font-size:1.05rem; padding:14px 40px;">
-            🍳 生成剩食料理
-          </button>
+          <button class="btn-primary" id="generate-btn" onclick="generateRecipes()"
+            style="font-size:1.05rem;padding:14px 40px;">🍳 生成剩食料理</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ====================================================
-       三、食譜推薦區（Recipe Recommendation Section）
-       ==================================================== -->
   <section id="recipes-section" aria-labelledby="recipes-title" aria-live="polite">
-    <div class="container" id="recipes-container">
-      <!-- 食譜卡片由 JavaScript 動態插入 -->
-    </div>
+    <div class="container" id="recipes-container"></div>
   </section>
 
-  <!-- ====================================================
-       五、減碳小知識區（Eco Section）
-       ==================================================== -->
   <section id="eco-section" aria-labelledby="eco-title">
     <div class="container">
       <div class="eco-card">
@@ -733,14 +286,11 @@
         <h2 class="eco-slogan" id="eco-title">
           每一次把剩食變成料理，<br>都是替地球多留下一點資源。
         </h2>
-
-        <!-- 展示用碳排估算 -->
         <div class="carbon-box">
           <p class="carbon-desc" style="margin-bottom:6px;">本次選擇的食材，示意上避免了約</p>
           <p class="carbon-number" id="carbon-number">— kg CO₂e</p>
           <p class="carbon-desc">的食物浪費排放（展示用估算）</p>
         </div>
-
         <p class="carbon-disclaimer">
           ⚠️ 此數值為展示用估算，實際結果會因食材種類、重量、運輸與處理方式而不同，不代表科學精確測量。
         </p>
@@ -748,24 +298,12 @@
     </div>
   </section>
 
-  <!-- ====================================================
-       頁尾
-       ==================================================== -->
   <footer>
     <p>🌿 剩食料理推薦 &nbsp;|&nbsp; 推廣永續飲食，從家中剩食開始</p>
-    <p style="margin-top:6px; opacity:0.6; font-size:0.75rem;">靈感示範用途，食材安全請自行評估。</p>
+    <p style="margin-top:6px;opacity:0.6;font-size:0.75rem;">靈感示範用途，食材安全請自行評估。</p>
   </footer>
 
-
-  <!-- ====================================================
-       JavaScript：所有互動邏輯
-       ==================================================== -->
   <script>
-
-    /* ====================================================
-       食材資料庫
-       每個快速標籤對應一個物件，包含標籤名稱與碳排估算係數
-       ==================================================== */
     const QUICK_INGREDIENTS = [
       { name: "過熟香蕉", carbon: 0.18 },
       { name: "剩米飯",   carbon: 0.22 },
@@ -775,48 +313,88 @@
       { name: "蛋",       carbon: 0.16 },
       { name: "蔬菜",     carbon: 0.12 },
       { name: "水果",     carbon: 0.15 },
+      { name: "豆腐",     carbon: 0.09 },
+      { name: "麵條",     carbon: 0.11 },
+      { name: "馬鈴薯",   carbon: 0.08 },
+      { name: "番茄",     carbon: 0.07 },
+      { name: "洋蔥",     carbon: 0.06 },
+      { name: "豆芽",     carbon: 0.05 },
     ];
 
-    /* ====================================================
-       食譜資料庫
-       每道食譜包含：觸發食材關鍵字、名稱、食材列表、
-       亮點、步驟、時間、難度
-       ==================================================== */
     const RECIPES = [
+      // ── 香蕉 ──
       {
-        /* 觸發關鍵字：只要已選食材中包含這些字，就可能推薦此食譜 */
         keywords: ["過熟香蕉", "香蕉"],
         name: "香蕉燕麥煎餅",
-        ingredients: ["過熟香蕉", "燕麥片", "雞蛋"],
+        ingredients: ["過熟香蕉 1根", "燕麥片 2大匙", "雞蛋 1顆"],
         highlight: "過熟香蕉甜度更高，無需額外加糖，天然甜味直接帶出煎餅香氣！",
         steps: [
           "將過熟香蕉用叉子壓成泥狀。",
-          "加入2大匙燕麥片與1顆蛋，攪拌均勻。",
+          "加入燕麥片與蛋，攪拌均勻成麵糊。",
           "平底鍋開中小火，塗少許油，舀入麵糊。",
-          "每面煎約2–3分鐘至金黃，起鍋即可享用。",
+          "每面煎約 2–3 分鐘至金黃，起鍋即可享用。",
         ],
-        time: "約 10 分鐘",
-        difficulty: "簡單",
+        time: "約 10 分鐘", difficulty: "簡單", calories: 210,
       },
+      {
+        keywords: ["過熟香蕉", "香蕉", "麵包"],
+        name: "香蕉吐司法式烤盤",
+        ingredients: ["過熟香蕉 1根", "吐司 2片", "蛋 1顆", "牛奶 2大匙", "糖少許"],
+        highlight: "香蕉搭配法式吐司，甜香濃郁，連隔夜硬吐司都能完美利用！",
+        steps: [
+          "香蕉切片備用；蛋加牛奶、糖攪拌均勻。",
+          "吐司兩面均勻沾裹蛋液。",
+          "平底鍋熱油，中小火將吐司兩面煎至金黃。",
+          "盛盤後鋪上香蕉片，可撒少許肉桂粉增香。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
+      },
+      // ── 剩米飯 ──
       {
         keywords: ["剩米飯", "米飯", "蔬菜", "蛋"],
         name: "蔬菜蛋炒飯",
-        ingredients: ["剩米飯", "蔬菜（任意）", "雞蛋", "醬油"],
+        ingredients: ["剩米飯 1碗", "蔬菜（任意）適量", "雞蛋 2顆", "醬油 1大匙"],
         highlight: "隔夜飯水分較少，炒出來粒粒分明，是最適合剩飯的零浪費料理！",
         steps: [
           "剩米飯稍微撥散，避免結塊。",
-          "鍋中倒油熱鍋，先炒打散的蛋液。",
+          "鍋中倒油熱鍋，先炒打散的蛋液至半熟盛起。",
           "加入蔬菜（如高麗菜、胡蘿蔔丁）翻炒。",
-          "放入米飯大火翻炒，加醬油、少許鹽調味。",
+          "放入米飯大火翻炒，加入炒蛋，以醬油與少許鹽調味。",
           "炒至均勻，盛盤即完成。",
         ],
-        time: "約 15 分鐘",
-        difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
+      {
+        keywords: ["剩米飯", "米飯"],
+        name: "日式茶泡飯",
+        ingredients: ["剩米飯 1碗", "綠茶或高湯 200ml", "醬菜或梅子適量", "海苔絲少許"],
+        highlight: "剩飯加熱茶，日本人幾百年來的智慧，簡單溫暖又零浪費！",
+        steps: [
+          "剩米飯盛入碗中。",
+          "沖入熱綠茶或熱高湯（約 200ml）。",
+          "擺上醬菜、梅子或鮭魚鬆。",
+          "撒上海苔絲，即可享用。",
+        ],
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
+      },
+      {
+        keywords: ["剩米飯", "米飯", "番茄", "蛋"],
+        name: "番茄蛋花米湯",
+        ingredients: ["剩米飯 半碗", "番茄 1顆", "雞蛋 1顆", "鹽少許", "蔥花少許"],
+        highlight: "番茄的酸甜讓米湯格外開胃，病後恢復或早餐都非常適合！",
+        steps: [
+          "番茄切小塊，鍋中倒少許油炒軟出汁。",
+          "加入 500ml 水煮滾，下剩米飯攪散。",
+          "蛋打散，繞圈倒入湯中，輕輕攪拌成蛋花。",
+          "加鹽調味，盛碗後撒蔥花即完成。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
+      },
+      // ── 菜梗 / 蔬菜 ──
       {
         keywords: ["菜梗", "蔬菜"],
         name: "香蒜炒菜梗",
-        ingredients: ["菜梗（各種皆可）", "蒜頭", "鹽", "米酒"],
+        ingredients: ["菜梗（各種皆可）200g", "蒜頭 3瓣", "鹽適量", "米酒少許"],
         highlight: "菜梗口感爽脆，比葉子更耐炒！加點蒜末就能變身下飯小菜。",
         steps: [
           "菜梗洗淨，切成約 4 公分長段。",
@@ -825,13 +403,40 @@
           "下菜梗大火快炒，加鹽與少許米酒。",
           "炒約 3 分鐘，菜梗稍軟即可起鍋。",
         ],
-        time: "約 10 分鐘",
-        difficulty: "簡單",
+        time: "約 10 分鐘", difficulty: "簡單", calories: 210,
       },
+      {
+        keywords: ["蔬菜", "馬鈴薯", "洋蔥"],
+        name: "奶油馬鈴薯洋蔥湯",
+        ingredients: ["馬鈴薯 2顆", "洋蔥 1顆", "奶油 1大匙", "牛奶或水 400ml", "鹽少許"],
+        highlight: "馬鈴薯和洋蔥是冰箱常見剩食，煮成濃湯既暖胃又有飽足感！",
+        steps: [
+          "馬鈴薯去皮切丁，洋蔥切絲。",
+          "鍋中放奶油，中火炒洋蔥至透明。",
+          "加入馬鈴薯丁翻炒 2 分鐘。",
+          "倒入牛奶或水，煮滾後轉小火燉 15 分鐘至馬鈴薯軟爛。",
+          "用叉子壓碎部分馬鈴薯增加濃稠感，加鹽調味即完成。",
+        ],
+        time: "約 25 分鐘", difficulty: "簡單", calories: 260,
+      },
+      {
+        keywords: ["蔬菜", "番茄", "洋蔥"],
+        name: "番茄洋蔥炒蛋",
+        ingredients: ["番茄 2顆", "洋蔥 半顆", "雞蛋 2顆", "鹽與糖少許"],
+        highlight: "台灣家常中的經典！番茄的酸甜配上滑嫩炒蛋，下飯首選。",
+        steps: [
+          "番茄切塊，洋蔥切絲；蛋打散備用。",
+          "熱鍋下油，先炒蛋至半熟盛起。",
+          "同鍋炒洋蔥至透明，加入番茄翻炒出汁。",
+          "放回炒蛋，加鹽少許糖調味拌勻即完成。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
+      },
+      // ── 熟肉 ──
       {
         keywords: ["熟肉", "肉", "蔬菜", "剩米飯", "米飯"],
         name: "剩肉蔬菜拌飯",
-        ingredients: ["熟肉（任意）", "蔬菜", "白飯", "醬油", "芝麻油"],
+        ingredients: ["熟肉（任意）適量", "蔬菜適量", "白飯 1碗", "醬油 1匙", "芝麻油半匙"],
         highlight: "熟肉不需再花時間煮熟，切碎拌飯，幾分鐘就能端上桌！",
         steps: [
           "熟肉切成小丁或剝絲，備用。",
@@ -840,13 +445,26 @@
           "白飯盛入碗中，鋪上肉丁與蔬菜。",
           "淋上醬汁，攪拌均勻即可享用。",
         ],
-        time: "約 10 分鐘",
-        difficulty: "非常簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
       },
+      {
+        keywords: ["熟肉", "肉", "麵條"],
+        name: "剩肉醬拌麵",
+        ingredients: ["熟肉（豬/雞）適量", "麵條 1把", "蒜末 1匙", "醬油膏 2匙", "辣油（可選）"],
+        highlight: "剩肉切碎加醬油膏和蒜末，就是一碗香噴噴的台式乾麵醬！",
+        steps: [
+          "麵條依包裝指示煮熟，撈起放入碗中。",
+          "熟肉切碎或剝絲。",
+          "碗中加入蒜末、醬油膏、芝麻油、辣油拌勻。",
+          "鋪上肉絲，撒蔥花，攪拌均勻即可享用。",
+        ],
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
+      },
+      // ── 麵包 ──
       {
         keywords: ["麵包"],
         name: "香煎麵包丁沙拉",
-        ingredients: ["硬麵包", "生菜", "番茄", "橄欖油", "鹽"],
+        ingredients: ["硬麵包 2片", "生菜適量", "番茄 1顆", "橄欖油 2匙", "鹽少許"],
         highlight: "老麵包烤成麵包丁，香脆有嚼勁，讓沙拉增加層次感！",
         steps: [
           "硬麵包切成 1.5 公分小方丁。",
@@ -854,287 +472,557 @@
           "生菜撕成一口大小，番茄切塊，盛盤。",
           "撒上麵包丁，淋少許橄欖油與鹽，拌勻即完成。",
         ],
-        time: "約 12 分鐘",
-        difficulty: "簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
+      {
+        keywords: ["麵包", "蛋"],
+        name: "隔夜麵包布丁",
+        ingredients: ["硬吐司或麵包 3片", "蛋 2顆", "牛奶 200ml", "糖 2大匙", "奶油少許"],
+        highlight: "變硬的麵包泡入蛋奶液再烤，搖身一變成為法式甜點！",
+        steps: [
+          "麵包切成方塊，鋪入塗了奶油的烤皿。",
+          "蛋、牛奶、糖攪拌均勻，倒入烤皿使麵包充分吸收，靜置 10 分鐘。",
+          "烤箱預熱 180°C，放入烤皿烤 25–30 分鐘至表面金黃。",
+          "取出稍涼後即可享用，可搭配冰淇淋或鮮奶油。",
+        ],
+        time: "約 40 分鐘", difficulty: "普通", calories: 290,
+      },
+      // ── 蛋 ──
       {
         keywords: ["蛋"],
         name: "日式玉子燒",
-        ingredients: ["蛋（2–3顆）", "醬油", "味醂或糖", "蔥花（可選）"],
-        highlight: "打散的蛋加少許甜味，用玉子燒鍋（或一般平底鍋）捲出層次感！",
+        ingredients: ["蛋 2–3顆", "醬油 1小匙", "味醂或糖半匙", "蔥花（可選）"],
+        highlight: "打散的蛋加少許甜味，用平底鍋捲出層次感，早餐便當兩相宜！",
         steps: [
-          "蛋打散，加1小匙醬油、半匙糖或味醂，攪拌均勻。",
-          "平底鍋熱鍋塗油，倒入1/3蛋液，半凝固時往前捲起。",
+          "蛋打散，加醬油、糖或味醂，攪拌均勻。",
+          "平底鍋熱鍋塗油，倒入 1/3 蛋液，半凝固時往前捲起。",
           "再倒入蛋液，半凝固後與第一層一起捲。",
           "重複一次，整形後切片盛盤。",
         ],
-        time: "約 10 分鐘",
-        difficulty: "普通",
+        time: "約 10 分鐘", difficulty: "普通", calories: 175,
       },
+      {
+        keywords: ["蛋", "番茄"],
+        name: "番茄炒蛋",
+        ingredients: ["番茄 2顆", "雞蛋 3顆", "鹽少許", "糖少許", "蔥花少許"],
+        highlight: "台灣最經典的家常菜，番茄和蛋是最佳拍檔，剩食也能有大滿足！",
+        steps: [
+          "番茄切塊，蛋打散備用。",
+          "熱鍋下油，炒蛋至半熟先盛起。",
+          "同鍋炒番茄，加少許鹽和糖炒出湯汁。",
+          "放回蛋翻炒均勻，撒蔥花起鍋。",
+        ],
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
+      },
+      {
+        keywords: ["蛋", "豆腐"],
+        name: "蒸蛋豆腐",
+        ingredients: ["嫩豆腐 半盒", "蛋 2顆", "高湯或水 180ml", "醬油少許", "蔥花少許"],
+        highlight: "豆腐加入蒸蛋，口感更滑嫩，蛋白質加倍，超適合老人小孩！",
+        steps: [
+          "豆腐切小丁，排入蒸碗。",
+          "蛋打散加高湯（蛋:液體 = 1:1.5），過篩後倒入碗中。",
+          "蒸鍋水滾後放入，蓋上保鮮膜或蓋子，中小火蒸 12 分鐘。",
+          "取出後淋少許醬油，撒蔥花即完成。",
+        ],
+        time: "約 18 分鐘", difficulty: "簡單", calories: 130,
+      },
+      // ── 豆腐 ──
+      {
+        keywords: ["豆腐", "蔬菜"],
+        name: "麻婆豆腐",
+        ingredients: ["嫩豆腐 1盒", "絞肉 50g（可省略）", "豆瓣醬 1匙", "蒜末薑末各1匙", "太白粉水少許"],
+        highlight: "豆腐吸附麻婆醬汁後鮮香入味，快速上桌的省時下飯菜！",
+        steps: [
+          "豆腐切 2 公分丁，用滾水燙一下去豆腥味，撈起備用。",
+          "熱鍋下油，炒香蒜末、薑末與豆瓣醬。",
+          "加入絞肉（如有）翻炒至熟，加水或高湯 150ml 煮滾。",
+          "放入豆腐，輕輕翻拌，小火煮 3 分鐘入味。",
+          "加太白粉水勾薄芡，撒上蔥花即完成。",
+        ],
+        time: "約 15 分鐘", difficulty: "普通", calories: 240,
+      },
+      {
+        keywords: ["豆腐"],
+        name: "煎豆腐佐醬油薑汁",
+        ingredients: ["板豆腐 1盒", "醬油 1匙", "薑泥半匙", "芝麻油少許", "蔥花少許"],
+        highlight: "煎到外酥內嫩的豆腐，搭配薑汁醬油，清爽又有飽足感！",
+        steps: [
+          "板豆腐用廚房紙巾吸乾水分，切成 1 公分厚片。",
+          "平底鍋熱油，中火將豆腐兩面煎至金黃酥脆。",
+          "混合醬油、薑泥、芝麻油做成醬汁。",
+          "豆腐盛盤，淋上醬汁，撒蔥花即完成。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
+      },
+      // ── 麵條 ──
+      {
+        keywords: ["麵條", "蔬菜"],
+        name: "蔬菜清炒細麵",
+        ingredients: ["細麵 1把", "各式蔬菜適量", "蒜末 1匙", "醬油 1匙", "香油少許"],
+        highlight: "任何剩餘蔬菜都能加進來，炒麵是消耗庫存食材的萬用料理！",
+        steps: [
+          "細麵依包裝煮熟，撈起沖冷水備用。",
+          "鍋中熱油，爆香蒜末，加入蔬菜翻炒。",
+          "放入麵條，加醬油、鹽大火翻炒均勻。",
+          "起鍋前淋少許香油，盛盤即完成。",
+        ],
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
+      },
+      {
+        keywords: ["麵條", "蛋"],
+        name: "蛋花陽春麵",
+        ingredients: ["麵條 1把", "雞蛋 1顆", "蔥花少許", "醬油 1匙", "胡椒少許"],
+        highlight: "最簡單的一碗麵，只需要蛋和醬油，卻是深夜最溫暖的剩食料理！",
+        steps: [
+          "鍋中加水煮滾，放入麵條煮至熟透。",
+          "另起一鍋，加高湯或水煮滾，打入雞蛋成荷包蛋。",
+          "麵條撈入碗中，加醬油、胡椒粉調味。",
+          "鋪上荷包蛋，撒蔥花即可享用。",
+        ],
+        time: "約 12 分鐘", difficulty: "非常簡單", calories: 320,
+      },
+      // ── 馬鈴薯 ──
+      {
+        keywords: ["馬鈴薯"],
+        name: "香煎馬鈴薯餅",
+        ingredients: ["馬鈴薯 2顆", "鹽少許", "胡椒少許", "油適量"],
+        highlight: "馬鈴薯磨泥或切丁煎成金黃薄餅，外酥內軟，配番茄醬超好吃！",
+        steps: [
+          "馬鈴薯去皮，刨成細絲，撒鹽靜置 5 分鐘後擠乾水分。",
+          "加入胡椒、少許麵粉（可選）拌勻。",
+          "平底鍋熱油，舀入薯絲壓扁，中火煎 4–5 分鐘至底部金黃。",
+          "翻面再煎 3 分鐘，盛盤搭配番茄醬享用。",
+        ],
+        time: "約 20 分鐘", difficulty: "簡單", calories: 300,
+      },
+      {
+        keywords: ["馬鈴薯", "洋蔥"],
+        name: "西班牙馬鈴薯烘蛋",
+        ingredients: ["馬鈴薯 2顆", "洋蔥 半顆", "蛋 4顆", "橄欖油 2匙", "鹽少許"],
+        highlight: "西班牙家庭的剩食神器！馬鈴薯加蛋，厚實有飽足感，冷熱都好吃！",
+        steps: [
+          "馬鈴薯去皮切薄片，洋蔥切絲。",
+          "平底鍋熱油，中火煎馬鈴薯和洋蔥約 10 分鐘至軟，加鹽調味。",
+          "蛋打散，將炒好的馬鈴薯洋蔥倒入蛋液中拌勻。",
+          "同鍋再下少許油，倒入蛋液，中小火煎 5 分鐘至底部固定。",
+          "用盤子輔助翻面，再煎 3 分鐘，盛盤切片享用。",
+        ],
+        time: "約 25 分鐘", difficulty: "普通", calories: 310,
+      },
+      // ── 番茄 ──
+      {
+        keywords: ["番茄"],
+        name: "番茄羅勒冷湯",
+        ingredients: ["熟透番茄 3顆", "蒜頭 1瓣", "橄欖油 1匙", "鹽少許", "羅勒或九層塔（可選）"],
+        highlight: "番茄越熟越適合打湯，甜度高又出汁，是夏天最清爽的零浪費料理！",
+        steps: [
+          "番茄切塊，加蒜頭、橄欖油、鹽放入調理機。",
+          "攪打至滑順，試味道調整鹹淡。",
+          "冷藏 30 分鐘後倒入碗中。",
+          "上桌前淋少許橄欖油，放上羅勒葉點綴。",
+        ],
+        time: "約 10 分鐘（+冷藏）", difficulty: "非常簡單", calories: 70,
+      },
+      // ── 豆芽 ──
+      {
+        keywords: ["豆芽", "蔬菜"],
+        name: "韓式涼拌豆芽",
+        ingredients: ["豆芽菜 200g", "蒜末 1匙", "芝麻油 1匙", "醬油半匙", "白芝麻少許", "辣椒粉（可選）"],
+        highlight: "豆芽快速汆燙後拌入醬料，5 分鐘完成的健康涼拌小菜！",
+        steps: [
+          "豆芽洗淨，沸水汆燙 1 分鐘，撈起立刻沖冷水，瀝乾備用。",
+          "混合蒜末、醬油、芝麻油、辣椒粉做成醬料。",
+          "豆芽與醬料充分拌勻。",
+          "盛盤後撒上白芝麻即完成。",
+        ],
+        time: "約 8 分鐘", difficulty: "非常簡單", calories: 90,
+      },
+      // ── 洋蔥 ──
+      {
+        keywords: ["洋蔥", "蛋"],
+        name: "洋蔥炒蛋",
+        ingredients: ["洋蔥 1顆", "雞蛋 2顆", "醬油 1匙", "鹽少許"],
+        highlight: "洋蔥炒熟後甜味大增，配上滑嫩炒蛋，簡單卻令人驚喜的下飯菜！",
+        steps: [
+          "洋蔥切絲，蛋打散備用。",
+          "熱鍋下油，中火炒洋蔥至透明且微焦糖化（約 5 分鐘）。",
+          "倒入蛋液，翻炒至半熟。",
+          "加醬油、鹽調味，炒勻起鍋。",
+        ],
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
+      },
+      // ── 水果 ──
       {
         keywords: ["水果", "香蕉", "過熟香蕉"],
         name: "水果優格冰沙",
-        ingredients: ["熟透水果（任意）", "原味優格", "蜂蜜（可選）"],
+        ingredients: ["熟透水果（任意）1杯", "原味優格 3–4大匙", "蜂蜜（可選）少許"],
         highlight: "熟透的水果甜度最高、香氣最濃，打成冰沙省力又美味！",
         steps: [
           "水果去皮切塊，可先冷凍 1 小時更濃稠。",
-          "放入果汁機，加入優格（約 3–4 大匙）。",
+          "放入果汁機，加入優格。",
           "視口味加少許蜂蜜，攪打至滑順。",
           "倒入杯中，立即享用或冷藏保存。",
         ],
-        time: "約 8 分鐘",
-        difficulty: "非常簡單",
+        time: "約 8 分鐘", difficulty: "非常簡單", calories: 90,
       },
       {
-        keywords: ["過熟香蕉", "香蕉", "水果"],
-        name: "香蕉牛奶燉燕麥粥",
-        ingredients: ["過熟香蕉", "燕麥片", "牛奶或植物奶", "肉桂粉（可選）"],
-        highlight: "過熟香蕉直接當天然甜味劑，不加糖也香甜，早餐首選！",
+        keywords: ["蛋", "醬油"],
+        name: "家常滷蛋",
+        ingredients: ["蛋（4–6顆）", "醬油", "冰糖", "八角（可選）", "水"],
+        highlight: "剩雞蛋最簡單的變身！滷好的蛋放隔夜更入味，一次多做幾顆備用。",
         steps: [
-          "牛奶倒入小鍋，中火加熱至微滾。",
-          "加入燕麥片，攪拌煮約 3 分鐘至濃稠。",
-          "香蕉切片，一半壓成泥拌入粥中增加甜味。",
-          "盛碗後擺上剩餘香蕉片，撒肉桂粉即完成。",
+          "雞蛋煮熟（冷水下鍋，滾後煮8分鐘），剝殼備用。",
+          "鍋中加水 300ml、醬油 3 大匙、冰糖 1 小匙、八角1顆。",
+          "放入剝殼雞蛋，中小火煮滾後轉小火燜 15 分鐘。",
+          "關火後讓雞蛋繼續浸泡 30 分鐘以上更入味，即可盛盤。",
         ],
-        time: "約 8 分鐘",
-        difficulty: "非常簡單",
+        time: "約 30 分鐘", difficulty: "簡單", calories: 320,
       },
       {
-        keywords: ["過熟香蕉", "香蕉", "麵包"],
-        name: "香蕉吐司法式烤",
-        ingredients: ["過熟香蕉", "吐司或硬麵包", "雞蛋", "牛奶", "糖"],
-        highlight: "過熟香蕉搗泥塗抹，加上法式蛋液，讓老麵包重獲新生！",
+        keywords: ["蔬菜", "菜梗", "味噌"],
+        name: "剩蔬菜味噌湯",
+        ingredients: ["剩餘蔬菜（任意）", "味噌醬 2大匙", "豆腐（可選）", "水 600ml", "蔥花"],
+        highlight: "任何剩蔬菜都能入湯！味噌的鮮味讓食材更有層次，暖胃又零浪費。",
         steps: [
-          "香蕉壓成泥，均勻塗抹在吐司上。",
-          "蛋加牛奶、少許糖打勻成蛋液。",
-          "吐司兩面沾蛋液，靜置 30 秒讓麵包吸飽。",
-          "平底鍋熱油，中小火兩面各煎 2 分鐘至金黃。",
-          "起鍋後可撒糖粉或淋蜂蜜享用。",
+          "蔬菜洗淨切小塊，豆腐切丁備用。",
+          "鍋中加水 600ml 煮滾，放入較硬的根莖類先煮 5 分鐘。",
+          "加入葉菜類與豆腐，續煮 2 分鐘。",
+          "關小火，將味噌醬用少許湯汁溶開後倒入鍋中，拌勻。",
+          "不再沸騰，撒上蔥花即可盛碗（味噌不宜久煮）。",
         ],
-        time: "約 12 分鐘",
-        difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
-        keywords: ["剩米飯", "米飯"],
-        name: "韓式泡菜飯糰",
-        ingredients: ["剩米飯", "泡菜", "芝麻油", "海苔（可選）"],
-        highlight: "剩飯加泡菜拌炒，捏成飯糰方便帶著走，零廚餘又美味！",
+        keywords: ["蔬菜", "小黃瓜", "涼拌"],
+        name: "涼拌時蔬",
+        ingredients: ["當季蔬菜（小黃瓜/豆芽/木耳等）", "蒜末", "醬油", "醋", "芝麻油", "辣椒（可選）"],
+        highlight: "免開火的消暑料理！任何脆口蔬菜都適合，五分鐘快速上桌。",
         steps: [
-          "剩米飯放入鍋中，加泡菜切碎後一起翻炒。",
-          "加少許芝麻油提香，炒至均勻。",
-          "待飯稍涼後，雙手沾少許鹽水，捏成三角形飯糰。",
-          "包上海苔或直接享用皆可。",
+          "蔬菜洗淨，小黃瓜拍裂切段，豆芽/木耳燙熟放涼。",
+          "調醬汁：醬油1匙、醋1匙、芝麻油半匙、蒜末、糖少許拌勻。",
+          "將蔬菜盛入碗中，淋上醬汁。",
+          "拌勻後靜置 5 分鐘讓食材入味，即可享用。",
         ],
-        time: "約 10 分鐘",
-        difficulty: "簡單",
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
+      },
+      {
+        keywords: ["麵包", "蛋"],
+        name: "法式吐司",
+        ingredients: ["厚片吐司或硬麵包", "蛋 2顆", "牛奶 3大匙", "糖 1小匙", "奶油或油"],
+        highlight: "隔夜麵包變甜點！蛋奶液讓麵包變得外酥內軟，配蜂蜜或果醬更美味。",
+        steps: [
+          "蛋、牛奶、糖混合打勻成蛋奶液。",
+          "吐司兩面浸泡蛋奶液，讓其充分吸收（約30秒）。",
+          "平底鍋下奶油，中小火煎至兩面金黃。",
+          "起鍋後可淋蜂蜜或撒糖粉，即可享用。",
+        ],
+        time: "約 10 分鐘", difficulty: "非常簡單", calories: 150,
+      },
+      {
+        keywords: ["蔬菜", "菜梗", "熟肉", "肉"],
+        name: "剩料蛋餅",
+        ingredients: ["蛋 2顆", "剩餘蔬菜或熟肉", "麵粉 2大匙", "鹽", "油"],
+        highlight: "任何剩料都能包進蛋餅！麵粉加蛋做成薄皮，台式早餐輕鬆在家做。",
+        steps: [
+          "麵粉加水（約 60ml）、少許鹽調成麵糊。",
+          "剩蔬菜切碎，熟肉切丁備用。",
+          "平底鍋熱油，倒入麵糊搖晃均勻成薄皮，煎至半熟。",
+          "鋪上蛋液，放上餡料，捲起煎至金黃即完成。",
+        ],
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
         keywords: ["剩米飯", "米飯", "蛋"],
-        name: "蛋包飯",
-        ingredients: ["剩米飯", "雞蛋（2顆）", "番茄醬", "洋蔥丁", "鹽"],
-        highlight: "隔夜飯炒過更 Q 彈，薄蛋皮包裹，視覺與口感都滿分！",
+        name: "起司焗飯",
+        ingredients: ["剩米飯", "蛋 1顆", "起司絲", "番茄醬或醬油", "蔥花"],
+        highlight: "剩飯加起司進烤箱，5分鐘變身香濃焗飯！不用烤箱也可用平底鍋蓋蓋悶熟。",
         steps: [
-          "洋蔥炒香，加剩飯翻炒，以番茄醬、鹽調味。",
-          "炒飯盛起備用，鍋中重新刷薄油。",
-          "蛋打散加少許鹽，倒入鍋中攤成薄蛋皮。",
-          "蛋皮半熟時放入炒飯，左右對折包起。",
-          "盛盤後淋番茄醬即完成。",
+          "剩米飯鋪在耐熱碗或烤皿中。",
+          "打上一顆蛋，淋少許番茄醬或醬油。",
+          "撒上起司絲，放入烤箱 200°C 烤 8–10 分鐘至起司融化金黃。",
+          "取出撒蔥花，即可享用。",
         ],
-        time: "約 15 分鐘",
-        difficulty: "普通",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
       },
       {
-        keywords: ["菜梗", "蔬菜"],
-        name: "菜梗醃漬小菜",
-        ingredients: ["菜梗（各種皆可）", "鹽", "醋", "糖", "辣椒（可選）"],
-        highlight: "菜梗質地脆硬，最適合醃漬！短時間入味，下飯又開胃。",
+        keywords: ["水果", "香蕉", "過熟香蕉", "麵包"],
+        name: "水果夾心吐司",
+        ingredients: ["吐司或麵包", "熟透水果", "花生醬或奶油"],
+        highlight: "軟爛水果最適合抹醬！香蕉泥、草莓直接夾入麵包，甜蜜又零浪費。",
         steps: [
-          "菜梗洗淨，切成 0.5 公分薄片。",
-          "加 1 小匙鹽抓醃 10 分鐘，擠去多餘水分。",
-          "加醋 1 匙、糖半匙、辣椒絲，攪拌均勻。",
-          "靜置 15 分鐘讓味道融合，即可食用。",
-          "可冷藏保存 2–3 天。",
+          "熟透水果切片或壓成泥（香蕉直接壓泥最方便）。",
+          "吐司一面抹上花生醬或奶油。",
+          "鋪上水果，蓋上另一片吐司。",
+          "切半盛盤，可搭配牛奶當早餐或點心。",
         ],
-        time: "約 25 分鐘（含靜置）",
-        difficulty: "非常簡單",
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
       },
       {
-        keywords: ["菜梗", "蔬菜", "蛋"],
-        name: "菜梗蛋花湯",
-        ingredients: ["菜梗", "雞蛋（1顆）", "高湯或水", "鹽", "薑絲"],
-        highlight: "菜梗熬湯清甜鮮美，蛋花增添滑嫩口感，5 分鐘完成暖胃湯！",
+        keywords: ["蔬菜", "熟肉", "肉", "蛋"],
+        name: "韓式部隊鍋",
+        ingredients: ["剩餘蔬菜", "熟肉或火鍋料", "泡麵或冬粉", "韓式辣醬", "水 500ml"],
+        highlight: "把冰箱剩料全部丟進去！韓式辣醬提鮮，越多食材越好吃。",
         steps: [
-          "菜梗切小段，薑切絲備用。",
-          "鍋中高湯加薑絲煮滾，放入菜梗。",
-          "煮 3 分鐘至菜梗軟化，加鹽調味。",
-          "蛋打散，沿鍋邊緩緩倒入，輕輕攪拌成蛋花。",
-          "起鍋盛碗即完成。",
+          "鍋中加水 500ml 煮滾，加入韓式辣醬 1–2 大匙調色調味。",
+          "放入較硬的蔬菜與肉類，煮 3 分鐘。",
+          "加入葉菜類與泡麵（或冬粉），續煮 2 分鐘。",
+          "起鍋前可打入一顆蛋，蓋蓋燜 1 分鐘，即可享用。",
         ],
-        time: "約 10 分鐘",
-        difficulty: "簡單",
+        time: "約 15 分鐘", difficulty: "簡單", calories: 350,
+      },
+      {
+        keywords: ["蔬菜", "菜梗"],
+        name: "蔬菜天婦羅",
+        ingredients: ["各種蔬菜（南瓜/地瓜/四季豆等）", "麵粉 4大匙", "冰水 4大匙", "鹽", "炸油"],
+        highlight: "任何蔬菜沾麵糊下鍋炸，酥脆外皮鎖住水分，零浪費的日式點心！",
+        steps: [
+          "蔬菜洗淨切成適口大小，吸乾水分。",
+          "麵粉加冰水輕輕拌勻成麵糊（不要過度攪拌，有顆粒更酥脆）。",
+          "油鍋加熱至 170°C，蔬菜沾麵糊下鍋炸 2–3 分鐘至金黃。",
+          "撈起瀝油，搭配鹽或醬油享用。",
+        ],
+        time: "約 20 分鐘", difficulty: "普通", calories: 280,
       },
       {
         keywords: ["熟肉", "肉", "麵包"],
         name: "剩肉三明治",
-        ingredients: ["熟肉（任意）", "吐司或麵包", "生菜", "美乃滋或芥末"],
-        highlight: "任何剩肉切片或剝絲，夾入麵包即成豐盛三明治，零食材浪費！",
+        ingredients: ["吐司或麵包", "熟肉（任意）", "生菜", "美乃滋或芥末醬", "番茄片"],
+        highlight: "熟肉切片或撕絲夾入麵包，加上醬料與蔬菜，豐盛又快速的一餐！",
         steps: [
-          "熟肉切薄片或剝成絲狀。",
-          "吐司可直接使用或稍微烤過增加脆度。",
-          "一片吐司塗抹美乃滋或芥末醬。",
-          "依序疊上生菜、肉片，蓋上另一片吐司。",
-          "對角切開，盛盤即完成。",
+          "熟肉切薄片或手撕成絲。",
+          "吐司塗上美乃滋或芥末醬。",
+          "依序鋪上生菜、番茄片、熟肉。",
+          "蓋上另一片吐司，對切盛盤即完成。",
         ],
-        time: "約 5 分鐘",
-        difficulty: "非常簡單",
+        time: "約 5 分鐘", difficulty: "非常簡單", calories: 180,
       },
+      // ── 高麗菜 ──
+      { keywords: ["高麗菜", "蔬菜"], name: "高麗菜炒蛋",
+        ingredients: ["高麗菜 1/4顆", "雞蛋 2顆", "蒜末 1匙", "鹽少許", "醬油半匙"],
+        highlight: "高麗菜甜脆，和炒蛋是絕配，5 分鐘快速上桌的家常小菜！",
+        steps: ["高麗菜切絲，蛋打散備用。","熱鍋下油，爆香蒜末。","先炒蛋至半熟盛起。","下高麗菜大火翻炒至軟，加鹽調味。","放回蛋拌勻，滴少許醬油起鍋。"],
+        time: "約 8 分鐘", difficulty: "非常簡單" },
+      { keywords: ["高麗菜", "蔬菜", "麵條"], name: "高麗菜肉絲炒麵",
+        ingredients: ["高麗菜 1/4顆", "熟肉絲適量", "麵條 1把", "醬油 1匙", "蒜末 1匙"],
+        highlight: "高麗菜和肉絲是炒麵的黃金搭檔，剩菜剩麵全部解決！",
+        steps: ["麵條煮熟沖冷水備用。","熱鍋爆香蒜末，炒高麗菜至軟。","加入肉絲翻炒。","放入麵條，加醬油大火翻炒均勻。","起鍋前撒蔥花即完成。"],
+        time: "約 15 分鐘", difficulty: "簡單" },
+      // ── 胡蘿蔔 ──
+      { keywords: ["胡蘿蔔", "蔬菜"], name: "胡蘿蔔炒蛋絲",
+        ingredients: ["胡蘿蔔 1根", "雞蛋 2顆", "鹽少許", "糖少許", "油適量"],
+        highlight: "胡蘿蔔加熱後甜度更明顯，配上蛋絲色彩繽紛又營養！",
+        steps: ["胡蘿蔔刨絲；蛋打散煎薄餅後切絲備用。","熱鍋下油，炒胡蘿蔔絲至軟，加鹽和糖調味。","放入蛋絲翻炒均勻，起鍋盛盤。"],
+        time: "約 12 分鐘", difficulty: "簡單" },
+      { keywords: ["胡蘿蔔", "馬鈴薯", "蔬菜"], name: "日式馬鈴薯燉肉",
+        ingredients: ["馬鈴薯 2顆", "胡蘿蔔 1根", "洋蔥 1顆", "醬油 2匙", "味醂 1匙", "糖 1匙"],
+        highlight: "日本家常料理肉じゃが，根莖類燉到入味，鬆軟香甜！",
+        steps: ["馬鈴薯、胡蘿蔔切塊，洋蔥切絲。","鍋中熱油炒洋蔥至透明，加入胡蘿蔔和馬鈴薯翻炒。","加水 300ml、醬油、味醂、糖，煮滾後轉小火。","燉煮 20 分鐘至蔬菜軟透入味即完成。"],
+        time: "約 30 分鐘", difficulty: "簡單" },
+      // ── 玉米 ──
+      { keywords: ["玉米", "蔬菜"], name: "玉米蛋花湯",
+        ingredients: ["玉米 1根（或罐頭玉米粒）", "雞蛋 1顆", "鹽少許", "太白粉水少許", "蔥花少許"],
+        highlight: "玉米的天然甜味讓湯頭清甜，蛋花滑嫩，簡單又暖胃！",
+        steps: ["玉米切段或取玉米粒備用。","鍋中加水 500ml 煮滾，放入玉米煮 5 分鐘。","加鹽調味，倒入太白粉水勾薄芡。","蛋打散繞圈倒入，輕攪成蛋花。","盛碗撒蔥花即完成。"],
+        time: "約 15 分鐘", difficulty: "非常簡單" },
+      { keywords: ["玉米", "蛋"], name: "玉米炒蛋",
+        ingredients: ["玉米粒 1杯", "雞蛋 3顆", "蔥花少許", "鹽少許", "奶油 1小匙（可選）"],
+        highlight: "玉米甜蛋香，顏色金黃討喜，是便當盒裡最受歡迎的配菜！",
+        steps: ["蛋打散，加鹽攪勻。","熱鍋下奶油或油，倒入蛋液炒至半熟盛起。","同鍋下玉米粒翻炒 2 分鐘。","放回蛋，加鹽調味，撒蔥花起鍋。"],
+        time: "約 10 分鐘", difficulty: "非常簡單" },
+      // ── 青椒 ──
+      { keywords: ["青椒", "蔬菜"], name: "青椒炒肉絲",
+        ingredients: ["青椒 2顆", "豬肉絲 150g", "醬油 1匙", "蒜末 1匙", "太白粉少許"],
+        highlight: "青椒微苦帶甜，搭配醃過的肉絲大火快炒，是最經典的下飯菜！",
+        steps: ["豬肉絲加醬油、太白粉醃 10 分鐘；青椒切絲。","熱鍋下油，爆香蒜末，放入肉絲炒至變色盛起。","同鍋炒青椒至軟，放回肉絲大火翻炒。","加鹽調味，起鍋盛盤。"],
+        time: "約 15 分鐘", difficulty: "簡單" },
+      // ── 菠菜 ──
+      { keywords: ["菠菜", "蔬菜"], name: "蒜炒菠菜",
+        ingredients: ["菠菜 1把", "蒜頭 3瓣", "鹽少許", "油適量"],
+        highlight: "菠菜快炒最能保留營養，蒜香提味，30 秒出鍋！",
+        steps: ["菠菜洗淨切段，蒜頭拍扁切末。","鍋中燒熱油，爆香蒜末。","放入菠菜大火快炒 30 秒至軟。","加鹽調味，立刻起鍋避免過熟。"],
+        time: "約 5 分鐘", difficulty: "非常簡單" },
+      { keywords: ["菠菜", "蛋", "蔬菜"], name: "菠菜蛋花湯",
+        ingredients: ["菠菜 1把", "雞蛋 1顆", "高湯或水 500ml", "鹽少許", "薑片 2片"],
+        highlight: "菠菜鮮綠，蛋花滑嫩，清爽湯品最適合剩菜快速料理！",
+        steps: ["高湯加薑片煮滾，放入菠菜段。","蛋打散，繞圈緩緩倒入湯中攪成蛋花。","加鹽調味，盛碗即完成。"],
+        time: "約 8 分鐘", difficulty: "非常簡單" },
+      // ── 豆乾 ──
+      { keywords: ["豆乾", "豆腐", "蔬菜"], name: "五香豆乾炒芹菜",
+        ingredients: ["豆乾 3片", "芹菜 2根", "紅辣椒 1根（可選）", "醬油 1匙", "鹽少許"],
+        highlight: "豆乾有嚼勁，芹菜清香，是最下酒下飯的台式家常小炒！",
+        steps: ["豆乾切條，芹菜切段，辣椒切斜片。","熱鍋下油，炒豆乾至表面微黃。","加入芹菜和辣椒大火翻炒。","加醬油、鹽調味，炒勻起鍋。"],
+        time: "約 10 分鐘", difficulty: "簡單" },
+      // ── 冬粉 ──
+      { keywords: ["冬粉", "蔬菜", "蛋"], name: "冬粉蛋花蔬菜湯",
+        ingredients: ["冬粉 1把", "蛋 1顆", "蔬菜適量", "高湯 500ml", "鹽少許"],
+        highlight: "冬粉吸飽湯汁滑溜爽口，搭配剩餘蔬菜快速煮成一碗！",
+        steps: ["冬粉泡水 10 分鐘至軟，剪短備用。","高湯煮滾，放入蔬菜煮熟。","放入冬粉煮 2 分鐘。","蛋打散繞圈倒入，攪成蛋花，加鹽調味即完成。"],
+        time: "約 15 分鐘", difficulty: "非常簡單" },
+      // ── 麵包進階 ──
+      { keywords: ["麵包", "番茄", "蔬菜"], name: "番茄莫扎瑞拉開放三明治",
+        ingredients: ["吐司或麵包 2片", "番茄 1顆", "起司片 2片（可選）", "橄欖油少許", "鹽與黑胡椒少許"],
+        highlight: "番茄切片疊上麵包，淋橄欖油，義式風味 5 分鐘搞定！",
+        steps: ["吐司可稍微烤脆。","番茄切薄片，排在麵包上。","疊上起司片（可選）。","淋橄欖油，撒鹽和黑胡椒即完成。"],
+        time: "約 5 分鐘", difficulty: "非常簡單" },
+      { keywords: ["麵包"], name: "大蒜奶油烤吐司",
+        ingredients: ["吐司 2片", "奶油 1大匙", "蒜末 1匙", "香芹粉少許（可選）"],
+        highlight: "奶油蒜末抹在硬掉的吐司上，烤出香酥蒜香麵包！",
+        steps: ["奶油軟化後混合蒜末。","均勻抹在吐司兩面。","烤箱 180°C 烤 8 分鐘至金黃酥脆。","撒香芹粉即可享用。"],
+        time: "約 12 分鐘", difficulty: "非常簡單" },
+      // ── 剩飯進階 ──
+      { keywords: ["剩米飯", "米飯", "豆腐"], name: "豆腐味噌粥",
+        ingredients: ["剩米飯 半碗", "嫩豆腐 半盒", "味噌 1大匙", "水 400ml", "蔥花少許"],
+        highlight: "味噌加豆腐香濃暖胃，剩飯煮成粥，早餐宵夜都完美！",
+        steps: ["水煮滾，放入剩米飯攪散煮 3 分鐘。","豆腐切小丁放入鍋中。","舀少許熱湯溶化味噌，倒回鍋中（不可再煮滾）。","盛碗撒蔥花即完成。"],
+        time: "約 10 分鐘", difficulty: "非常簡單" },
+      { keywords: ["剩米飯", "米飯", "水果"], name: "芒果椰奶甜米飯",
+        ingredients: ["剩米飯 1碗", "椰奶 100ml", "糖 1匙", "芒果或任意水果半顆"],
+        highlight: "東南亞風甜點！剩飯加椰奶，搭配熟透芒果，清甜迷人！",
+        steps: ["剩米飯加椰奶和糖，小火攪拌煮至米粒吸收椰奶（約 3 分鐘）。","盛入碗中，鋪上切丁芒果即可享用。"],
+        time: "約 8 分鐘", difficulty: "非常簡單" },
+      { keywords: ["剩米飯", "米飯", "熟肉"], name: "日式烤飯糰",
+        ingredients: ["剩米飯 1碗", "鹽少許", "醬油 1匙", "芝麻油少許", "餡料（鮪魚/肉鬆/任意）"],
+        highlight: "剩飯捏成三角飯糰，刷醬油下鍋煎烤，外酥內軟超香！",
+        steps: ["剩米飯加少許鹽和芝麻油拌勻，捏成三角形，中間包入餡料。","平底鍋不放油，中火煎飯糰兩面至微焦脆。","刷上薄薄醬油，再煎 30 秒即完成。"],
+        time: "約 15 分鐘", difficulty: "簡單" },
+      // ── 雞蛋進階 ──
+      { keywords: ["蛋"], name: "溏心蛋",
+        ingredients: ["雞蛋 4顆", "醬油 3匙", "味醂 2匙", "水 100ml", "糖 1匙"],
+        highlight: "滷過的溏心蛋，蛋白彈牙蛋黃流心，泡在醬汁隔夜更入味！",
+        steps: ["水滾後放蛋煮 7 分鐘，撈起泡冰水剝殼。","醬油、味醂、水、糖煮滾後放涼。","蛋放入醬汁中冷藏醃製至少 4 小時。","切半盛盤即可享用。"],
+        time: "約 15 分鐘（+冷藏）", difficulty: "簡單" },
+      { keywords: ["蛋", "馬鈴薯"], name: "馬鈴薯蛋沙拉",
+        ingredients: ["馬鈴薯 2顆", "水煮蛋 2顆", "美乃滋 2匙", "鹽與黑胡椒少許", "蔥花少許"],
+        highlight: "日式馬鈴薯沙拉，濃郁綿密，拌三明治或單吃都超滿足！",
+        steps: ["馬鈴薯蒸熟壓成泥，水煮蛋切碎。","趁熱加入美乃滋、鹽、黑胡椒拌勻。","撒蔥花，可冷藏後更入味。"],
+        time: "約 20 分鐘", difficulty: "簡單" },
+      // ── 豆腐進階 ──
+      { keywords: ["豆腐"], name: "涼拌豆腐",
+        ingredients: ["嫩豆腐 1盒", "醬油 1匙", "芝麻油半匙", "柴魚片少許", "蔥花少許"],
+        highlight: "嫩豆腐不需加熱，直接淋醬汁，10 秒完成的夏日涼菜！",
+        steps: ["嫩豆腐倒扣盤中，用廚房紙巾吸去多餘水分。","混合醬油和芝麻油做成醬汁。","淋在豆腐上，撒柴魚片和蔥花即完成。"],
+        time: "約 3 分鐘", difficulty: "非常簡單" },
+      { keywords: ["豆腐", "番茄"], name: "番茄豆腐湯",
+        ingredients: ["番茄 2顆", "豆腐 1盒", "蔥花少許", "鹽少許", "香油少許"],
+        highlight: "番茄酸甜的湯底讓豆腐更鮮嫩，簡單食材煮出餐廳風味！",
+        steps: ["番茄切塊，豆腐切丁。","鍋中熱油炒番茄出汁，加水 500ml 煮滾。","放入豆腐煮 3 分鐘，加鹽調味。","滴少許香油，盛碗撒蔥花即完成。"],
+        time: "約 12 分鐘", difficulty: "非常簡單" },
+      // ── 南瓜 ──
+      { keywords: ["南瓜", "蔬菜"], name: "南瓜濃湯",
+        ingredients: ["南瓜 1/4顆", "洋蔥 半顆", "奶油 1匙", "牛奶或豆漿 200ml", "鹽少許"],
+        highlight: "南瓜甜且易打成泥，做濃湯最省力，顏色金黃十分誘人！",
+        steps: ["南瓜去皮切塊蒸熟（約 15 分鐘）；洋蔥切丁。","鍋中下奶油炒洋蔥至透明。","加入南瓜和牛奶，用調理機打成泥。","回鍋加熱，加鹽調味即完成。"],
+        time: "約 25 分鐘", difficulty: "簡單" },
+      { keywords: ["南瓜", "蛋", "蔬菜"], name: "南瓜炒蛋",
+        ingredients: ["南瓜 1/4顆", "雞蛋 2顆", "蔥花少許", "鹽少許"],
+        highlight: "南瓜炒蛋色彩鮮豔，南瓜的甜和蛋的香交融，老少皆愛！",
+        steps: ["南瓜去皮切薄片，蛋打散備用。","熱鍋下油，南瓜片煎至兩面微黃且軟。","倒入蛋液，翻炒至熟。","加鹽調味，撒蔥花起鍋。"],
+        time: "約 15 分鐘", difficulty: "簡單" },
+      // ── 菇類 ──
+      { keywords: ["蘑菇", "菇類", "蔬菜"], name: "奶油蒜香炒蘑菇",
+        ingredients: ["蘑菇 200g", "奶油 1匙", "蒜末 2匙", "鹽與黑胡椒少許", "香芹少許"],
+        highlight: "蘑菇炒出水後吸飽奶油蒜香，是最簡單的西式配菜！",
+        steps: ["蘑菇切片，蒜末準備好。","鍋中融化奶油，爆香蒜末。","放入蘑菇大火翻炒至出水收乾。","加鹽、黑胡椒調味，撒香芹即完成。"],
+        time: "約 10 分鐘", difficulty: "非常簡單" },
+      { keywords: ["蘑菇", "菇類", "蛋"], name: "菇菇炒蛋",
+        ingredients: ["各式菇類 200g", "雞蛋 3顆", "蔥花少許", "醬油 1匙", "鹽少許"],
+        highlight: "菇類的鮮味讓炒蛋升級，任何菇類都適用，鮮香滑嫩！",
+        steps: ["菇類切片或撕開；蛋打散備用。","熱鍋下油，先炒菇類至軟出香。","倒入蛋液翻炒至半熟，加醬油和鹽。","撒蔥花起鍋盛盤。"],
+        time: "約 10 分鐘", difficulty: "非常簡單" },
+      // ── 火腿 / 培根 ──
+      { keywords: ["火腿", "熟肉", "蛋"], name: "火腿炒蛋",
+        ingredients: ["火腿片 3片", "雞蛋 3顆", "蔥花少許", "鹽少許"],
+        highlight: "火腿自帶鹹味不需額外調味，和炒蛋搭配是最快速的早餐！",
+        steps: ["火腿切丁，蛋打散加少許鹽。","熱鍋下油，先炒火腿丁至邊緣微焦。","倒入蛋液翻炒至熟，撒蔥花起鍋。"],
+        time: "約 8 分鐘", difficulty: "非常簡單" },
+      { keywords: ["培根", "熟肉", "蛋"], name: "培根蛋炒飯",
+        ingredients: ["培根 3片", "雞蛋 2顆", "剩米飯 1碗", "醬油 1匙", "蔥花少許"],
+        highlight: "培根油脂炒出米飯香氣，鹹香焦脆，是最讓人上癮的炒飯！",
+        steps: ["培根切小片，鍋中乾炒至出油後盛起。","用培根油炒散蛋液至半熟盛起。","放入米飯大火翻炒，加醬油調味。","放回培根和蛋，撒蔥花翻炒均勻。"],
+        time: "約 12 分鐘", difficulty: "簡單" },
+      // ── 剩菜綜合 ──
+      { keywords: ["熟肉", "蔬菜", "麵包"], name: "剩菜總匯三明治",
+        ingredients: ["吐司 2片", "剩餘熟肉適量", "蔬菜（生菜、番茄等）適量", "美乃滋或芥末醬少許"],
+        highlight: "把冰箱裡的剩菜全夾進去，每次都是不同驚喜的零浪費三明治！",
+        steps: ["吐司烤至微脆。","一面塗美乃滋或芥末醬。","鋪上蔬菜、熟肉等剩菜食材。","蓋上另一片吐司，斜切對半即完成。"],
+        time: "約 8 分鐘", difficulty: "非常簡單" },
+      { keywords: ["蔬菜", "蛋"], name: "蔬菜煎餅",
+        ingredients: ["各種剩餘蔬菜 1杯", "雞蛋 1顆", "中筋麵粉 3匙", "鹽少許", "油適量"],
+        highlight: "把零碎蔬菜混入麵糊煎成餅，外酥內軟，任何蔬菜都適用！",
+        steps: ["蔬菜切碎或刨絲，加蛋、麵粉、鹽攪拌成糊。","平底鍋熱油，舀入蔬菜糊壓扁。","中火煎至兩面金黃，約各 3 分鐘。","搭配醬油或辣椒醬享用。"],
+        time: "約 15 分鐘", difficulty: "簡單" },
+      // ── 水果進階 ──
+      { keywords: ["水果", "蛋"], name: "水果鬆餅",
+        ingredients: ["過熟水果 1杯", "雞蛋 1顆", "中筋麵粉 100g", "牛奶 80ml", "泡打粉 1小匙", "糖 1匙"],
+        highlight: "水果泥加入鬆餅麵糊，天然甜香，比外面賣的更健康！",
+        steps: ["水果壓泥備用。","蛋、牛奶、糖攪拌均勻，加麵粉和泡打粉拌成糊。","加入水果泥拌勻。","平底鍋熱鍋，舀入麵糊，小火煎至起泡翻面，再煎 1 分鐘。"],
+        time: "約 20 分鐘", difficulty: "簡單" },
+      { keywords: ["水果"], name: "水果氣泡飲",
+        ingredients: ["過熟水果（任意）1顆", "氣泡水 300ml", "蜂蜜或糖少許", "冰塊適量"],
+        highlight: "過熟水果榨汁加氣泡水，比手搖飲料更健康，自製天然果飲！",
+        steps: ["水果去皮切塊，用叉子壓汁或放入果汁機打成汁。","加蜂蜜調整甜度。","倒入杯中加冰塊，再倒入氣泡水即完成。"],
+        time: "約 5 分鐘", difficulty: "非常簡單" },
+      { keywords: ["香蕉", "過熟香蕉", "水果"], name: "香蕉冰棒",
+        ingredients: ["過熟香蕉 2根", "優格 3匙", "蜂蜜少許"],
+        highlight: "把過熟香蕉打成泥加優格冷凍，天然無添加的自製冰棒！",
+        steps: ["香蕉去皮壓成泥，加優格和蜂蜜攪拌均勻。","倒入冰棒模具（或小杯子），插入冰棒棍。","冷凍至少 4 小時至完全凝固即可享用。"],
+        time: "約 5 分鐘（+冷凍）", difficulty: "非常簡單" },
+      // ── 湯品進階 ──
+      { keywords: ["蔬菜", "番茄", "馬鈴薯", "洋蔥"], name: "羅宋湯",
+        ingredients: ["番茄 2顆", "馬鈴薯 1顆", "洋蔥 1顆", "高麗菜 1/4顆", "番茄醬 1匙", "鹽少許"],
+        highlight: "東歐家常濃湯，各種根莖蔬菜通通入鍋，暖胃又飽足！",
+        steps: ["所有蔬菜切塊。","鍋中熱油炒洋蔥至透明，加番茄炒出汁。","加入馬鈴薯、高麗菜、番茄醬和水 800ml。","煮滾後轉小火燉 20 分鐘，加鹽調味即完成。"],
+        time: "約 30 分鐘", difficulty: "簡單" },
+      { keywords: ["蛋", "豆腐", "蔬菜"], name: "韓式大醬湯",
+        ingredients: ["豆腐 半盒", "蔬菜（南瓜/菇/洋蔥）適量", "韓式大醬 1.5匙", "蒜末 1匙", "水 500ml"],
+        highlight: "大醬鹹鮮濃郁，豆腐和蔬菜燉煮入味，是韓式家庭的靈魂料理！",
+        steps: ["蔬菜切塊，豆腐切丁。","水煮滾，放入大醬溶化，加入蒜末。","放入所有蔬菜煮 5 分鐘。","加入豆腐再煮 2 分鐘，調味即完成。"],
+        time: "約 15 分鐘", difficulty: "簡單" },
+      // ── 甜點 ──
+      { keywords: ["蛋"], name: "牛奶蒸蛋布丁",
+        ingredients: ["雞蛋 2顆", "牛奶 250ml", "糖 2匙", "香草精少許（可選）"],
+        highlight: "只需蛋和牛奶，不用烤箱，電鍋蒸出絲滑嫩布丁！",
+        steps: ["蛋打散，加糖和香草精攪拌均勻。","牛奶加熱至溫熱（不沸騰），緩緩倒入蛋液中攪拌。","過篩倒入容器，蓋上保鮮膜。","電鍋外鍋加半杯水，蒸 12 分鐘，燜 5 分鐘即完成。"],
+        time: "約 20 分鐘", difficulty: "簡單" },
+      // ── 涼拌 ──
+      { keywords: ["海帶", "蔬菜"], name: "涼拌海帶絲",
+        ingredients: ["海帶絲 200g", "蒜末 1匙", "醬油 1匙", "醋 1匙", "辣椒油少許", "芝麻少許"],
+        highlight: "海帶絲汆燙後涼拌，低熱量又有飽足感，酸辣開胃！",
+        steps: ["海帶絲沸水汆燙 2 分鐘，撈起沖冷水瀝乾。","混合蒜末、醬油、醋、辣椒油做成醬汁。","海帶絲與醬汁拌勻，撒白芝麻盛盤。"],
+        time: "約 10 分鐘", difficulty: "非常簡單" },
       {
-        keywords: ["熟肉", "肉"],
-        name: "剩肉蔬菜炒烏龍",
-        ingredients: ["熟肉（任意）", "烏龍麵", "蔬菜", "醬油", "芝麻油"],
-        highlight: "剩肉切絲加入炒麵，省去另外煮肉的時間，快速完成一碗料多麵！",
-        steps: [
-          "熟肉切絲或剝小塊，蔬菜切絲備用。",
-          "烏龍麵依包裝指示煮熟，撈起瀝乾。",
-          "鍋中熱油，先炒蔬菜至軟化。",
-          "加入肉絲與烏龍麵，倒醬油翻炒均勻。",
-          "起鍋前淋芝麻油增香，盛碗即完成。",
-        ],
-        time: "約 15 分鐘",
-        difficulty: "簡單",
-      },
-      {
-        keywords: ["麵包"],
-        name: "麵包布丁",
-        ingredients: ["老麵包（2–3片）", "雞蛋（2顆）", "牛奶", "糖", "香草精（可選）"],
-        highlight: "硬掉的麵包吸滿蛋奶液後烤出軟嫩口感，變身甜點免浪費！",
-        steps: [
-          "麵包切成 2 公分方塊，鋪入烤盤。",
-          "蛋、牛奶、糖攪拌均勻成蛋奶液，加入香草精。",
-          "將蛋奶液倒入烤盤，靜置 15 分鐘讓麵包吸飽。",
-          "烤箱預熱 175°C，烤 25 分鐘至表面金黃。",
-          "取出放涼，撒糖粉或淋蜂蜜享用。",
-        ],
-        time: "約 45 分鐘（含靜置）",
-        difficulty: "普通",
-      },
-      {
-        keywords: ["蛋", "蔬菜"],
-        name: "蔬菜烘蛋（Frittata）",
-        ingredients: ["雞蛋（3顆）", "剩餘蔬菜（任意）", "起司（可選）", "鹽", "黑胡椒"],
-        highlight: "任何剩餘蔬菜都能加進烘蛋，一鍋搞定，切片分享超有儀式感！",
-        steps: [
-          "蔬菜切小塊或切絲，平底鍋炒熟後鋪平。",
-          "蛋打散加鹽、黑胡椒攪拌均勻。",
-          "蛋液倒入鍋中，撒上起司，中小火加蓋燜煮。",
-          "待蛋液表面幾乎凝固，入烤箱 180°C 烤 5 分鐘。",
-          "取出切片，熱食冷食皆宜。",
-        ],
-        time: "約 20 分鐘",
-        difficulty: "普通",
-      },
-      {
-        keywords: ["蛋", "剩米飯", "米飯"],
-        name: "茶碗蒸配剩飯",
-        ingredients: ["雞蛋（2顆）", "高湯或水", "醬油", "味醂", "配料（任意）"],
-        highlight: "蛋液加高湯蒸出豆腐般嫩滑口感，搭配剩飯就是日式定食！",
-        steps: [
-          "蛋打散，加入 1.5 倍量的高湯攪拌均勻。",
-          "加醬油半匙、味醂少許，過篩去除氣泡。",
-          "倒入茶碗，加入喜歡的配料（蝦、香菇等）。",
-          "電鍋外鍋加半杯水，蒸約 12 分鐘。",
-          "取出後搭配剩飯一起享用。",
-        ],
-        time: "約 20 分鐘",
-        difficulty: "普通",
-      },
-      {
-        keywords: ["蔬菜", "水果"],
-        name: "蔬果鮮榨冷湯",
-        ingredients: ["各種蔬菜水果", "檸檬汁", "鹽", "冰塊"],
-        highlight: "快熟透的蔬果最適合打成冷湯，保留全部營養又清爽解暑！",
-        steps: [
-          "蔬果洗淨，切成適合放入果汁機的大小。",
-          "放入果汁機，加少許水、鹽、檸檬汁。",
-          "攪打至滑順，試味道並調整鹹淡。",
-          "倒入杯中，加冰塊，即刻享用。",
-        ],
-        time: "約 8 分鐘",
-        difficulty: "非常簡單",
-      },
-      {
-        keywords: ["水果"],
-        name: "水果果醬",
-        ingredients: ["熟透水果（任意）", "糖（水果重量的 50%）", "檸檬汁"],
-        highlight: "快過熟的水果煮成果醬，冷藏保存延長壽命，塗麵包超美味！",
-        steps: [
-          "水果去皮去籽，切成小丁或壓成粗泥。",
-          "加入糖與檸檬汁，靜置 30 分鐘出汁。",
-          "中火加熱，不斷攪拌避免燒焦，煮至濃稠。",
-          "倒入乾淨玻璃瓶，放涼後冷藏保存。",
-          "一週內食用完畢。",
-        ],
-        time: "約 40 分鐘",
-        difficulty: "普通",
-      },
-      {
-        /* 通用備用食譜一：什錦蔬菜湯 */
         keywords: ["__fallback__"],
         name: "什錦剩食蔬菜清湯",
-        ingredients: ["各種剩餘蔬菜", "水或高湯", "鹽", "薑片（可選）"],
+        ingredients: ["各種剩餘蔬菜適量", "水或高湯 600ml", "鹽適量", "薑片（可選）"],
         highlight: "任何剩餘蔬菜、根莖類都能入湯，零浪費的溫暖料理！",
         steps: [
           "將剩餘蔬菜洗淨，切成適口大小。",
-          "鍋中加水（約 600 ml），加薑片煮滾。",
+          "鍋中加水（約 600ml），加薑片煮滾。",
           "放入較硬的根莖類，煮 5 分鐘。",
           "加入葉菜類，續煮 2–3 分鐘。",
           "加鹽調味，盛碗即完成。",
         ],
-        time: "約 20 分鐘",
-        difficulty: "簡單",
+        time: "約 20 分鐘", difficulty: "簡單", calories: 300,
       },
       {
-        /* 通用備用食譜二：剩食炒飯 */
         keywords: ["__fallback__"],
-        name: "萬用剩食炒飯",
-        ingredients: ["任何剩餘食材", "白飯", "雞蛋", "醬油", "鹽"],
-        highlight: "冰箱裡任何食材都能下鍋，炒飯是最萬用的剩食料理！",
+        name: "萬用剩食蛋炒一切",
+        ingredients: ["剩餘食材（任意）適量", "雞蛋 2顆", "醬油 1匙", "蒜末 1匙"],
+        highlight: "蛋是最萬能的剩食救星，任何食材加蛋大火一炒，立刻變成一道菜！",
         steps: [
-          "將所有剩餘食材切成小丁。",
-          "鍋中熱油，先炒蛋液至半熟。",
-          "加入食材丁翻炒均勻。",
-          "放入白飯大火快炒，加醬油、鹽調味。",
-          "炒至飯粒均勻上色，盛盤即完成。",
+          "所有剩餘食材切成適口大小。",
+          "熱鍋下油，爆香蒜末。",
+          "加入食材中大火翻炒至熟。",
+          "撥到鍋邊，倒入蛋液炒散，再與食材混合翻炒。",
+          "加醬油與鹽調味，起鍋盛盤。",
         ],
-        time: "約 15 分鐘",
-        difficulty: "簡單",
-      },
-      {
-        /* 通用備用食譜三：雜炊粥 */
-        keywords: ["__fallback__"],
-        name: "剩食雜炊粥",
-        ingredients: ["任何剩餘食材", "白飯或剩飯", "水或高湯", "鹽", "薑"],
-        highlight: "任何剩餘食材都能加入粥中，養胃暖身，最適合清冰箱！",
-        steps: [
-          "剩飯加水（約 1:5 比例）放入鍋中。",
-          "加入薑片，中火煮至飯粒軟化成粥。",
-          "放入剩餘食材（肉、菜、蛋皆可）。",
-          "續煮 5 分鐘，加鹽調味。",
-          "盛碗後可加蔥花或芝麻油提香。",
-        ],
-        time: "約 25 分鐘",
-        difficulty: "非常簡單",
+        time: "約 12 分鐘", difficulty: "簡單", calories: 280,
       },
     ];
 
-    /* ====================================================
-       狀態管理：用 Set 儲存已選食材，方便去重
-       ==================================================== */
     const selectedIngredients = new Set();
 
-    /* ====================================================
-       初始化：產生快速標籤按鈕
-       ==================================================== */
     function initQuickTags() {
       const container = document.getElementById("quick-tags");
       QUICK_INGREDIENTS.forEach(item => {
@@ -1142,24 +1030,16 @@
         btn.textContent = item.name;
         btn.className = "quick-tag";
         btn.setAttribute("type", "button");
-        /* aria-pressed 讓螢幕閱讀器知道這是切換型按鈕 */
         btn.setAttribute("aria-pressed", "false");
         btn.dataset.name = item.name;
         btn.addEventListener("click", () => toggleTag(btn, item.name));
-        /* 也支援 Enter 鍵觸發 */
         btn.addEventListener("keydown", e => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggleTag(btn, item.name);
-          }
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleTag(btn, item.name); }
         });
         container.appendChild(btn);
       });
     }
 
-    /* ====================================================
-       切換快速標籤的選取狀態
-       ==================================================== */
     function toggleTag(btnEl, name) {
       if (selectedIngredients.has(name)) {
         selectedIngredients.delete(name);
@@ -1174,38 +1054,23 @@
       updateCarbonEstimate();
     }
 
-    /* ====================================================
-       新增自訂食材
-       ==================================================== */
     function addCustomIngredient() {
       const input = document.getElementById("custom-ingredient");
       const name = input.value.trim();
-      if (!name) return; /* 空輸入不處理 */
+      if (!name) return;
       selectedIngredients.add(name);
       input.value = "";
       renderSelectedList();
       updateCarbonEstimate();
-      /* 將焦點移回輸入框，方便連續輸入 */
       input.focus();
     }
 
-    /* ====================================================
-       Enter 鍵也能新增食材
-       ==================================================== */
-    document.getElementById("custom-ingredient")
-      .addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          addCustomIngredient();
-        }
-      });
+    document.getElementById("custom-ingredient").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") { e.preventDefault(); addCustomIngredient(); }
+    });
 
-    /* ====================================================
-       移除已選食材
-       ==================================================== */
     function removeIngredient(name) {
       selectedIngredients.delete(name);
-      /* 同步更新快速標籤的視覺狀態 */
       document.querySelectorAll(".quick-tag").forEach(btn => {
         if (btn.dataset.name === name) {
           btn.classList.remove("selected");
@@ -1216,266 +1081,215 @@
       updateCarbonEstimate();
     }
 
-    /* ====================================================
-       渲染已選食材清單
-       ==================================================== */
     function renderSelectedList() {
       const list = document.getElementById("selected-list");
       const countEl = document.getElementById("selected-count");
-
-      list.innerHTML = ""; /* 清空再重繪 */
+      list.innerHTML = "";
       countEl.textContent = selectedIngredients.size;
-
       selectedIngredients.forEach(name => {
         const item = document.createElement("div");
         item.className = "selected-item";
-
         const label = document.createElement("span");
         label.textContent = name;
-
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
         removeBtn.innerHTML = "✕";
-        removeBtn.setAttribute("aria-label", `移除 ${name}`);
+        removeBtn.setAttribute("aria-label", "移除 " + name);
         removeBtn.setAttribute("type", "button");
         removeBtn.addEventListener("click", () => removeIngredient(name));
-
         item.appendChild(label);
         item.appendChild(removeBtn);
         list.appendChild(item);
       });
     }
 
-    /* ====================================================
-       更新展示用碳排估算
-       以每個食材 0.12 kg CO₂e 為基礎（示意數值）
-       ==================================================== */
     function updateCarbonEstimate() {
       const carbonEl = document.getElementById("carbon-number");
-      const count = selectedIngredients.size;
-
-      if (count === 0) {
-        carbonEl.textContent = "— kg CO₂e";
-        return;
-      }
-
-      /* 計算：先查快速食材的個別係數，其餘用預設值 */
+      if (selectedIngredients.size === 0) { carbonEl.textContent = "— kg CO₂e"; return; }
       let total = 0;
       selectedIngredients.forEach(name => {
         const found = QUICK_INGREDIENTS.find(i => i.name === name);
-        total += found ? found.carbon : 0.12; /* 自訂食材用預設值 */
+        total += found ? found.carbon : 0.12;
       });
-
-      carbonEl.textContent = `約 ${total.toFixed(2)} kg CO₂e`;
+      carbonEl.textContent = "約 " + total.toFixed(2) + " kg CO₂e";
     }
 
-    /* ====================================================
-       生成食譜推薦
-       ==================================================== */
     function generateRecipes() {
       const container = document.getElementById("recipes-container");
-
-      /* 若無食材，顯示友善提醒 */
       if (selectedIngredients.size === 0) {
         const warn = document.getElementById("warning-msg");
         warn.classList.add("show");
-        /* 捲動到提醒訊息，方便使用者看到 */
         warn.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
-
-      /* 隱藏提醒 */
       document.getElementById("warning-msg").classList.remove("show");
-
-      /* 找出符合的食譜（根據關鍵字交集） */
       const selectedArr = Array.from(selectedIngredients);
       let matched = RECIPES.filter(recipe =>
-        recipe.keywords.some(kw =>
-          selectedArr.some(sel =>
-            sel.includes(kw) || kw.includes(sel)
-          )
-        )
+        recipe.keywords.some(kw => selectedArr.some(sel => sel.includes(kw) || kw.includes(sel)))
       );
-
-      /* 排除 fallback 備用食譜（只有在沒有其他結果時才用） */
       const nonFallback = matched.filter(r => !r.keywords.includes("__fallback__"));
-      if (nonFallback.length > 0) {
-        matched = nonFallback;
-      } else {
-        /* 沒有任何匹配時，使用備用食譜 */
-        matched = RECIPES.filter(r => r.keywords.includes("__fallback__"));
-      }
-
-      /* 最多推薦 3 道，隨機挑選保持趣味性 */
-      const shuffled = matched.sort(() => Math.random() - 0.5);
-      const toShow = shuffled.slice(0, 3);
-
-      /* 清空並插入新卡片 */
+      matched = nonFallback.length > 0 ? nonFallback : RECIPES.filter(r => r.keywords.includes("__fallback__"));
+      // 計算每道食譜匹配到的食材數量，匹配越多排越前面；數量相同時隨機排序
+      matched.sort((a, b) => {
+        const countMatch = r => r.keywords.filter(kw =>
+          selectedArr.some(sel => sel.includes(kw) || kw.includes(sel))
+        ).length;
+        return countMatch(b) - countMatch(a) || Math.random() - 0.5;
+      });
+      // 儲存本次排序結果供「更多料理」使用
+      currentMatched = matched;
+      currentShownCount = 0;
       container.innerHTML = "";
-
-      /* 加入區塊標題 */
       const header = document.createElement("div");
-      header.innerHTML = `
-        <h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦（共 ${toShow.length} 道）</h2>
-        <p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>
-      `;
+      header.innerHTML = '<h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦</h2><p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>';
       container.appendChild(header);
-
-      /* 安全提醒橫幅 */
       const safety = document.createElement("div");
       safety.className = "safety-notice";
       safety.setAttribute("role", "note");
-      safety.innerHTML = `
-        <strong>🔔 食材安全提醒</strong>
-        若食材出現異味、發黴、黏液或保存時間不明，請勿食用。
-      `;
+      safety.innerHTML = "<strong>🔔 食材安全提醒</strong>若食材出現異味、發黴、黏液或保存時間不明，請勿食用。";
       container.appendChild(safety);
-
-      /* 逐一渲染食譜卡片 */
-      toShow.forEach((recipe, index) => {
-        const card = createRecipeCard(recipe, index);
-        container.appendChild(card);
-      });
-
-      /* 平滑捲動到食譜區 */
+      showMoreRecipes();
       container.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    /* ====================================================
-       建立單一食譜卡片 DOM 元素
-       ==================================================== */
+    let currentMatched = [];
+    let currentShownCount = 0;
+    const PAGE_SIZE = 3;
+
+    function showMoreRecipes() {
+      const container = document.getElementById("recipes-container");
+      // 移除舊的「更多料理」按鈕（若存在）
+      const oldMore = document.getElementById("more-btn-wrap");
+      if (oldMore) oldMore.remove();
+
+      const batch = currentMatched.slice(currentShownCount, currentShownCount + PAGE_SIZE);
+      batch.forEach((recipe, i) => container.appendChild(createRecipeCard(recipe, currentShownCount + i)));
+      currentShownCount += batch.length;
+
+      // 若還有更多，顯示按鈕
+      if (currentShownCount < currentMatched.length) {
+        const wrap = document.createElement("div");
+        wrap.className = "more-wrap";
+        wrap.id = "more-btn-wrap";
+        const remaining = currentMatched.length - currentShownCount;
+        const btn = document.createElement("button");
+        btn.className = "btn-more";
+        btn.type = "button";
+        btn.textContent = "🍴 更多料理（還有 " + remaining + " 道）";
+        btn.onclick = showMoreRecipes;
+        wrap.appendChild(btn);
+        container.appendChild(wrap);
+      }
+    }
+
+    // ── localStorage 工具函式 ──
+    function getRatingData(recipeName) {
+      try { return JSON.parse(localStorage.getItem("rating_" + recipeName)) || { total: 0, count: 0 }; }
+      catch(e) { return { total: 0, count: 0 }; }
+    }
+    function saveRatingData(recipeName, data) {
+      try { localStorage.setItem("rating_" + recipeName, JSON.stringify(data)); } catch(e) {}
+    }
+    function getFeedbackCount(recipeName) {
+      try { return parseInt(localStorage.getItem("feedback_" + recipeName) || "0", 10); }
+      catch(e) { return 0; }
+    }
+    function saveFeedbackCount(recipeName, count) {
+      try { localStorage.setItem("feedback_" + recipeName, String(count)); } catch(e) {}
+    }
+
+    function renderAvgStars(avg) {
+      if (avg === 0) return "尚無評分";
+      const full  = Math.floor(avg);
+      const half  = avg - full >= 0.5 ? 1 : 0;
+      const empty = 5 - full - half;
+      return "★".repeat(full) + (half ? "½" : "") + "☆".repeat(empty);
+    }
+
     function createRecipeCard(recipe, index) {
       const card = document.createElement("article");
       card.className = "card recipe-card-anim";
-      /* 加入動畫延遲，讓多張卡片依序出現 */
-      card.style.animationDelay = `${index * 0.12}s`;
-      card.setAttribute("aria-label", `食譜卡片：${recipe.name}`);
+      card.style.animationDelay = ((index % PAGE_SIZE) * 0.12) + "s";
+      card.setAttribute("aria-label", "食譜卡片：" + recipe.name);
 
-      /* 食材標籤 HTML */
-      const ingredientTags = recipe.ingredients
-        .map(i => `<span>${i}</span>`)
-        .join("");
+      const ratingData   = getRatingData(recipe.name);
+      const feedbackCount = getFeedbackCount(recipe.name);
+      const avg = ratingData.count > 0 ? (ratingData.total / ratingData.count) : 0;
+      const avgText = avg > 0
+        ? renderAvgStars(avg) + "  " + avg.toFixed(1) + " 分（共 " + ratingData.count + " 人評分）"
+        : "尚無評分";
 
-      /* 步驟列表 HTML */
-      const stepItems = recipe.steps
-        .map(s => `<li>${s}</li>`)
-        .join("");
+      const ingredientTags = recipe.ingredients.map(i => "<span>" + i + "</span>").join("");
+      const stepItems = recipe.steps.map(s => "<li>" + s + "</li>").join("");
+      const difficultyIcon = { "非常簡單": "🟢", "簡單": "🟡", "普通": "🟠", "稍難": "🔴" }[recipe.difficulty] || "🟡";
+      const stars = [1,2,3,4,5].map(n =>
+        '<button class="star-btn" type="button" data-rating="' + n + '" aria-label="' + n + ' 顆星" onclick="setRating(this,' + n + ')">★</button>'
+      ).join("");
 
-      /* 難度對應顏色（文字說明為主，顏色為輔） */
-      const difficultyIcon = {
-        "非常簡單": "🟢",
-        "簡單": "🟡",
-        "普通": "🟠",
-        "稍難": "🔴",
-      }[recipe.difficulty] || "🟡";
+      const caloriesBadge = recipe.calories
+        ? '<span class="meta-badge badge-calories">🔥 約 ' + recipe.calories + ' 大卡</span>'
+        : '';
 
-      card.innerHTML = `
-        <span class="ai-badge">💡 靈感示範</span>
-        <h3 class="recipe-name">${recipe.name}</h3>
-
-        <!-- 時間與難度徽章 -->
-        <div class="meta-row">
-          <span class="meta-badge badge-time">⏱ ${recipe.time}</span>
-          <span class="meta-badge badge-difficulty">${difficultyIcon} 難度：${recipe.difficulty}</span>
-        </div>
-
-        <!-- 使用食材 -->
-        <p style="font-size:0.85rem; color:var(--text-mid); margin-bottom:6px; font-weight:600;">建議使用食材</p>
-        <div class="recipe-ingredients">${ingredientTags}</div>
-
-        <!-- 食材改造亮點 -->
-        <div class="highlight-box">
-          <strong>✨ 食材改造亮點</strong><br>
-          ${recipe.highlight}
-        </div>
-
-        <!-- 料理步驟 -->
-        <p class="steps-title">📋 簡易料理步驟</p>
-        <ol class="steps-list">${stepItems}</ol>
-
-        <!-- 分隔線 -->
-        <hr class="card-divider">
-
-        <!-- 四、互動回饋區 -->
-        <!-- 星級評分 -->
-        <div class="rating-row">
-          <span class="rating-label">為這道食譜評分：</span>
-          <div class="stars" role="group" aria-label="星級評分">
-            ${[1,2,3,4,5].map(n => `
-              <button
-                class="star-btn"
-                type="button"
-                data-rating="${n}"
-                aria-label="${n} 顆星"
-                onclick="setRating(this, ${n})"
-              >★</button>
-            `).join("")}
-          </div>
-          <span class="rating-text" aria-live="polite"></span>
-        </div>
-
-        <!-- 回饋按鈕 -->
-        <div class="feedback-row">
-          <button
-            class="feedback-btn"
-            type="button"
-            onclick="submitFeedback(this)"
-          >這道菜對我有幫助！</button>
-          <span class="feedback-count" aria-live="polite">回饋次數：0</span>
-        </div>
-      `;
-
+      card.innerHTML =
+        '<span class="ai-badge">💡 靈感示範</span>' +
+        '<h3 class="recipe-name">' + recipe.name + '</h3>' +
+        '<div class="meta-row"><span class="meta-badge badge-time">⏱ ' + recipe.time + '</span>' +
+        '<span class="meta-badge badge-difficulty">' + difficultyIcon + ' 難度：' + recipe.difficulty + '</span>' +
+        caloriesBadge + '</div>' +
+        '<p style="font-size:0.85rem;color:var(--text-mid);margin-bottom:6px;font-weight:600;">建議使用食材</p>' +
+        '<div class="recipe-ingredients">' + ingredientTags + '</div>' +
+        '<div class="highlight-box"><strong>✨ 食材改造亮點</strong><br>' + recipe.highlight + '</div>' +
+        '<p class="steps-title">📋 簡易料理步驟</p>' +
+        '<ol class="steps-list">' + stepItems + '</ol>' +
+        '<hr class="card-divider">' +
+        '<div class="rating-row"><span class="rating-label">為這道食譜評分：</span>' +
+        '<div class="stars" role="group" aria-label="星級評分" data-recipe="' + recipe.name + '">' + stars + '</div>' +
+        '<span class="rating-text" aria-live="polite"></span></div>' +
+        '<div class="avg-rating-row">📊 平均評分：<span class="avg-stars">' + avgText + '</span></div>' +
+        '<div class="feedback-row">' +
+        '<button class="feedback-btn" type="button" data-recipe="' + recipe.name + '" onclick="submitFeedback(this)">這道菜對我有幫助！</button>' +
+        '<span class="feedback-count" aria-live="polite">回饋次數：' + feedbackCount + '</span></div>';
       return card;
     }
 
-    /* ====================================================
-       星級評分互動
-       ==================================================== */
     function setRating(clickedStar, rating) {
-      /* 找到同一評分列裡的所有星星 */
       const starsContainer = clickedStar.closest(".stars");
-      const allStars = starsContainer.querySelectorAll(".star-btn");
-      const ratingText = starsContainer.closest(".rating-row")
-                                       .querySelector(".rating-text");
-
-      /* 更新每顆星的 active 狀態（active = 金色星） */
-      allStars.forEach(star => {
-        const n = parseInt(star.dataset.rating, 10);
-        if (n <= rating) {
-          star.classList.add("active");
-        } else {
-          star.classList.remove("active");
-        }
+      const recipeName = starsContainer.dataset.recipe;
+      // 更新星星顯示
+      starsContainer.querySelectorAll(".star-btn").forEach(star => {
+        star.classList.toggle("active", parseInt(star.dataset.rating, 10) <= rating);
       });
-
-      /* 顯示評分結果文字 */
-      const labels = ["", "非常不滿意", "不太滿意", "還可以", "滿意", "非常滿意！"];
-      ratingText.textContent = `${rating} 顆星 — ${labels[rating]}`;
+      const labels = ["","非常不滿意","不太滿意","還可以","滿意","非常滿意！"];
+      starsContainer.closest(".rating-row").querySelector(".rating-text").textContent =
+        rating + " 顆星 — " + labels[rating];
+      // 儲存評分並更新平均
+      const data = getRatingData(recipeName);
+      data.total += rating;
+      data.count += 1;
+      saveRatingData(recipeName, data);
+      const avg = data.total / data.count;
+      const avgText = renderAvgStars(avg) + "  " + avg.toFixed(1) + " 分（共 " + data.count + " 人評分）";
+      starsContainer.closest("article").querySelector(".avg-stars").textContent = avgText;
+      // 評分後禁用星星避免重複評分
+      starsContainer.querySelectorAll(".star-btn").forEach(s => {
+        s.onclick = null;
+        s.style.cursor = "default";
+      });
     }
 
-    /* ====================================================
-       回饋按鈕互動
-       ==================================================== */
     function submitFeedback(btn) {
-      /* 若已回饋，不重複處理 */
       if (btn.classList.contains("done")) return;
-
+      const recipeName = btn.dataset.recipe;
       btn.textContent = "✅ 已收到你的回饋";
       btn.classList.add("done");
       btn.setAttribute("aria-disabled", "true");
-
-      /* 更新回饋次數（只在當前畫面模擬，非資料庫） */
-      const countEl = btn.closest(".feedback-row")
-                         .querySelector(".feedback-count");
-      const current = parseInt(countEl.textContent.replace(/[^0-9]/g, ""), 10) || 0;
-      countEl.textContent = `回饋次數：${current + 1}`;
+      const countEl = btn.closest(".feedback-row").querySelector(".feedback-count");
+      const newCount = getFeedbackCount(recipeName) + 1;
+      saveFeedbackCount(recipeName, newCount);
+      countEl.textContent = "回饋次數：" + newCount;
     }
 
-    /* ====================================================
-       頁面初始化
-       ==================================================== */
     initQuickTags();
-
   </script>
 </body>
 </html>
