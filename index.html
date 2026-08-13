@@ -161,7 +161,7 @@
     .card-divider { border:none; border-top:1.5px solid #e8f4ee; margin:18px 0; }
 
     /* Rating */
-    .rating-row { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .rating-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
     .rating-label { font-size:0.88rem; color:var(--text-mid); font-weight:600; }
     .stars { display:flex; gap:4px; }
     .star-btn {
@@ -172,6 +172,8 @@
     .star-btn:hover  { transform:scale(1.2); color:#f4a261; }
     .star-btn:focus-visible { outline:3px solid var(--green-mid); border-radius:4px; }
     .rating-text { font-size:0.85rem; color:var(--text-mid); }
+    .avg-rating-row { font-size:0.83rem; color:var(--text-muted); margin-bottom:12px; }
+    .avg-stars { color:#f4a261; letter-spacing:1px; }
     .feedback-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
     .feedback-btn {
       background-color:var(--green-mid); color:var(--white); border:none;
@@ -183,6 +185,17 @@
     .feedback-btn.done { background-color:#a0b8a8; cursor:not-allowed; }
     .feedback-btn:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
     .feedback-count { font-size:0.85rem; color:var(--text-muted); }
+    /* More button */
+    .more-wrap { text-align:center; padding:8px 0 24px; }
+    .btn-more {
+      display:inline-block; background-color:var(--white); color:var(--green-dark);
+      font-size:1rem; font-weight:700; padding:12px 36px;
+      border:2px solid var(--green-mid); border-radius:var(--radius-lg);
+      cursor:pointer; transition:background-color 0.2s,transform 0.1s;
+    }
+    .btn-more:hover  { background-color:var(--green-light); }
+    .btn-more:active { transform:scale(0.97); }
+    .btn-more:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
 
     /* Eco */
     #eco-section { padding:16px 0 60px; }
@@ -299,40 +312,88 @@
       { name: "蛋",       carbon: 0.16 },
       { name: "蔬菜",     carbon: 0.12 },
       { name: "水果",     carbon: 0.15 },
+      { name: "豆腐",     carbon: 0.09 },
+      { name: "麵條",     carbon: 0.11 },
+      { name: "馬鈴薯",   carbon: 0.08 },
+      { name: "番茄",     carbon: 0.07 },
+      { name: "洋蔥",     carbon: 0.06 },
+      { name: "豆芽",     carbon: 0.05 },
     ];
 
     const RECIPES = [
+      // ── 香蕉 ──
       {
         keywords: ["過熟香蕉", "香蕉"],
         name: "香蕉燕麥煎餅",
-        ingredients: ["過熟香蕉", "燕麥片", "雞蛋"],
+        ingredients: ["過熟香蕉 1根", "燕麥片 2大匙", "雞蛋 1顆"],
         highlight: "過熟香蕉甜度更高，無需額外加糖，天然甜味直接帶出煎餅香氣！",
         steps: [
           "將過熟香蕉用叉子壓成泥狀。",
-          "加入2大匙燕麥片與1顆蛋，攪拌均勻。",
+          "加入燕麥片與蛋，攪拌均勻成麵糊。",
           "平底鍋開中小火，塗少許油，舀入麵糊。",
-          "每面煎約2–3分鐘至金黃，起鍋即可享用。",
+          "每面煎約 2–3 分鐘至金黃，起鍋即可享用。",
         ],
         time: "約 10 分鐘", difficulty: "簡單",
       },
       {
+        keywords: ["過熟香蕉", "香蕉", "麵包"],
+        name: "香蕉吐司法式烤盤",
+        ingredients: ["過熟香蕉 1根", "吐司 2片", "蛋 1顆", "牛奶 2大匙", "糖少許"],
+        highlight: "香蕉搭配法式吐司，甜香濃郁，連隔夜硬吐司都能完美利用！",
+        steps: [
+          "香蕉切片備用；蛋加牛奶、糖攪拌均勻。",
+          "吐司兩面均勻沾裹蛋液。",
+          "平底鍋熱油，中小火將吐司兩面煎至金黃。",
+          "盛盤後鋪上香蕉片，可撒少許肉桂粉增香。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單",
+      },
+      // ── 剩米飯 ──
+      {
         keywords: ["剩米飯", "米飯", "蔬菜", "蛋"],
         name: "蔬菜蛋炒飯",
-        ingredients: ["剩米飯", "蔬菜（任意）", "雞蛋", "醬油"],
+        ingredients: ["剩米飯 1碗", "蔬菜（任意）適量", "雞蛋 2顆", "醬油 1大匙"],
         highlight: "隔夜飯水分較少，炒出來粒粒分明，是最適合剩飯的零浪費料理！",
         steps: [
           "剩米飯稍微撥散，避免結塊。",
-          "鍋中倒油熱鍋，先炒打散的蛋液。",
+          "鍋中倒油熱鍋，先炒打散的蛋液至半熟盛起。",
           "加入蔬菜（如高麗菜、胡蘿蔔丁）翻炒。",
-          "放入米飯大火翻炒，加醬油、少許鹽調味。",
+          "放入米飯大火翻炒，加入炒蛋，以醬油與少許鹽調味。",
           "炒至均勻，盛盤即完成。",
         ],
         time: "約 15 分鐘", difficulty: "簡單",
       },
       {
+        keywords: ["剩米飯", "米飯"],
+        name: "日式茶泡飯",
+        ingredients: ["剩米飯 1碗", "綠茶或高湯 200ml", "醬菜或梅子適量", "海苔絲少許"],
+        highlight: "剩飯加熱茶，日本人幾百年來的智慧，簡單溫暖又零浪費！",
+        steps: [
+          "剩米飯盛入碗中。",
+          "沖入熱綠茶或熱高湯（約 200ml）。",
+          "擺上醬菜、梅子或鮭魚鬆。",
+          "撒上海苔絲，即可享用。",
+        ],
+        time: "約 5 分鐘", difficulty: "非常簡單",
+      },
+      {
+        keywords: ["剩米飯", "米飯", "番茄", "蛋"],
+        name: "番茄蛋花米湯",
+        ingredients: ["剩米飯 半碗", "番茄 1顆", "雞蛋 1顆", "鹽少許", "蔥花少許"],
+        highlight: "番茄的酸甜讓米湯格外開胃，病後恢復或早餐都非常適合！",
+        steps: [
+          "番茄切小塊，鍋中倒少許油炒軟出汁。",
+          "加入 500ml 水煮滾，下剩米飯攪散。",
+          "蛋打散，繞圈倒入湯中，輕輕攪拌成蛋花。",
+          "加鹽調味，盛碗後撒蔥花即完成。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單",
+      },
+      // ── 菜梗 / 蔬菜 ──
+      {
         keywords: ["菜梗", "蔬菜"],
         name: "香蒜炒菜梗",
-        ingredients: ["菜梗（各種皆可）", "蒜頭", "鹽", "米酒"],
+        ingredients: ["菜梗（各種皆可）200g", "蒜頭 3瓣", "鹽適量", "米酒少許"],
         highlight: "菜梗口感爽脆，比葉子更耐炒！加點蒜末就能變身下飯小菜。",
         steps: [
           "菜梗洗淨，切成約 4 公分長段。",
@@ -344,9 +405,37 @@
         time: "約 10 分鐘", difficulty: "簡單",
       },
       {
+        keywords: ["蔬菜", "馬鈴薯", "洋蔥"],
+        name: "奶油馬鈴薯洋蔥湯",
+        ingredients: ["馬鈴薯 2顆", "洋蔥 1顆", "奶油 1大匙", "牛奶或水 400ml", "鹽少許"],
+        highlight: "馬鈴薯和洋蔥是冰箱常見剩食，煮成濃湯既暖胃又有飽足感！",
+        steps: [
+          "馬鈴薯去皮切丁，洋蔥切絲。",
+          "鍋中放奶油，中火炒洋蔥至透明。",
+          "加入馬鈴薯丁翻炒 2 分鐘。",
+          "倒入牛奶或水，煮滾後轉小火燉 15 分鐘至馬鈴薯軟爛。",
+          "用叉子壓碎部分馬鈴薯增加濃稠感，加鹽調味即完成。",
+        ],
+        time: "約 25 分鐘", difficulty: "簡單",
+      },
+      {
+        keywords: ["蔬菜", "番茄", "洋蔥"],
+        name: "番茄洋蔥炒蛋",
+        ingredients: ["番茄 2顆", "洋蔥 半顆", "雞蛋 2顆", "鹽與糖少許"],
+        highlight: "台灣家常中的經典！番茄的酸甜配上滑嫩炒蛋，下飯首選。",
+        steps: [
+          "番茄切塊，洋蔥切絲；蛋打散備用。",
+          "熱鍋下油，先炒蛋至半熟盛起。",
+          "同鍋炒洋蔥至透明，加入番茄翻炒出汁。",
+          "放回炒蛋，加鹽少許糖調味拌勻即完成。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單",
+      },
+      // ── 熟肉 ──
+      {
         keywords: ["熟肉", "肉", "蔬菜", "剩米飯", "米飯"],
         name: "剩肉蔬菜拌飯",
-        ingredients: ["熟肉（任意）", "蔬菜", "白飯", "醬油", "芝麻油"],
+        ingredients: ["熟肉（任意）適量", "蔬菜適量", "白飯 1碗", "醬油 1匙", "芝麻油半匙"],
         highlight: "熟肉不需再花時間煮熟，切碎拌飯，幾分鐘就能端上桌！",
         steps: [
           "熟肉切成小丁或剝絲，備用。",
@@ -358,9 +447,23 @@
         time: "約 10 分鐘", difficulty: "非常簡單",
       },
       {
+        keywords: ["熟肉", "肉", "麵條"],
+        name: "剩肉醬拌麵",
+        ingredients: ["熟肉（豬/雞）適量", "麵條 1把", "蒜末 1匙", "醬油膏 2匙", "辣油（可選）"],
+        highlight: "剩肉切碎加醬油膏和蒜末，就是一碗香噴噴的台式乾麵醬！",
+        steps: [
+          "麵條依包裝指示煮熟，撈起放入碗中。",
+          "熟肉切碎或剝絲。",
+          "碗中加入蒜末、醬油膏、芝麻油、辣油拌勻。",
+          "鋪上肉絲，撒蔥花，攪拌均勻即可享用。",
+        ],
+        time: "約 15 分鐘", difficulty: "簡單",
+      },
+      // ── 麵包 ──
+      {
         keywords: ["麵包"],
         name: "香煎麵包丁沙拉",
-        ingredients: ["硬麵包", "生菜", "番茄", "橄欖油", "鹽"],
+        ingredients: ["硬麵包 2片", "生菜適量", "番茄 1顆", "橄欖油 2匙", "鹽少許"],
         highlight: "老麵包烤成麵包丁，香脆有嚼勁，讓沙拉增加層次感！",
         steps: [
           "硬麵包切成 1.5 公分小方丁。",
@@ -371,26 +474,192 @@
         time: "約 12 分鐘", difficulty: "簡單",
       },
       {
+        keywords: ["麵包", "蛋"],
+        name: "隔夜麵包布丁",
+        ingredients: ["硬吐司或麵包 3片", "蛋 2顆", "牛奶 200ml", "糖 2大匙", "奶油少許"],
+        highlight: "變硬的麵包泡入蛋奶液再烤，搖身一變成為法式甜點！",
+        steps: [
+          "麵包切成方塊，鋪入塗了奶油的烤皿。",
+          "蛋、牛奶、糖攪拌均勻，倒入烤皿使麵包充分吸收，靜置 10 分鐘。",
+          "烤箱預熱 180°C，放入烤皿烤 25–30 分鐘至表面金黃。",
+          "取出稍涼後即可享用，可搭配冰淇淋或鮮奶油。",
+        ],
+        time: "約 40 分鐘", difficulty: "普通",
+      },
+      // ── 蛋 ──
+      {
         keywords: ["蛋"],
         name: "日式玉子燒",
-        ingredients: ["蛋（2–3顆）", "醬油", "味醂或糖", "蔥花（可選）"],
-        highlight: "打散的蛋加少許甜味，用玉子燒鍋（或一般平底鍋）捲出層次感！",
+        ingredients: ["蛋 2–3顆", "醬油 1小匙", "味醂或糖半匙", "蔥花（可選）"],
+        highlight: "打散的蛋加少許甜味，用平底鍋捲出層次感，早餐便當兩相宜！",
         steps: [
-          "蛋打散，加1小匙醬油、半匙糖或味醂，攪拌均勻。",
-          "平底鍋熱鍋塗油，倒入1/3蛋液，半凝固時往前捲起。",
+          "蛋打散，加醬油、糖或味醂，攪拌均勻。",
+          "平底鍋熱鍋塗油，倒入 1/3 蛋液，半凝固時往前捲起。",
           "再倒入蛋液，半凝固後與第一層一起捲。",
           "重複一次，整形後切片盛盤。",
         ],
         time: "約 10 分鐘", difficulty: "普通",
       },
       {
+        keywords: ["蛋", "番茄"],
+        name: "番茄炒蛋",
+        ingredients: ["番茄 2顆", "雞蛋 3顆", "鹽少許", "糖少許", "蔥花少許"],
+        highlight: "台灣最經典的家常菜，番茄和蛋是最佳拍檔，剩食也能有大滿足！",
+        steps: [
+          "番茄切塊，蛋打散備用。",
+          "熱鍋下油，炒蛋至半熟先盛起。",
+          "同鍋炒番茄，加少許鹽和糖炒出湯汁。",
+          "放回蛋翻炒均勻，撒蔥花起鍋。",
+        ],
+        time: "約 10 分鐘", difficulty: "非常簡單",
+      },
+      {
+        keywords: ["蛋", "豆腐"],
+        name: "蒸蛋豆腐",
+        ingredients: ["嫩豆腐 半盒", "蛋 2顆", "高湯或水 180ml", "醬油少許", "蔥花少許"],
+        highlight: "豆腐加入蒸蛋，口感更滑嫩，蛋白質加倍，超適合老人小孩！",
+        steps: [
+          "豆腐切小丁，排入蒸碗。",
+          "蛋打散加高湯（蛋:液體 = 1:1.5），過篩後倒入碗中。",
+          "蒸鍋水滾後放入，蓋上保鮮膜或蓋子，中小火蒸 12 分鐘。",
+          "取出後淋少許醬油，撒蔥花即完成。",
+        ],
+        time: "約 18 分鐘", difficulty: "簡單",
+      },
+      // ── 豆腐 ──
+      {
+        keywords: ["豆腐", "蔬菜"],
+        name: "麻婆豆腐",
+        ingredients: ["嫩豆腐 1盒", "絞肉 50g（可省略）", "豆瓣醬 1匙", "蒜末薑末各1匙", "太白粉水少許"],
+        highlight: "豆腐吸附麻婆醬汁後鮮香入味，快速上桌的省時下飯菜！",
+        steps: [
+          "豆腐切 2 公分丁，用滾水燙一下去豆腥味，撈起備用。",
+          "熱鍋下油，炒香蒜末、薑末與豆瓣醬。",
+          "加入絞肉（如有）翻炒至熟，加水或高湯 150ml 煮滾。",
+          "放入豆腐，輕輕翻拌，小火煮 3 分鐘入味。",
+          "加太白粉水勾薄芡，撒上蔥花即完成。",
+        ],
+        time: "約 15 分鐘", difficulty: "普通",
+      },
+      {
+        keywords: ["豆腐"],
+        name: "煎豆腐佐醬油薑汁",
+        ingredients: ["板豆腐 1盒", "醬油 1匙", "薑泥半匙", "芝麻油少許", "蔥花少許"],
+        highlight: "煎到外酥內嫩的豆腐，搭配薑汁醬油，清爽又有飽足感！",
+        steps: [
+          "板豆腐用廚房紙巾吸乾水分，切成 1 公分厚片。",
+          "平底鍋熱油，中火將豆腐兩面煎至金黃酥脆。",
+          "混合醬油、薑泥、芝麻油做成醬汁。",
+          "豆腐盛盤，淋上醬汁，撒蔥花即完成。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單",
+      },
+      // ── 麵條 ──
+      {
+        keywords: ["麵條", "蔬菜"],
+        name: "蔬菜清炒細麵",
+        ingredients: ["細麵 1把", "各式蔬菜適量", "蒜末 1匙", "醬油 1匙", "香油少許"],
+        highlight: "任何剩餘蔬菜都能加進來，炒麵是消耗庫存食材的萬用料理！",
+        steps: [
+          "細麵依包裝煮熟，撈起沖冷水備用。",
+          "鍋中熱油，爆香蒜末，加入蔬菜翻炒。",
+          "放入麵條，加醬油、鹽大火翻炒均勻。",
+          "起鍋前淋少許香油，盛盤即完成。",
+        ],
+        time: "約 15 分鐘", difficulty: "簡單",
+      },
+      {
+        keywords: ["麵條", "蛋"],
+        name: "蛋花陽春麵",
+        ingredients: ["麵條 1把", "雞蛋 1顆", "蔥花少許", "醬油 1匙", "胡椒少許"],
+        highlight: "最簡單的一碗麵，只需要蛋和醬油，卻是深夜最溫暖的剩食料理！",
+        steps: [
+          "鍋中加水煮滾，放入麵條煮至熟透。",
+          "另起一鍋，加高湯或水煮滾，打入雞蛋成荷包蛋。",
+          "麵條撈入碗中，加醬油、胡椒粉調味。",
+          "鋪上荷包蛋，撒蔥花即可享用。",
+        ],
+        time: "約 12 分鐘", difficulty: "非常簡單",
+      },
+      // ── 馬鈴薯 ──
+      {
+        keywords: ["馬鈴薯"],
+        name: "香煎馬鈴薯餅",
+        ingredients: ["馬鈴薯 2顆", "鹽少許", "胡椒少許", "油適量"],
+        highlight: "馬鈴薯磨泥或切丁煎成金黃薄餅，外酥內軟，配番茄醬超好吃！",
+        steps: [
+          "馬鈴薯去皮，刨成細絲，撒鹽靜置 5 分鐘後擠乾水分。",
+          "加入胡椒、少許麵粉（可選）拌勻。",
+          "平底鍋熱油，舀入薯絲壓扁，中火煎 4–5 分鐘至底部金黃。",
+          "翻面再煎 3 分鐘，盛盤搭配番茄醬享用。",
+        ],
+        time: "約 20 分鐘", difficulty: "簡單",
+      },
+      {
+        keywords: ["馬鈴薯", "洋蔥"],
+        name: "西班牙馬鈴薯烘蛋",
+        ingredients: ["馬鈴薯 2顆", "洋蔥 半顆", "蛋 4顆", "橄欖油 2匙", "鹽少許"],
+        highlight: "西班牙家庭的剩食神器！馬鈴薯加蛋，厚實有飽足感，冷熱都好吃！",
+        steps: [
+          "馬鈴薯去皮切薄片，洋蔥切絲。",
+          "平底鍋熱油，中火煎馬鈴薯和洋蔥約 10 分鐘至軟，加鹽調味。",
+          "蛋打散，將炒好的馬鈴薯洋蔥倒入蛋液中拌勻。",
+          "同鍋再下少許油，倒入蛋液，中小火煎 5 分鐘至底部固定。",
+          "用盤子輔助翻面，再煎 3 分鐘，盛盤切片享用。",
+        ],
+        time: "約 25 分鐘", difficulty: "普通",
+      },
+      // ── 番茄 ──
+      {
+        keywords: ["番茄"],
+        name: "番茄羅勒冷湯",
+        ingredients: ["熟透番茄 3顆", "蒜頭 1瓣", "橄欖油 1匙", "鹽少許", "羅勒或九層塔（可選）"],
+        highlight: "番茄越熟越適合打湯，甜度高又出汁，是夏天最清爽的零浪費料理！",
+        steps: [
+          "番茄切塊，加蒜頭、橄欖油、鹽放入調理機。",
+          "攪打至滑順，試味道調整鹹淡。",
+          "冷藏 30 分鐘後倒入碗中。",
+          "上桌前淋少許橄欖油，放上羅勒葉點綴。",
+        ],
+        time: "約 10 分鐘（+冷藏）", difficulty: "非常簡單",
+      },
+      // ── 豆芽 ──
+      {
+        keywords: ["豆芽", "蔬菜"],
+        name: "韓式涼拌豆芽",
+        ingredients: ["豆芽菜 200g", "蒜末 1匙", "芝麻油 1匙", "醬油半匙", "白芝麻少許", "辣椒粉（可選）"],
+        highlight: "豆芽快速汆燙後拌入醬料，5 分鐘完成的健康涼拌小菜！",
+        steps: [
+          "豆芽洗淨，沸水汆燙 1 分鐘，撈起立刻沖冷水，瀝乾備用。",
+          "混合蒜末、醬油、芝麻油、辣椒粉做成醬料。",
+          "豆芽與醬料充分拌勻。",
+          "盛盤後撒上白芝麻即完成。",
+        ],
+        time: "約 8 分鐘", difficulty: "非常簡單",
+      },
+      // ── 洋蔥 ──
+      {
+        keywords: ["洋蔥", "蛋"],
+        name: "洋蔥炒蛋",
+        ingredients: ["洋蔥 1顆", "雞蛋 2顆", "醬油 1匙", "鹽少許"],
+        highlight: "洋蔥炒熟後甜味大增，配上滑嫩炒蛋，簡單卻令人驚喜的下飯菜！",
+        steps: [
+          "洋蔥切絲，蛋打散備用。",
+          "熱鍋下油，中火炒洋蔥至透明且微焦糖化（約 5 分鐘）。",
+          "倒入蛋液，翻炒至半熟。",
+          "加醬油、鹽調味，炒勻起鍋。",
+        ],
+        time: "約 10 分鐘", difficulty: "非常簡單",
+      },
+      // ── 水果 ──
+      {
         keywords: ["水果", "香蕉", "過熟香蕉"],
         name: "水果優格冰沙",
-        ingredients: ["熟透水果（任意）", "原味優格", "蜂蜜（可選）"],
+        ingredients: ["熟透水果（任意）1杯", "原味優格 3–4大匙", "蜂蜜（可選）少許"],
         highlight: "熟透的水果甜度最高、香氣最濃，打成冰沙省力又美味！",
         steps: [
           "水果去皮切塊，可先冷凍 1 小時更濃稠。",
-          "放入果汁機，加入優格（約 3–4 大匙）。",
+          "放入果汁機，加入優格。",
           "視口味加少許蜂蜜，攪打至滑順。",
           "倒入杯中，立即享用或冷藏保存。",
         ],
@@ -569,16 +838,30 @@
       {
         keywords: ["__fallback__"],
         name: "什錦剩食蔬菜清湯",
-        ingredients: ["各種剩餘蔬菜", "水或高湯", "鹽", "薑片（可選）"],
+        ingredients: ["各種剩餘蔬菜適量", "水或高湯 600ml", "鹽適量", "薑片（可選）"],
         highlight: "任何剩餘蔬菜、根莖類都能入湯，零浪費的溫暖料理！",
         steps: [
           "將剩餘蔬菜洗淨，切成適口大小。",
-          "鍋中加水（約 600 ml），加薑片煮滾。",
+          "鍋中加水（約 600ml），加薑片煮滾。",
           "放入較硬的根莖類，煮 5 分鐘。",
           "加入葉菜類，續煮 2–3 分鐘。",
           "加鹽調味，盛碗即完成。",
         ],
         time: "約 20 分鐘", difficulty: "簡單",
+      },
+      {
+        keywords: ["__fallback__"],
+        name: "萬用剩食蛋炒一切",
+        ingredients: ["剩餘食材（任意）適量", "雞蛋 2顆", "醬油 1匙", "蒜末 1匙"],
+        highlight: "蛋是最萬能的剩食救星，任何食材加蛋大火一炒，立刻變成一道菜！",
+        steps: [
+          "所有剩餘食材切成適口大小。",
+          "熱鍋下油，爆香蒜末。",
+          "加入食材中大火翻炒至熟。",
+          "撥到鍋邊，倒入蛋液炒散，再與食材混合翻炒。",
+          "加醬油與鹽調味，起鍋盛盤。",
+        ],
+        time: "約 12 分鐘", difficulty: "簡單",
       },
     ];
 
@@ -690,7 +973,16 @@
       );
       const nonFallback = matched.filter(r => !r.keywords.includes("__fallback__"));
       matched = nonFallback.length > 0 ? nonFallback : RECIPES.filter(r => r.keywords.includes("__fallback__"));
-      const toShow = matched.sort(() => Math.random() - 0.5).slice(0, 2);
+      // 計算每道食譜匹配到的食材數量，匹配越多排越前面；數量相同時隨機排序
+      matched.sort((a, b) => {
+        const countMatch = r => r.keywords.filter(kw =>
+          selectedArr.some(sel => sel.includes(kw) || kw.includes(sel))
+        ).length;
+        return countMatch(b) - countMatch(a) || Math.random() - 0.5;
+      });
+      // 儲存本次排序結果供「更多料理」使用
+      currentMatched = matched;
+      currentShownCount = 0;
       container.innerHTML = "";
       const header = document.createElement("div");
       header.innerHTML = '<h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦</h2><p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>';
@@ -700,21 +992,84 @@
       safety.setAttribute("role", "note");
       safety.innerHTML = "<strong>🔔 食材安全提醒</strong>若食材出現異味、發黴、黏液或保存時間不明，請勿食用。";
       container.appendChild(safety);
-      toShow.forEach((recipe, index) => container.appendChild(createRecipeCard(recipe, index)));
+      showMoreRecipes();
       container.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    let currentMatched = [];
+    let currentShownCount = 0;
+    const PAGE_SIZE = 3;
+
+    function showMoreRecipes() {
+      const container = document.getElementById("recipes-container");
+      // 移除舊的「更多料理」按鈕（若存在）
+      const oldMore = document.getElementById("more-btn-wrap");
+      if (oldMore) oldMore.remove();
+
+      const batch = currentMatched.slice(currentShownCount, currentShownCount + PAGE_SIZE);
+      batch.forEach((recipe, i) => container.appendChild(createRecipeCard(recipe, currentShownCount + i)));
+      currentShownCount += batch.length;
+
+      // 若還有更多，顯示按鈕
+      if (currentShownCount < currentMatched.length) {
+        const wrap = document.createElement("div");
+        wrap.className = "more-wrap";
+        wrap.id = "more-btn-wrap";
+        const remaining = currentMatched.length - currentShownCount;
+        const btn = document.createElement("button");
+        btn.className = "btn-more";
+        btn.type = "button";
+        btn.textContent = "🍴 更多料理（還有 " + remaining + " 道）";
+        btn.onclick = showMoreRecipes;
+        wrap.appendChild(btn);
+        container.appendChild(wrap);
+      }
+    }
+
+    // ── localStorage 工具函式 ──
+    function getRatingData(recipeName) {
+      try { return JSON.parse(localStorage.getItem("rating_" + recipeName)) || { total: 0, count: 0 }; }
+      catch(e) { return { total: 0, count: 0 }; }
+    }
+    function saveRatingData(recipeName, data) {
+      try { localStorage.setItem("rating_" + recipeName, JSON.stringify(data)); } catch(e) {}
+    }
+    function getFeedbackCount(recipeName) {
+      try { return parseInt(localStorage.getItem("feedback_" + recipeName) || "0", 10); }
+      catch(e) { return 0; }
+    }
+    function saveFeedbackCount(recipeName, count) {
+      try { localStorage.setItem("feedback_" + recipeName, String(count)); } catch(e) {}
+    }
+
+    function renderAvgStars(avg) {
+      if (avg === 0) return "尚無評分";
+      const full  = Math.floor(avg);
+      const half  = avg - full >= 0.5 ? 1 : 0;
+      const empty = 5 - full - half;
+      return "★".repeat(full) + (half ? "½" : "") + "☆".repeat(empty);
     }
 
     function createRecipeCard(recipe, index) {
       const card = document.createElement("article");
       card.className = "card recipe-card-anim";
-      card.style.animationDelay = (index * 0.12) + "s";
+      card.style.animationDelay = ((index % PAGE_SIZE) * 0.12) + "s";
       card.setAttribute("aria-label", "食譜卡片：" + recipe.name);
+
+      const ratingData   = getRatingData(recipe.name);
+      const feedbackCount = getFeedbackCount(recipe.name);
+      const avg = ratingData.count > 0 ? (ratingData.total / ratingData.count) : 0;
+      const avgText = avg > 0
+        ? renderAvgStars(avg) + "  " + avg.toFixed(1) + " 分（共 " + ratingData.count + " 人評分）"
+        : "尚無評分";
+
       const ingredientTags = recipe.ingredients.map(i => "<span>" + i + "</span>").join("");
       const stepItems = recipe.steps.map(s => "<li>" + s + "</li>").join("");
       const difficultyIcon = { "非常簡單": "🟢", "簡單": "🟡", "普通": "🟠", "稍難": "🔴" }[recipe.difficulty] || "🟡";
       const stars = [1,2,3,4,5].map(n =>
         '<button class="star-btn" type="button" data-rating="' + n + '" aria-label="' + n + ' 顆星" onclick="setRating(this,' + n + ')">★</button>'
       ).join("");
+
       card.innerHTML =
         '<span class="ai-badge">💡 靈感示範</span>' +
         '<h3 class="recipe-name">' + recipe.name + '</h3>' +
@@ -727,32 +1082,50 @@
         '<ol class="steps-list">' + stepItems + '</ol>' +
         '<hr class="card-divider">' +
         '<div class="rating-row"><span class="rating-label">為這道食譜評分：</span>' +
-        '<div class="stars" role="group" aria-label="星級評分">' + stars + '</div>' +
+        '<div class="stars" role="group" aria-label="星級評分" data-recipe="' + recipe.name + '">' + stars + '</div>' +
         '<span class="rating-text" aria-live="polite"></span></div>' +
+        '<div class="avg-rating-row">📊 平均評分：<span class="avg-stars">' + avgText + '</span></div>' +
         '<div class="feedback-row">' +
-        '<button class="feedback-btn" type="button" onclick="submitFeedback(this)">這道菜對我有幫助！</button>' +
-        '<span class="feedback-count" aria-live="polite">回饋次數：0</span></div>';
+        '<button class="feedback-btn" type="button" data-recipe="' + recipe.name + '" onclick="submitFeedback(this)">這道菜對我有幫助！</button>' +
+        '<span class="feedback-count" aria-live="polite">回饋次數：' + feedbackCount + '</span></div>';
       return card;
     }
 
     function setRating(clickedStar, rating) {
       const starsContainer = clickedStar.closest(".stars");
+      const recipeName = starsContainer.dataset.recipe;
+      // 更新星星顯示
       starsContainer.querySelectorAll(".star-btn").forEach(star => {
         star.classList.toggle("active", parseInt(star.dataset.rating, 10) <= rating);
       });
       const labels = ["","非常不滿意","不太滿意","還可以","滿意","非常滿意！"];
       starsContainer.closest(".rating-row").querySelector(".rating-text").textContent =
         rating + " 顆星 — " + labels[rating];
+      // 儲存評分並更新平均
+      const data = getRatingData(recipeName);
+      data.total += rating;
+      data.count += 1;
+      saveRatingData(recipeName, data);
+      const avg = data.total / data.count;
+      const avgText = renderAvgStars(avg) + "  " + avg.toFixed(1) + " 分（共 " + data.count + " 人評分）";
+      starsContainer.closest("article").querySelector(".avg-stars").textContent = avgText;
+      // 評分後禁用星星避免重複評分
+      starsContainer.querySelectorAll(".star-btn").forEach(s => {
+        s.onclick = null;
+        s.style.cursor = "default";
+      });
     }
 
     function submitFeedback(btn) {
       if (btn.classList.contains("done")) return;
+      const recipeName = btn.dataset.recipe;
       btn.textContent = "✅ 已收到你的回饋";
       btn.classList.add("done");
       btn.setAttribute("aria-disabled", "true");
       const countEl = btn.closest(".feedback-row").querySelector(".feedback-count");
-      const current = parseInt(countEl.textContent.replace(/[^0-9]/g, ""), 10) || 0;
-      countEl.textContent = "回饋次數：" + (current + 1);
+      const newCount = getFeedbackCount(recipeName) + 1;
+      saveFeedbackCount(recipeName, newCount);
+      countEl.textContent = "回饋次數：" + newCount;
     }
 
     initQuickTags();
