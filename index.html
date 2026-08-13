@@ -159,6 +159,17 @@
       flex-shrink:0; margin-top:2px;
     }
     .card-divider { border:none; border-top:1.5px solid #e8f4ee; margin:18px 0; }
+    .recipe-img {
+      width:100%; height:200px; object-fit:cover;
+      border-radius:var(--radius-md); margin-bottom:16px;
+      background:#e8f4ee; display:block;
+    }
+    .recipe-img-placeholder {
+      width:100%; height:200px; border-radius:var(--radius-md);
+      background:linear-gradient(135deg,var(--green-light),#e8f4ee);
+      display:flex; align-items:center; justify-content:center;
+      font-size:3rem; margin-bottom:16px;
+    }
 
     /* Rating */
     .rating-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
@@ -324,7 +335,7 @@
       // ── 香蕉 ──
       {
         keywords: ["過熟香蕉", "香蕉"],
-        name: "香蕉燕麥煎餅",
+        name: "香蕉燕麥煎餅", imageKeyword: "banana pancake",
         ingredients: ["過熟香蕉 1根", "燕麥片 2大匙", "雞蛋 1顆"],
         highlight: "過熟香蕉甜度更高，無需額外加糖，天然甜味直接帶出煎餅香氣！",
         steps: [
@@ -351,7 +362,7 @@
       // ── 剩米飯 ──
       {
         keywords: ["剩米飯", "米飯", "蔬菜", "蛋"],
-        name: "蔬菜蛋炒飯",
+        name: "蔬菜蛋炒飯", imageKeyword: "fried rice egg vegetable",
         ingredients: ["剩米飯 1碗", "蔬菜（任意）適量", "雞蛋 2顆", "醬油 1大匙"],
         highlight: "隔夜飯水分較少，炒出來粒粒分明，是最適合剩飯的零浪費料理！",
         steps: [
@@ -392,7 +403,7 @@
       // ── 菜梗 / 蔬菜 ──
       {
         keywords: ["菜梗", "蔬菜"],
-        name: "香蒜炒菜梗",
+        name: "香蒜炒菜梗", imageKeyword: "stir fry vegetables garlic",
         ingredients: ["菜梗（各種皆可）200g", "蒜頭 3瓣", "鹽適量", "米酒少許"],
         highlight: "菜梗口感爽脆，比葉子更耐炒！加點蒜末就能變身下飯小菜。",
         steps: [
@@ -434,7 +445,7 @@
       // ── 熟肉 ──
       {
         keywords: ["熟肉", "肉", "蔬菜", "剩米飯", "米飯"],
-        name: "剩肉蔬菜拌飯",
+        name: "剩肉蔬菜拌飯", imageKeyword: "rice bowl meat vegetables",
         ingredients: ["熟肉（任意）適量", "蔬菜適量", "白飯 1碗", "醬油 1匙", "芝麻油半匙"],
         highlight: "熟肉不需再花時間煮熟，切碎拌飯，幾分鐘就能端上桌！",
         steps: [
@@ -462,7 +473,7 @@
       // ── 麵包 ──
       {
         keywords: ["麵包"],
-        name: "香煎麵包丁沙拉",
+        name: "香煎麵包丁沙拉", imageKeyword: "crouton salad bread",
         ingredients: ["硬麵包 2片", "生菜適量", "番茄 1顆", "橄欖油 2匙", "鹽少許"],
         highlight: "老麵包烤成麵包丁，香脆有嚼勁，讓沙拉增加層次感！",
         steps: [
@@ -489,7 +500,7 @@
       // ── 蛋 ──
       {
         keywords: ["蛋"],
-        name: "日式玉子燒",
+        name: "日式玉子燒", imageKeyword: "tamagoyaki japanese egg roll",
         ingredients: ["蛋 2–3顆", "醬油 1小匙", "味醂或糖半匙", "蔥花（可選）"],
         highlight: "打散的蛋加少許甜味，用平底鍋捲出層次感，早餐便當兩相宜！",
         steps: [
@@ -654,7 +665,7 @@
       // ── 水果 ──
       {
         keywords: ["水果", "香蕉", "過熟香蕉"],
-        name: "水果優格冰沙",
+        name: "水果優格冰沙", imageKeyword: "fruit yogurt smoothie",
         ingredients: ["熟透水果（任意）1杯", "原味優格 3–4大匙", "蜂蜜（可選）少許"],
         highlight: "熟透的水果甜度最高、香氣最濃，打成冰沙省力又美味！",
         steps: [
@@ -667,7 +678,7 @@
       },
       {
         keywords: ["蛋", "醬油"],
-        name: "家常滷蛋",
+        name: "家常滷蛋", imageKeyword: "soy sauce braised egg",
         ingredients: ["蛋（4–6顆）", "醬油", "冰糖", "八角（可選）", "水"],
         highlight: "剩雞蛋最簡單的變身！滷好的蛋放隔夜更入味，一次多做幾顆備用。",
         steps: [
@@ -680,7 +691,7 @@
       },
       {
         keywords: ["蔬菜", "菜梗", "味噌"],
-        name: "剩蔬菜味噌湯",
+        name: "剩蔬菜味噌湯", imageKeyword: "miso soup vegetables tofu",
         ingredients: ["剩餘蔬菜（任意）", "味噌醬 2大匙", "豆腐（可選）", "水 600ml", "蔥花"],
         highlight: "任何剩蔬菜都能入湯！味噌的鮮味讓食材更有層次，暖胃又零浪費。",
         steps: [
@@ -694,7 +705,7 @@
       },
       {
         keywords: ["蔬菜", "小黃瓜", "涼拌"],
-        name: "涼拌時蔬",
+        name: "涼拌時蔬", imageKeyword: "cold salad vegetable sesame",
         ingredients: ["當季蔬菜（小黃瓜/豆芽/木耳等）", "蒜末", "醬油", "醋", "芝麻油", "辣椒（可選）"],
         highlight: "免開火的消暑料理！任何脆口蔬菜都適合，五分鐘快速上桌。",
         steps: [
@@ -1070,7 +1081,13 @@
         '<button class="star-btn" type="button" data-rating="' + n + '" aria-label="' + n + ' 顆星" onclick="setRating(this,' + n + ')">★</button>'
       ).join("");
 
+      // Unsplash Source API：用食譜英文關鍵字搜尋圖片
+      const keyword = recipe.imageKeyword || recipe.name;
+      const imgUrl = "https://source.unsplash.com/featured/800x400/?" + encodeURIComponent(keyword) + "&sig=" + encodeURIComponent(recipe.name);
+
       card.innerHTML =
+        '<img class="recipe-img" src="' + imgUrl + '" alt="' + recipe.name + ' 料理圖片" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+        '<div class="recipe-img-placeholder" style="display:none;">🍽️</div>' +
         '<span class="ai-badge">💡 靈感示範</span>' +
         '<h3 class="recipe-name">' + recipe.name + '</h3>' +
         '<div class="meta-row"><span class="meta-badge badge-time">⏱ ' + recipe.time + '</span>' +
