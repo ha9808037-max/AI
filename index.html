@@ -1,675 +1,1600 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<!-- 讓手機瀏覽器正確縮放，避免水平捲軸 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>剩食料理推薦 — 把剩食變成下一道美味</title>
-<style>
-    /* ================================================
-       全域重置與基礎設定
-       ================================================ */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FoodWise — 把每一份食材，變成餐桌上的精彩</title>
 
-    /* CSS 自訂變數：色彩系統 */
+  <style>
+    /* ── 全域重置 ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Design Tokens ── */
     :root {
-      --green-dark:   #2d6a4f; /* 深綠：標題、強調 */
-      --green-mid:    #40916c; /* 中綠：按鈕、標籤 */
-      --green-light:  #d8f3dc; /* 淺綠：背景、hover */
-      --yellow:       #f4a261; /* 暖黃：標籤、亮點 */
-      --yellow-light: #fff3e0; /* 淡黃：卡片背景 */
-      --cream:        #fefae0; /* 米色：頁面背景 */
-      --white:        #ffffff;
-      --text-dark:    #1b2e22; /* 主要文字 */
-      --text-mid:     #4a6357; /* 次要文字 */
-      --text-muted:   #7a9186; /* 說明文字 */
-      --border:       #b7d9c5;
-      --shadow:       rgba(45, 106, 79, 0.12);
-      --radius-sm:    8px;
-      --radius-md:    14px;
-      --radius-lg:    20px;
+      --c-primary:       #1a4731;
+      --c-primary-mid:   #2d7a56;
+      --c-primary-light: #e4f2e8;
+      --c-primary-ghost: #f0faf4;
+      --c-amber:         #d97706;
+      --c-amber-light:   #fef3c7;
+      --c-amber-pale:    #fffbeb;
+      --c-bg:            #f8f9f7;
+      --c-surface:       #ffffff;
+      --c-border:        #e4e7e2;
+      --c-border-mid:    #c8d4c8;
+      --c-text-h:        #111816;
+      --c-text-b:        #364840;
+      --c-text-m:        #576a60;
+      --c-text-s:        #8fa89e;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.07);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+      --shadow-lg:  0 12px 36px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05);
+      --r-sm: 6px;  --r-md: 12px;  --r-lg: 18px;  --r-xl: 24px;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC",
-                   system-ui, -apple-system, sans-serif;
-      background-color: var(--cream);
-      color: var(--text-dark);
+      font-family: "PingFang TC","Microsoft JhengHei","Noto Sans TC",-apple-system,system-ui,sans-serif;
+      background: var(--c-bg);
+      color: var(--c-text-b);
       font-size: 16px;
-      line-height: 1.7;
+      line-height: 1.75;
       overflow-x: hidden;
     }
 
-    .container {
-      width: 100%;
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 0 20px;
+    /* ── 導覽列 ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(248,249,247,0.93);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--c-border);
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
     }
-
-    .section-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-
-    .section-desc {
-      color: var(--text-mid);
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      background-color: var(--green-mid);
-      color: var(--white);
-      font-size: 1rem;
-      font-weight: 600;
-      padding: 12px 28px;
-      border: none;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
+    .nav-logo {
+      font-size: 1.05rem; font-weight: 800; color: var(--c-primary);
+      letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px;
       text-decoration: none;
     }
-    .btn-primary:hover  { background-color: var(--green-dark); }
-    .btn-primary:active { transform: scale(0.97); }
-    .btn-primary:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
+    .nav-logo-dot {
+      width: 7px; height: 7px; background: #34d399;
+      border-radius: 50%; display: inline-block;
     }
+    .nav-cta {
+      font-size: 0.83rem; font-weight: 600; color: var(--c-primary-mid);
+      background: var(--c-primary-light); border: none; border-radius: var(--r-md);
+      padding: 6px 15px; cursor: pointer; text-decoration: none;
+      transition: background 0.15s;
+    }
+    .nav-cta:hover { background: #cde8d4; }
 
-    .btn-secondary {
-      display: inline-block;
-      background-color: transparent;
-      color: var(--green-dark);
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 8px 18px;
-      border: 2px solid var(--green-mid);
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    .btn-secondary:hover {
-      background-color: var(--green-light);
-    }
-    .btn-secondary:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
-    }
+    /* ── 容器 ── */
+    .container { width: 100%; max-width: 860px; margin: 0 auto; padding: 0 24px; }
 
+    /* ── 通用按鈕 ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--c-primary-mid); color: #fff;
+      font-size: 0.95rem; font-weight: 600;
+      padding: 11px 24px; border: none; border-radius: var(--r-md);
+      cursor: pointer; text-decoration: none;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 2px 8px rgba(45,122,86,0.22);
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover  { background: var(--c-primary); box-shadow: 0 4px 14px rgba(45,122,86,0.32); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(0.97) translateY(0); }
+    .btn-primary:focus-visible { outline: 3px solid var(--c-amber); outline-offset: 3px; }
+
+    /* ── 卡片 ── */
     .card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px var(--shadow);
-      padding: 24px;
+      background: var(--c-surface);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--c-border);
+      padding: 28px 28px 24px;
       margin-bottom: 24px;
     }
 
-    #hero {
-      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
-      color: var(--white);
-      padding: 72px 20px 80px;
-      text-align: center;
-    }
-
-    #hero .hero-emoji {
-      font-size: 3.5rem;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    #hero h1 {
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      margin-bottom: 16px;
-      line-height: 1.3;
-    }
-
-    #hero .hero-sub {
-      font-size: 1.05rem;
-      opacity: 0.92;
-      max-width: 480px;
-      margin: 0 auto 32px;
-    }
-
-    #hero .btn-hero {
+    /* ── Section 標題群組 ── */
+    .section-eyebrow {
       display: inline-block;
-      background-color: var(--white);
-      color: var(--green-dark);
-      font-size: 1.05rem;
-      font-weight: 700;
-      padding: 14px 36px;
-      border: none;
-      border-radius: var(--radius-lg);
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
-      text-decoration: none;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--c-primary-mid); background: var(--c-primary-light);
+      padding: 3px 10px; border-radius: 99px; margin-bottom: 10px;
     }
-    #hero .btn-hero:hover  { background-color: var(--green-light); }
-    #hero .btn-hero:active { transform: scale(0.97); }
-    #hero .btn-hero:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
+    .section-title {
+      font-size: 1.5rem; font-weight: 800; color: var(--c-text-h);
+      margin-bottom: 6px; letter-spacing: -0.02em;
     }
+    .section-desc { font-size: 0.93rem; color: var(--c-text-m); margin-bottom: 24px; line-height: 1.6; }
 
-    #input-section {
-      padding: 48px 0 32px;
+    /* ================================================
+       一、Hero
+       ================================================ */
+    #hero {
+      background: var(--c-primary);
+      background-image:
+        radial-gradient(ellipse at 18% 85%, rgba(52,211,153,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 82% 15%, rgba(26,71,49,0.7) 0%, transparent 55%);
+      color: #fff;
+      padding: 88px 24px 96px;
+      text-align: center;
+      position: relative; overflow: hidden;
     }
+    #hero::before {
+      content: ""; position: absolute;
+      width: 560px; height: 560px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.05);
+      top: -180px; right: -130px; pointer-events: none;
+    }
+    #hero::after {
+      content: ""; position: absolute;
+      width: 320px; height: 320px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.05);
+      bottom: -90px; left: -70px; pointer-events: none;
+    }
+    .hero-kicker {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 99px; padding: 5px 14px; margin-bottom: 22px;
+      color: rgba(255,255,255,0.85);
+    }
+    #hero h1 {
+      font-size: clamp(2rem, 5.5vw, 3.1rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.18;
+      margin-bottom: 18px; max-width: 640px; margin-left: auto; margin-right: auto;
+    }
+    .hero-highlight {
+      background: linear-gradient(135deg, #6ee7a4, #34d399);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    #hero .hero-sub {
+      font-size: 1.05rem; color: rgba(255,255,255,0.72);
+      max-width: 440px; margin: 0 auto 36px; line-height: 1.65;
+    }
+    .btn-hero {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--c-primary);
+      font-size: 1rem; font-weight: 700;
+      padding: 14px 32px; border: none; border-radius: var(--r-lg);
+      cursor: pointer; text-decoration: none;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.22); }
+    .btn-hero:active { transform: scale(0.97); }
+    .btn-hero:focus-visible { outline: 3px solid #34d399; outline-offset: 3px; }
 
-    .input-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
+    .hero-stats {
+      display: flex; justify-content: center; gap: 48px; margin-top: 56px; flex-wrap: wrap;
     }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-size: 1.7rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    .hero-stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; margin-top: 3px; }
+
+    /* ================================================
+       二、食材輸入區
+       ================================================ */
+    #input-section { padding: 56px 0 32px; }
 
     .input-label {
-      display: block;
-      font-weight: 600;
-      color: var(--green-dark);
-      margin-bottom: 6px;
-      font-size: 0.95rem;
+      display: block; font-size: 0.86rem; font-weight: 600;
+      color: var(--c-text-m); margin-bottom: 8px; letter-spacing: 0.02em;
     }
-
+    .input-row { display: flex; gap: 10px; margin-bottom: 20px; }
     .ingredient-input {
-      flex: 1;
-      padding: 11px 16px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      color: var(--text-dark);
-      background: var(--white);
-      transition: border-color 0.2s;
-      min-width: 0;
+      flex: 1; min-width: 0;
+      padding: 11px 18px;
+      border: 1.5px solid var(--c-border); border-radius: var(--r-md);
+      font-size: 0.97rem; color: var(--c-text-h); background: var(--c-surface);
+      transition: border-color 0.18s, box-shadow 0.18s;
     }
+    .ingredient-input::placeholder { color: var(--c-text-s); }
     .ingredient-input:focus {
-      outline: none;
-      border-color: var(--green-mid);
-      box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.18);
+      outline: none; border-color: var(--c-primary-mid);
+      box-shadow: 0 0 0 3px rgba(45,122,86,0.13);
     }
 
-    .tag-label {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-      margin-bottom: 10px;
-      font-weight: 600;
+    .tag-group-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--c-text-s); margin-bottom: 12px;
     }
-
-    .tags-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
+    .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
     .quick-tag {
-      padding: 7px 16px;
-      border-radius: 99px;
-      border: 2px solid var(--green-mid);
-      background: var(--white);
-      color: var(--green-dark);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.15s, color 0.15s;
-      user-select: none;
-    }
-    .quick-tag.selected {
-      background-color: var(--green-mid);
-      color: var(--white);
+      padding: 7px 16px; border-radius: 99px;
+      border: 1.5px solid var(--c-border-mid);
+      background: var(--c-surface); color: var(--c-text-b);
+      font-size: 0.87rem; font-weight: 500;
+      cursor: pointer; user-select: none;
+      transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
     }
     .quick-tag:hover:not(.selected) {
-      background-color: var(--green-light);
+      border-color: var(--c-primary-mid); color: var(--c-primary-mid);
+      background: var(--c-primary-ghost);
     }
-    .quick-tag:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 2px;
+    .quick-tag.selected {
+      background: var(--c-primary-mid); border-color: var(--c-primary-mid);
+      color: #fff; box-shadow: 0 2px 6px rgba(45,122,86,0.28);
     }
+    .quick-tag:focus-visible { outline: 3px solid var(--c-amber); outline-offset: 2px; }
 
-    .selected-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-mid);
-      margin-bottom: 8px;
+    .selected-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .selected-label { font-size: 0.84rem; font-weight: 600; color: var(--c-text-m); }
+    .selected-count-badge {
+      font-size: 0.74rem; font-weight: 700;
+      background: var(--c-primary-light); color: var(--c-primary-mid);
+      border-radius: 99px; padding: 2px 10px;
     }
-
-    .selected-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-height: 36px;
-      margin-bottom: 24px;
-    }
-
+    .selected-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; margin-bottom: 24px; }
     .selected-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      background-color: var(--yellow-light);
-      border: 1.5px solid var(--yellow);
-      border-radius: 99px;
-      font-size: 0.9rem;
-      color: var(--text-dark);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px 5px 14px;
+      background: var(--c-amber-pale); border: 1.5px solid #f0d070;
+      border-radius: 99px; font-size: 0.86rem; color: var(--c-text-h); font-weight: 500;
     }
-
     .remove-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-mid);
-      font-size: 1rem;
-      line-height: 1;
-      padding: 0 2px;
-      border-radius: 50%;
-      transition: color 0.15s, background-color 0.15s;
+      background: none; border: none; cursor: pointer;
+      color: var(--c-text-s); font-size: 0.84rem; line-height: 1;
+      padding: 1px 3px; border-radius: 50%;
+      transition: color 0.15s, background 0.15s;
+      display: flex; align-items: center;
     }
-    .remove-btn:hover {
-      color: #c0392b;
-      background-color: #fde8e8;
-    }
-    .remove-btn:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 1px;
-    }
+    .remove-btn:hover { color: #b91c1c; background: #fee2e2; }
+    .remove-btn:focus-visible { outline: 2px solid var(--c-amber); outline-offset: 1px; }
 
     .warning-msg {
-      display: none;
-      background-color: #fff3cd;
-      border: 1.5px solid #f4a261;
-      border-radius: var(--radius-sm);
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      color: #7d4e00;
-      margin-bottom: 16px;
+      display: none; align-items: center; gap: 10px;
+      background: #fffbeb; border: 1.5px solid #fcd34d;
+      border-radius: var(--r-sm); padding: 11px 16px;
+      font-size: 0.87rem; color: #92400e; margin-bottom: 16px;
     }
-    .warning-msg.show { display: block; }
+    .warning-msg.show { display: flex; }
 
-    .generate-wrap {
-      text-align: center;
+    .generate-wrap { text-align: center; }
+    .btn-generate {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--c-primary); color: #fff;
+      font-size: 1.05rem; font-weight: 700;
+      padding: 16px 44px; border: none; border-radius: var(--r-lg);
+      cursor: pointer; letter-spacing: 0.02em;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 4px 18px rgba(26,71,49,0.28);
     }
+    .btn-generate:hover { background: #133d27; box-shadow: 0 6px 24px rgba(26,71,49,0.38); transform: translateY(-1px); }
+    .btn-generate:active { transform: scale(0.97); }
+    .btn-generate:focus-visible { outline: 3px solid var(--c-amber); outline-offset: 3px; }
 
-    #recipes-section {
-      padding: 16px 0 40px;
-    }
+    /* ================================================
+       三、食譜卡片
+       ================================================ */
+    #recipes-section { padding: 8px 0 52px; }
 
     .safety-notice {
-      background-color: #fff3cd;
-      border-left: 5px solid var(--yellow);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      font-size: 0.88rem;
-      color: #7d4e00;
-      margin-bottom: 24px;
+      display: flex; align-items: flex-start; gap: 12px;
+      background: #fffbeb; border: 1px solid #fcd34d;
+      border-radius: var(--r-md); padding: 14px 18px;
+      font-size: 0.85rem; color: #78350f; margin-bottom: 28px; line-height: 1.55;
     }
-    .safety-notice strong { display: block; margin-bottom: 2px; }
+    .safety-notice .notice-icon { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+    .recipe-illustration {
+      width: 100%; height: 190px;
+      border-radius: var(--r-lg); margin-bottom: 20px;
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(145deg, var(--c-primary-ghost), #fefcf3);
+    }
+    .recipe-illustration svg { width: 100%; height: 100%; display: block; }
 
     .ai-badge {
-      display: inline-block;
-      background-color: var(--green-light);
-      color: var(--green-dark);
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 99px;
-      margin-bottom: 14px;
-      letter-spacing: 0.05em;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--c-primary-light); color: var(--c-primary-mid);
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 99px; margin-bottom: 10px;
+      letter-spacing: 0.07em; text-transform: uppercase;
     }
-
     .recipe-name {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      margin-bottom: 6px;
+      font-size: 1.45rem; font-weight: 800; color: var(--c-text-h);
+      margin-bottom: 10px; letter-spacing: -0.02em; line-height: 1.25;
     }
-
-    .meta-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
+    .meta-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
     .meta-badge {
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 3px 12px;
-      border-radius: 99px;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.78rem; font-weight: 600; padding: 4px 12px; border-radius: 99px;
     }
-    .badge-time {
-      background: #e0f7ee;
-      color: var(--green-dark);
-    }
-    .badge-difficulty {
-      background: var(--yellow-light);
-      color: #7d4e00;
-    }
+    .badge-time       { background: #ecfdf5; color: #065f46; }
+    .badge-difficulty { background: var(--c-amber-light); color: #92400e; }
+    .badge-calories   { background: #fce7f3; color: #9d174d; }
 
-    .recipe-ingredients {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 14px;
+    .avg-like-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+      padding: 10px 14px;
+      background: var(--c-bg); border-radius: var(--r-sm); border: 1px solid var(--c-border);
     }
+    .avg-like-label { font-size: 0.82rem; color: var(--c-text-m); font-weight: 600; }
+    .avg-like-stars { color: #f59e0b; font-size: 0.98rem; letter-spacing: 1px; }
+    .avg-like-score { font-size: 0.9rem; font-weight: 800; color: var(--c-text-h); }
+    .avg-like-count { font-size: 0.76rem; color: var(--c-text-s); margin-left: auto; }
+
+    .ingredients-label {
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--c-text-s); margin-bottom: 8px;
+    }
+    .recipe-ingredients { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
     .recipe-ingredients span {
-      background: var(--green-light);
-      color: var(--green-dark);
-      font-size: 0.83rem;
-      padding: 3px 10px;
-      border-radius: 99px;
+      background: var(--c-primary-ghost); color: var(--c-primary-mid);
+      font-size: 0.81rem; font-weight: 500; padding: 4px 12px;
+      border-radius: 99px; border: 1px solid #c0ddc6;
     }
 
     .highlight-box {
-      background: var(--yellow-light);
-      border-left: 4px solid var(--yellow);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      padding: 10px 14px;
-      font-size: 0.92rem;
-      color: #7d4e00;
-      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--c-amber-pale), #fffbf0);
+      border: 1px solid #fde68a; border-radius: var(--r-md);
+      padding: 14px 16px; font-size: 0.89rem; color: #78350f;
+      margin-bottom: 18px; line-height: 1.6;
     }
-    .highlight-box strong { color: #5c3600; }
-
+    .hl-title {
+      font-weight: 700; color: #92400e; margin-bottom: 5px;
+      font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; display: block;
+    }
     .steps-title {
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-      font-size: 0.95rem;
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--c-text-s); margin-bottom: 12px;
     }
-
-    .steps-list {
-      list-style: none;
-      padding: 0;
-      counter-reset: step-counter;
-    }
+    .steps-list { list-style: none; padding: 0; counter-reset: step-counter; }
     .steps-list li {
       counter-increment: step-counter;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 8px;
-      font-size: 0.93rem;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 10px; font-size: 0.91rem; color: var(--c-text-b); line-height: 1.6;
     }
     .steps-list li::before {
       content: counter(step-counter);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 26px;
-      height: 26px;
-      background-color: var(--green-mid);
-      color: var(--white);
-      font-size: 0.8rem;
-      font-weight: 700;
-      border-radius: 50%;
-      flex-shrink: 0;
-      margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
+      min-width: 24px; height: 24px;
+      background: var(--c-primary-mid); color: #fff;
+      font-size: 0.7rem; font-weight: 800; border-radius: 50%;
+      flex-shrink: 0; margin-top: 3px;
     }
+    .card-divider { border: none; border-top: 1px solid var(--c-border); margin: 20px 0; }
 
-    .card-divider {
-      border: none;
-      border-top: 1.5px solid #e8f4ee;
-      margin: 18px 0;
-    }
-
-    .rating-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .rating-label {
-      font-size: 0.88rem;
-      color: var(--text-mid);
-      font-weight: 600;
-    }
-    .stars {
-      display: flex;
-      gap: 4px;
-    }
+    /* ── 互動回饋 ── */
+    .rating-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .rating-label { font-size: 0.82rem; font-weight: 600; color: var(--c-text-m); }
+    .stars { display: flex; gap: 3px; }
     .star-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.5rem;
-      color: #ccc;
-      padding: 0 2px;
-      transition: color 0.1s, transform 0.1s;
-      line-height: 1;
+      background: none; border: none; cursor: pointer;
+      font-size: 1.4rem; color: #d1d5db; padding: 0 2px;
+      transition: color 0.1s, transform 0.12s; line-height: 1;
     }
-    .star-btn.active { color: #f4a261; }
-    .star-btn:hover  { transform: scale(1.2); color: #f4a261; }
-    .star-btn:focus-visible {
-      outline: 3px solid var(--green-mid);
-      border-radius: 4px;
-    }
-    .rating-text {
-      font-size: 0.85rem;
-      color: var(--text-mid);
-    }
+    .star-btn.active { color: #f59e0b; }
+    .star-btn:hover  { transform: scale(1.25); color: #f59e0b; }
+    .star-btn:focus-visible { outline: 2px solid var(--c-primary-mid); border-radius: 4px; }
+    .rating-text { font-size: 0.81rem; color: var(--c-text-m); }
 
-    .feedback-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
+    .feedback-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .feedback-btn {
-      background-color: var(--green-mid);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-md);
-      padding: 9px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--c-primary-mid); color: #fff; border: none;
+      border-radius: var(--r-md); padding: 9px 20px;
+      font-size: 0.87rem; font-weight: 600; cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
     }
-    .feedback-btn:hover { background-color: var(--green-dark); }
+    .feedback-btn:hover { background: var(--c-primary); }
     .feedback-btn:active { transform: scale(0.97); }
-    .feedback-btn.done {
-      background-color: #a0b8a8;
-      cursor: not-allowed;
-    }
-    .feedback-btn:focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 3px;
-    }
+    .feedback-btn.done { background: #9ca3af; cursor: not-allowed; }
+    .feedback-btn:focus-visible { outline: 3px solid var(--c-amber); outline-offset: 3px; }
+    .feedback-count { font-size: 0.8rem; color: var(--c-text-s); }
 
-    .feedback-count {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    #eco-section {
-      padding: 16px 0 60px;
-    }
+    /* ================================================
+       五、永續區
+       ================================================ */
+    #eco-section { padding: 0 0 68px; }
 
     .eco-card {
-      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-      border: 2px solid #b2dfdb;
-      border-radius: var(--radius-lg);
-      padding: 28px 28px 24px;
-      text-align: center;
+      background: linear-gradient(140deg, var(--c-primary) 0%, #1e5c38 100%);
+      border-radius: var(--r-xl); padding: 52px 40px 44px;
+      color: #fff; text-align: center; position: relative; overflow: hidden;
     }
-
-    .eco-card .eco-icon {
-      font-size: 2.4rem;
-      display: block;
-      margin-bottom: 10px;
+    .eco-card::before {
+      content: ""; position: absolute;
+      width: 440px; height: 440px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.07);
+      top: -160px; right: -100px; pointer-events: none;
     }
-
+    .eco-icon-wrap {
+      width: 62px; height: 62px;
+      background: rgba(255,255,255,0.1); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.9rem; margin: 0 auto 20px;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
     .eco-slogan {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 14px;
+      font-size: clamp(1.1rem, 3vw, 1.45rem);
+      font-weight: 700; line-height: 1.45; margin-bottom: 28px; letter-spacing: -0.01em;
     }
-
     .carbon-box {
-      background: var(--white);
-      border-radius: var(--radius-md);
-      padding: 16px 20px;
-      margin: 14px 0;
-      border: 1.5px solid #b2dfdb;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: var(--r-lg); padding: 22px 32px;
+      margin: 0 auto 20px; max-width: 380px;
     }
+    .carbon-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+    .carbon-number { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.03em; color: #6ee7a4; margin-bottom: 4px; }
+    .carbon-unit { font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+    .carbon-disclaimer { font-size: 0.73rem; color: rgba(255,255,255,0.42); margin-top: 18px; line-height: 1.55; font-style: italic; }
 
-    .carbon-number {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--green-dark);
-      margin-bottom: 4px;
-    }
+    /* ── 頁尾 ── */
+    footer { background: #0d1f16; color: rgba(255,255,255,0.4); padding: 36px 24px; text-align: center; }
+    .footer-brand { font-size: 0.98rem; font-weight: 800; color: rgba(255,255,255,0.75); letter-spacing: -0.02em; margin-bottom: 8px; }
+    .footer-sub { font-size: 0.77rem; line-height: 1.65; }
 
-    .carbon-desc {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-    }
-
-    .carbon-disclaimer {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 12px;
-      font-style: italic;
-    }
-
-    footer {
-      background-color: var(--green-dark);
-      color: rgba(255,255,255,0.75);
-      text-align: center;
-      padding: 20px;
-      font-size: 0.83rem;
-    }
-
+    /* ── 響應式 ── */
     @media (max-width: 600px) {
-      .input-row {
-        flex-direction: column;
-      }
-      .eco-card {
-        padding: 20px 16px;
-      }
-      .card {
-        padding: 18px 16px;
-      }
+      .container { padding: 0 16px; }
+      .card { padding: 20px 16px; }
+      .eco-card { padding: 36px 20px 32px; }
+      .input-row { flex-direction: column; }
+      .hero-stats { gap: 28px; }
+      .recipe-illustration { height: 145px; }
+      nav { padding: 0 16px; }
     }
 
+    /* ── 動畫 ── */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .recipe-card-anim {
-      animation: fadeInUp 0.35s ease both;
-    }
+    .recipe-card-anim { animation: fadeInUp 0.4s cubic-bezier(.22,.68,0,1.15) both; }
 
   </style>
 </head>
 <body>
-<header id="hero" role="banner">
-<span class="hero-emoji" aria-hidden="true">🌱</span>
-<h1>把剩食變成下一道美味</h1>
-<p class="hero-sub">選擇家中剩餘食材，探索簡單又實用的料理靈感。</p>
-<a href="#input-section" class="btn-hero" role="button">✨ 開始使用</a>
-</header>
 
-<section id="input-section" aria-labelledby="input-title">
-<div class="container">
-<div class="card">
-<h2 class="section-title" id="input-title">🥦 選擇你的剩食食材</h2>
-<p class="section-desc">勾選快速標籤，或自行輸入食材，系統將為你推薦料理靈感。</p>
-<label class="input-label" for="custom-ingredient">自行輸入食材</label>
-<div class="input-row">
-<input type="text" id="custom-ingredient" class="ingredient-input" placeholder="例如：剩豆腐、玉米、薑..." maxlength="20" aria-label="輸入自訂食材名稱" />
-<button class="btn-primary" id="add-btn" onclick="addCustomIngredient()">＋ 新增</button>
-</div>
-<p class="tag-label">⚡ 常用食材快速選取</p>
-<div class="tags-container" id="quick-tags" role="group" aria-label="常用食材快速選取"></div>
-<p class="selected-title" aria-live="polite">已選食材（<span id="selected-count">0</span> 項）：</p>
-<div class="selected-list" id="selected-list" aria-label="已選取的食材清單"></div>
-<div class="warning-msg" id="warning-msg" role="alert">⚠️ 請先選擇或輸入至少一項食材，再生成料理推薦喔！</div>
-<div class="generate-wrap">
-<button class="btn-primary" id="generate-btn" onclick="generateRecipes()" style="font-size:1.05rem; padding:14px 40px;">🍳 生成剩食料理</button>
-</div>
-</div>
-</div>
-</section>
+  <!-- ── 導覽列 ── -->
+  <nav role="navigation" aria-label="主要導覽">
+    <a class="nav-logo" href="#hero">
+      <span class="nav-logo-dot" aria-hidden="true"></span>FoodWise
+    </a>
+    <a href="#input-section" class="nav-cta">探索食譜 →</a>
+  </nav>
 
-<section id="recipes-section" aria-labelledby="recipes-title" aria-live="polite">
-<div class="container" id="recipes-container"></div>
-</section>
+  <!-- ====================================================
+       一、Hero
+       ==================================================== -->
+  <header id="hero" role="banner">
+    <p class="hero-kicker" aria-hidden="true">永續飲食 · 零浪費料理</p>
+    <h1>每一份食材，<br>都值得變成<span class="hero-highlight"> 一道好料理</span></h1>
+    <p class="hero-sub">選擇手邊的食材，探索簡單、實用、令人驚喜的料理靈感。</p>
+    <a href="#input-section" class="btn-hero" role="button">✦ 開始探索食譜</a>
+    <div class="hero-stats" aria-label="平台統計（展示用）">
+      <div class="hero-stat">
+        <div class="hero-stat-num">34+</div>
+        <div class="hero-stat-label">道料理靈感</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">8</div>
+        <div class="hero-stat-label">種常見食材</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">5 min</div>
+        <div class="hero-stat-label">即可上手</div>
+      </div>
+    </div>
+  </header>
 
-<section id="eco-section" aria-labelledby="eco-title">
-<div class="container">
-<div class="eco-card">
-<span class="eco-icon" aria-hidden="true">🌍</span>
-<h2 class="eco-slogan" id="eco-title">每一次把剩食變成料理，<br>都是替地球多留下一點資源。</h2>
-<div class="carbon-box">
-<p class="carbon-desc" style="margin-bottom:6px;">本次選擇的食材，示意上避免了約</p>
-<p class="carbon-number" id="carbon-number">— kg CO₂e</p>
-<p class="carbon-desc">的食物浪費排放（展示用估算）</p>
-</div>
-<p class="carbon-disclaimer">⚠️ 此數值為展示用估算，實際結果會因食材種類、重量、運輸與處理方式而不同，不代表科學精確測量。</p>
-</div>
-</div>
-</section>
+  <!-- ====================================================
+       二、食材輸入區
+       ==================================================== -->
+  <section id="input-section" aria-labelledby="input-title">
+    <div class="container">
+      <div class="card">
+        <span class="section-eyebrow">Step 1</span>
+        <h2 class="section-title" id="input-title">選擇手邊的食材</h2>
+        <p class="section-desc">勾選快速標籤，或輸入自訂食材，系統將為你精選最合適的料理靈感。</p>
 
-<footer>
-<p>🌿 剩食料理推薦 &nbsp;|&nbsp; 推廣永續飲食，從家中剩食開始</p>
-<p style="margin-top:6px; opacity:0.6; font-size:0.75rem;">靈感示範用途，食材安全請自行評估。</p>
-</footer>
+        <label class="input-label" for="custom-ingredient">輸入其他食材</label>
+        <div class="input-row">
+          <input
+            type="text"
+            id="custom-ingredient"
+            class="ingredient-input"
+            placeholder="例如：豆腐、玉米、薑、洋蔥…"
+            maxlength="20"
+            aria-label="輸入自訂食材名稱"
+          />
+          <button class="btn-primary" id="add-btn" onclick="addCustomIngredient()">＋ 加入</button>
+        </div>
 
-<script>
+        <p class="tag-group-label">常用食材</p>
+        <div class="tags-container" id="quick-tags" role="group" aria-label="常用食材快速選取"></div>
+
+        <div class="selected-header">
+          <span class="selected-label">已選食材</span>
+          <span class="selected-count-badge"><span id="selected-count">0</span> 項</span>
+        </div>
+        <div class="selected-list" id="selected-list" aria-label="已選取的食材清單" aria-live="polite"></div>
+
+        <div class="warning-msg" id="warning-msg" role="alert">
+          <span aria-hidden="true">⚠</span>
+          請先選擇或輸入至少一項食材，再探索料理靈感。
+        </div>
+
+        <div class="generate-wrap">
+          <button class="btn-generate" id="generate-btn" onclick="generateRecipes()">
+            <span aria-hidden="true">✦</span> 探索料理靈感
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       三、食譜推薦區
+       ==================================================== -->
+  <section id="recipes-section" aria-labelledby="recipes-title" aria-live="polite">
+    <div class="container" id="recipes-container"></div>
+  </section>
+
+  <!-- ====================================================
+       五、永續區
+       ==================================================== -->
+  <section id="eco-section" aria-labelledby="eco-title">
+    <div class="container">
+      <div class="eco-card">
+        <div class="eco-icon-wrap" aria-hidden="true">🌍</div>
+        <h2 class="eco-slogan" id="eco-title">
+          每一次把食材化為料理，<br>都是替地球多保留一份資源。
+        </h2>
+        <div class="carbon-box">
+          <p class="carbon-label">本次選擇的食材，示意上避免了約</p>
+          <p class="carbon-number" id="carbon-number">— kg CO₂e</p>
+          <p class="carbon-unit">的食物浪費排放（展示用估算）</p>
+        </div>
+        <p class="carbon-disclaimer">
+          ⚠ 此數值為展示用估算，實際結果因食材種類、重量、運輸與處理方式而不同，不代表科學精確測量。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       頁尾
+       ==================================================== -->
+  <footer>
+    <p class="footer-brand">FoodWise</p>
+    <p class="footer-sub">
+      推廣永續飲食，從善用手邊食材開始。<br>
+      料理內容僅供靈感參考，食材安全請自行評估。
+    </p>
+  </footer>
+
+
+  <!-- ====================================================
+       JavaScript：所有互動邏輯
+       ==================================================== -->
+  <script>
+
+    /* ====================================================
+       食材資料庫
+       每個快速標籤對應一個物件，包含標籤名稱與碳排估算係數
+       ==================================================== */
     const QUICK_INGREDIENTS = [
-      { name: "過熟香蕉", carbon: 0.18 },
-      { name: "剩米飯",   carbon: 0.22 },
-      { name: "菜梗",     carbon: 0.10 },
-      { name: "熟肉",     carbon: 0.32 },
-      { name: "麵包",     carbon: 0.14 },
-      { name: "蛋",       carbon: 0.16 },
-      { name: "蔬菜",     carbon: 0.12 },
-      { name: "水果",     carbon: 0.15 },
+      { name: "🍌 香甜香蕉",   carbon: 0.18, keyword: "過熟香蕉" },
+      { name: "🍚 隔夜白飯",   carbon: 0.22, keyword: "剩米飯"   },
+      { name: "🥦 蔬菜莖葉",   carbon: 0.10, keyword: "菜梗"     },
+      { name: "🍖 現成熟肉",   carbon: 0.32, keyword: "熟肉"     },
+      { name: "🍞 家常麵包",   carbon: 0.14, keyword: "麵包"     },
+      { name: "🥚 新鮮雞蛋",   carbon: 0.16, keyword: "蛋"       },
+      { name: "🥬 當季蔬菜",   carbon: 0.12, keyword: "蔬菜"     },
+      { name: "🍎 香甜水果",   carbon: 0.15, keyword: "水果"     },
     ];
 
+    /* ====================================================
+       食譜資料庫
+       每道食譜包含：觸發食材關鍵字、名稱、食材列表、
+       亮點、步驟、時間、難度
+       ==================================================== */
     const RECIPES = [
-      { keywords: ["過熟香蕉", "香蕉"], name: "香蕉燕麥煎餅", ingredients: ["過熟香蕉", "燕麥片", "雞蛋"], highlight: "過熟香蕉甜度更高，無需額外加糖，天然甜味直接帶出煎餅香氣！", steps: ["將過熟香蕉用叉子壓成泥狀。","加入2大匙燕麥片與1顆蛋，攪拌均勻。","平底鍋開中小火，塗少許油，舀入麵糊。","每面煎約2–3分鐘至金黃，起鍋即可享用。"], time: "約 10 分鐘", difficulty: "簡單" },
-      { keywords: ["剩米飯", "米飯", "蔬菜", "蛋"], name: "蔬菜蛋炒飯", ingredients: ["剩米飯", "蔬菜（任意）", "雞蛋", "醬油"], highlight: "隔夜飯水分較少，炒出來粒粒分明，是最適合剩飯的零浪費料理！", steps: ["剩米飯稍微撥散，避免結塊。","鍋中倒油熱鍋，先炒打散的蛋液。","加入蔬菜（如高麗菜、胡蘿蔔丁）翻炒。","放入米飯大火翻炒，加醬油、少許鹽調味。","炒至均勻，盛盤即完成。"], time: "約 15 分鐘", difficulty: "簡單" },
-      { keywords: ["菜梗", "蔬菜"], name: "香蒜炒菜梗", ingredients: ["菜梗（各種皆可）", "蒜頭", "鹽", "米酒"], highlight: "菜梗口感爽脆，比葉子更耐炒！加點蒜末就能變身下飯小菜。", steps: ["菜梗洗淨，切成約 4 公分長段。","蒜頭拍扁切末，備用。","鍋中熱油，爆香蒜末至微金黃。","下菜梗大火快炒，加鹽與少許米酒。","炒約 3 分鐘，菜梗稍軟即可起鍋。"], time: "約 10 分鐘", difficulty: "簡單" },
-      { keywords: ["熟肉", "肉", "蔬菜", "剩米飯", "米飯"], name: "剩肉蔬菜拌飯", ingredients: ["熟肉（任意）", "蔬菜", "白飯", "醬油", "芝麻油"], highlight: "熟肉不需再花時間煮熟，切碎拌飯，幾分鐘就能端上桌！", steps: ["熟肉切成小丁或剝絲，備用。","蔬菜（如小黃瓜、燙青菜）切丁或切絲。","準備醬汁：醬油1匙、芝麻油半匙、糖少許，攪拌均勻。","白飯盛入碗中，鋪上肉丁與蔬菜。","淋上醬汁，攪拌均勻即可享用。"], time: "約 10 分鐘", difficulty: "非常簡單" },
-      { keywords: ["麵包"], name: "香煎麵包丁沙拉", ingredients: ["硬麵包", "生菜", "番茄", "橄欖油", "鹽"], highlight: "老麵包烤成麵包丁，香脆有嚼勁，讓沙拉增加層次感！", steps: ["硬麵包切成 1.5 公分小方丁。","平底鍋倒橄欖油，放入麵包丁中火翻炒至金黃酥脆。","生菜撕成一口大小，番茄切塊，盛盤。","撒上麵包丁，淋少許橄欖油與鹽，拌勻即完成。"], time: "約 12 分鐘", difficulty: "簡單" },
-      { keywords: ["蛋"], name: "日式玉子燒", ingredients: ["蛋（2–3顆）", "醬油", "味醂或糖", "蔥花（可選）"], highlight: "打散的蛋加少許甜味，用玉子燒鍋（或一般平底鍋）捲出層次感！", steps: ["蛋打散，加1小匙醬油、半匙糖或味醂，攪拌均勻。","平底鍋熱鍋塗油，倒入1/3蛋液，半凝固時往前捲起。","再倒入蛋液，半凝固後與第一層一起捲。","重複一次，整形後切片盛盤。"], time: "約 10 分鐘", difficulty: "普通" },
-      { keywords: ["水果", "香蕉", "過熟香蕉"], name: "水果優格冰沙", ingredients: ["熟透水果（任意）", "原味優格", "蜂蜜（可選）"], highlight: "熟透的水果甜度最高、香氣最濃，打成冰沙省力又美味！", steps: ["水果去皮切塊，可先冷凍 1 小時更濃稠。","放入果汁機，加入優格（約 3–4 大匙）。","視口味加少許蜂蜜，攪打至滑順。","倒入杯中，立即享用或冷藏保存。"], time: "約 8 分鐘", difficulty: "非常簡單" },
-      { keywords: ["過熟香蕉", "香蕉", "水果"], name: "香蕉牛奶燉燕麥粥", ingredients: ["過熟香蕉", "燕麥片", "牛奶或植物奶", "肉桂粉（可選）"], highlight: "過熟香蕉直接當天然甜味劑，不加糖也香甜，早餐首選！", steps: ["牛奶倒入小鍋，中火加熱至微滾。","加入燕麥片，攪拌煮約 3 分鐘至濃稠。","香蕉切片，一半壓成泥拌入粥中增加甜味。","盛碗後擺上剩餘香蕉片，撒肉桂粉即完成。"], time: "約 8 分鐘", difficulty: "非常簡單" },
-      { keywords: ["過熟香蕉", "香蕉", "麵包"], name: "香蕉吐司法式烤", ingredients: ["過熟香蕉", "吐司或硬麵包", "雞蛋", "牛奶", "糖"], highlight: "過熟香蕉搗泥塗抹，加上法式蛋液，讓老麵包重獲新生！", steps: ["香蕉壓成泥，均勻塗抹在吐司上。","蛋加牛奶、少許糖打勻成蛋液。","吐司兩面沾蛋液，靜置 30 秒讓麵包吸飽。","平底鍋熱油，中小火兩面各煎 2 分鐘至金黃。","起鍋後可撒糖粉或淋蜂蜜享用。"], time: "約 12 分鐘", difficulty: "簡單" },
-      { keywords: ["剩米飯", "米飯"], name: "韓式泡菜飯糰", ingredients: ["剩米飯", "泡菜", "芝麻油", "海苔（可選）"], highlight: "剩飯加泡菜拌炒，捏成飯糰方便帶著走，零廚餘又美味！", steps: ["剩米飯放入鍋中，加泡菜切碎後一起翻炒。","加少許芝麻油提香，炒至均勻。","待飯稍涼後，雙手沾少許鹽水，捏成三角形飯糰。","包上海苔或直接享用皆可。"], time: "約 10 分鐘", difficulty: "簡單" },
-      { keywords: ["剩米飯", "米飯", "蛋"], name: "蛋包飯", ingredients: ["剩米飯", "雞蛋（2顆）", "番茄醬", "洋蔥丁", "鹽"], highlight: "隔夜飯炒過更 Q 彈，薄蛋皮包裹，視覺與口感都滿分！", steps: ["洋蔥炒香，加剩飯翻炒，以番茄醬、鹽調味。","炒飯盛起備用，鍋中重新刷薄油。","蛋打散加少許鹽，倒入鍋中攤成薄蛋皮。","蛋皮半熟時放入炒飯，左右對折包起。","盛盤後淋番茄醬即完成。"], time: "約 15 分鐘", difficulty: "普通" },
-      { keywords: ["菜梗", "蔬菜"], name: "菜梗醃漬小菜", ingredients: ["菜梗（各種皆可）", "鹽", "醋", "糖", "辣椒（可選）"], highlight: "菜梗質地脆硬，最適合醃漬！短時間入味，下飯又開胃。", steps: ["菜梗洗淨，切成 0.5 公分薄片。","加 1 小匙鹽抓醃 10 分鐘，擠去多餘水分。","加醋 1 匙、糖半匙、辣椒絲，攪拌均勻。","靜置 15 分鐘讓味道融合，即可食用。","可冷藏保存 2–3 天。"], time: "約 25 分鐘（含靜置）", difficulty: "非常簡單" },
-      { keywords: ["菜梗", "蔬菜", "蛋"], name: "菜梗蛋花湯", ingredients: ["菜梗", "雞蛋（1顆）", "高湯或水", "鹽", "薑絲"], highlight: "菜梗熬湯清甜鮮美，蛋花增添滑嫩口感，5 分鐘完成暖胃湯！", steps: ["菜梗切小段，薑切絲備用。","鍋中高湯加薑絲煮滾，放入菜梗。","煮 3 分鐘至菜梗軟化，加鹽調味。","蛋打散，沿鍋邊緩緩倒入，輕輕攪拌成蛋花。","起鍋盛碗即完成。"], time: "約 10 分鐘", difficulty: "簡單" },
-      { keywords: ["熟肉", "肉", "麵包"], name: "剩肉三明治", ingredients: ["熟肉（任意）", "吐司或麵包", "生菜", "美乃滋或芥末"], highlight: "任何剩肉切片或剝絲，夾入麵包即成豐盛三明治，零食材浪費！", steps: ["熟肉切薄片或剝成絲狀。","吐司可直接使用或稍微烤過增加脆度。","一片吐司塗抹美乃滋或芥末醬。","依序疊上生菜、肉片，蓋上另一片吐司。","對角切開，盛盤即完成。"], time: "約 5 分鐘", difficulty: "非常簡單" },
-      { keywords: ["熟肉", "肉"], name: "剩肉蔬菜炒烏龍", ingredients: ["熟肉（任意）", "烏龍麵", "蔬菜", "醬油", "芝麻油"], highlight: "剩肉切絲加入炒麵，省去另外煮肉的時間，快速完成一碗料多麵！", steps: ["熟肉切絲或剝小塊，蔬菜切絲備用。","烏龍麵依包裝指示煮熟，撈起瀝乾。","鍋中熱油，先炒蔬菜至軟化。","加入肉絲與烏龍麵，倒醬油翻炒均勻。","起鍋前淋芝麻油增香，盛碗即完成。"], time: "約 15 分鐘", difficulty: "簡單" },
-      { keywords: ["麵包"], name: "麵包布丁", ingredients: ["老麵包（2–3片）", "雞蛋（2顆）", "牛奶", "糖", "香草精（可選）"], highlight: "硬掉的麵包吸滿蛋奶液後烤出軟嫩口感，變身甜點免浪費！", steps: ["麵包切成 2 公分方塊，鋪入烤盤。","蛋、牛奶、糖攪拌均勻成蛋奶液，加入香草精。","將蛋奶液倒入烤盤，靜置 15 分鐘讓麵包吸飽。","烤箱預熱 175°C，烤 25 分鐘至表面金黃。","取出放涼，撒糖粉或淋蜂蜜享用。"], time: "約 45 分鐘（含靜置）", difficulty: "普通" },
-      { keywords: ["蛋", "蔬菜"], name: "蔬菜烘蛋（Frittata）", ingredients: ["雞蛋（3顆）", "剩餘蔬菜（任意）", "起司（可選）", "鹽", "黑胡椒"], highlight: "任何剩餘蔬菜都能加進烘蛋，一鍋搞定，切片分享超有儀式感！", steps: ["蔬菜切小塊或切絲，平底鍋炒熟後鋪平。","蛋打散加鹽、黑胡椒攪拌均勻。","蛋液倒入鍋中，撒上起司，中小火加蓋燜煮。","待蛋液表面幾乎凝固，入烤箱 180°C 烤 5 分鐘。","取出切片，熱食冷食皆宜。"], time: "約 20 分鐘", difficulty: "普通" },
-      { keywords: ["蛋", "剩米飯", "米飯"], name: "茶碗蒸配剩飯", ingredients: ["雞蛋（2顆）", "高湯或水", "醬油", "味醂", "配料（任意）"], highlight: "蛋液加高湯蒸出豆腐般嫩滑口感，搭配剩飯就是日式定食！", steps: ["蛋打散，加入 1.5 倍量的高湯攪拌均勻。","加醬油半匙、味醂少許，過篩去除氣泡。","倒入茶碗，加入喜歡的配料（蝦、香菇等）。","電鍋外鍋加半杯水，蒸約 12 分鐘。","取出後搭配剩飯一起享用。"], time: "約 20 分鐘", difficulty: "普通" },
-      { keywords: ["蔬菜", "水果"], name: "蔬果鮮榨冷湯", ingredients: ["各種蔬菜水果", "檸檬汁", "鹽", "冰塊"], highlight: "快熟透的蔬果最適合打成冷湯，保留全部營養又清爽解暑！", steps: ["蔬果洗淨，切成適合放入果汁機的大小。","放入果汁機，加少許水、鹽、檸檬汁。","攪打至滑順，試味道並調整鹹淡。","倒入杯中，加冰塊，即刻享用。"], time: "約 8 分鐘", difficulty: "非常簡單" },
-      { keywords: ["水果"], name: "水果果醬", ingredients: ["熟透水果（任意）", "糖（水果重量的 50%）", "檸檬汁"], highlight: "快過熟的水果煮成果醬，冷藏保存延長壽命，塗麵包超美味！", steps: ["水果去皮去籽，切成小丁或壓成粗泥。","加入糖與檸檬汁，靜置 30 分鐘出汁。","中火加熱，不斷攪拌避免燒焦，煮至濃稠。","倒入乾淨玻璃瓶，放涼後冷藏保存。","一週內食用完畢。"], time: "約 40 分鐘", difficulty: "普通" },
-      { keywords: ["__fallback__"], name: "什錦剩食蔬菜清湯", ingredients: ["各種剩餘蔬菜", "水或高湯", "鹽", "薑片（可選）"], highlight: "任何剩餘蔬菜、根莖類都能入湯，零浪費的溫暖料理！", steps: ["將剩餘蔬菜洗淨，切成適口大小。","鍋中加水（約 600 ml），加薑片煮滾。","放入較硬的根莖類，煮 5 分鐘。","加入葉菜類，續煮 2–3 分鐘。","加鹽調味，盛碗即完成。"], time: "約 20 分鐘", difficulty: "簡單" },
-      { keywords: ["__fallback__"], name: "萬用剩食炒飯", ingredients: ["任何剩餘食材", "白飯", "雞蛋", "醬油", "鹽"], highlight: "冰箱裡任何食材都能下鍋，炒飯是最萬用的剩食料理！", steps: ["將所有剩餘食材切成小丁。","鍋中熱油，先炒蛋液至半熟。","加入食材丁翻炒均勻。","放入白飯大火快炒，加醬油、鹽調味。","炒至飯粒均勻上色，盛盤即完成。"], time: "約 15 分鐘", difficulty: "簡單" },
-      { keywords: ["__fallback__"], name: "剩食雜炊粥", ingredients: ["任何剩餘食材", "白飯或剩飯", "水或高湯", "鹽", "薑"], highlight: "任何剩餘食材都能加入粥中，養胃暖身，最適合清冰箱！", steps: ["剩飯加水（約 1:5 比例）放入鍋中。","加入薑片，中火煮至飯粒軟化成粥。","放入剩餘食材（肉、菜、蛋皆可）。","續煮 5 分鐘，加鹽調味。","盛碗後可加蔥花或芝麻油提香。"], time: "約 25 分鐘", difficulty: "非常簡單" },
+      {
+        /* 觸發關鍵字：只要已選食材中包含這些字，就可能推薦此食譜 */
+        keywords: ["過熟香蕉", "香蕉"],
+        name: "香蕉燕麥煎餅",
+        ingredients: ["過熟香蕉", "燕麥片", "雞蛋"],
+        highlight: "成熟香蕉甜度更高，無需額外加糖，天然甜味直接帶出煎餅香氣！",
+        steps: [
+          "將過熟香蕉用叉子壓成泥狀。",
+          "加入2大匙燕麥片與1顆蛋，攪拌均勻。",
+          "平底鍋開中小火，塗少許油，舀入麵糊。",
+          "每面煎約2–3分鐘至金黃，起鍋即可享用。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "簡單",
+        calories: 210,
+        avgLike: 4.5,
+        likeCount: 128,
+      },
+      {
+        keywords: ["剩米飯", "米飯", "蔬菜", "蛋"],
+        name: "蔬菜蛋炒飯",
+        ingredients: ["剩米飯", "蔬菜（任意）", "雞蛋", "醬油"],
+        highlight: "隔夜飯水分較少，炒出來粒粒分明，是最完美的零浪費料理！",
+        steps: [
+          "剩米飯稍微撥散，避免結塊。",
+          "鍋中倒油熱鍋，先炒打散的蛋液。",
+          "加入蔬菜（如高麗菜、胡蘿蔔丁）翻炒。",
+          "放入米飯大火翻炒，加醬油、少許鹽調味。",
+          "炒至均勻，盛盤即完成。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "簡單",
+        calories: 380,
+        avgLike: 4.7,
+        likeCount: 256,
+      },
+      {
+        keywords: ["菜梗", "蔬菜"],
+        name: "香蒜炒菜梗",
+        ingredients: ["菜梗（各種皆可）", "蒜頭", "鹽", "米酒"],
+        highlight: "菜梗口感爽脆，比葉子更耐炒！加點蒜末就能變身下飯小菜。",
+        steps: [
+          "菜梗洗淨，切成約 4 公分長段。",
+          "蒜頭拍扁切末，備用。",
+          "鍋中熱油，爆香蒜末至微金黃。",
+          "下菜梗大火快炒，加鹽與少許米酒。",
+          "炒約 3 分鐘，菜梗稍軟即可起鍋。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "簡單",
+        calories: 85,
+        avgLike: 4.2,
+        likeCount: 97,
+      },
+      {
+        keywords: ["熟肉", "肉", "蔬菜", "剩米飯", "米飯"],
+        name: "鮮肉蔬菜拌飯",
+        ingredients: ["熟肉（任意）", "蔬菜", "白飯", "醬油", "芝麻油"],
+        highlight: "現成熟肉省去烹調時間，切碎拌飯調味，幾分鐘就能端上豐盛的一碗！",
+        steps: [
+          "熟肉切成小丁或剝絲，備用。",
+          "蔬菜（如小黃瓜、燙青菜）切丁或切絲。",
+          "準備醬汁：醬油1匙、芝麻油半匙、糖少許，攪拌均勻。",
+          "白飯盛入碗中，鋪上肉丁與蔬菜。",
+          "淋上醬汁，攪拌均勻即可享用。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "非常簡單",
+        calories: 420,
+        avgLike: 4.4,
+        likeCount: 183,
+      },
+      {
+        keywords: ["麵包"],
+        name: "香煎麵包丁沙拉",
+        ingredients: ["硬麵包", "生菜", "番茄", "橄欖油", "鹽"],
+        highlight: "老麵包烤成麵包丁，香脆有嚼勁，讓沙拉增加層次感！",
+        steps: [
+          "硬麵包切成 1.5 公分小方丁。",
+          "平底鍋倒橄欖油，放入麵包丁中火翻炒至金黃酥脆。",
+          "生菜撕成一口大小，番茄切塊，盛盤。",
+          "撒上麵包丁，淋少許橄欖油與鹽，拌勻即完成。",
+        ],
+        time: "約 12 分鐘",
+        difficulty: "簡單",
+        calories: 220,
+        avgLike: 4.3,
+        likeCount: 142,
+      },
+      {
+        keywords: ["蛋"],
+        name: "日式玉子燒",
+        ingredients: ["蛋（2–3顆）", "醬油", "味醂或糖", "蔥花（可選）"],
+        highlight: "打散的蛋加少許甜味，用玉子燒鍋（或一般平底鍋）捲出層次感！",
+        steps: [
+          "蛋打散，加1小匙醬油、半匙糖或味醂，攪拌均勻。",
+          "平底鍋熱鍋塗油，倒入1/3蛋液，半凝固時往前捲起。",
+          "再倒入蛋液，半凝固後與第一層一起捲。",
+          "重複一次，整形後切片盛盤。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "普通",
+        calories: 175,
+        avgLike: 4.6,
+        likeCount: 201,
+      },
+      {
+        keywords: ["水果", "香蕉", "過熟香蕉"],
+        name: "水果優格冰沙",
+        ingredients: ["熟透水果（任意）", "原味優格", "蜂蜜（可選）"],
+        highlight: "熟透的水果甜度最高、香氣最濃，打成冰沙省力又美味！",
+        steps: [
+          "水果去皮切塊，可先冷凍 1 小時更濃稠。",
+          "放入果汁機，加入優格（約 3–4 大匙）。",
+          "視口味加少許蜂蜜，攪打至滑順。",
+          "倒入杯中，立即享用或冷藏保存。",
+        ],
+        time: "約 8 分鐘",
+        difficulty: "非常簡單",
+        calories: 150,
+        avgLike: 4.8,
+        likeCount: 314,
+      },
+      {
+        keywords: ["過熟香蕉", "香蕉", "水果"],
+        name: "香蕉牛奶燉燕麥粥",
+        ingredients: ["過熟香蕉", "燕麥片", "牛奶或植物奶", "肉桂粉（可選）"],
+        highlight: "過熟香蕉直接當天然甜味劑，不加糖也香甜，早餐首選！",
+        steps: [
+          "牛奶倒入小鍋，中火加熱至微滾。",
+          "加入燕麥片，攪拌煮約 3 分鐘至濃稠。",
+          "香蕉切片，一半壓成泥拌入粥中增加甜味。",
+          "盛碗後擺上剩餘香蕉片，撒肉桂粉即完成。",
+        ],
+        time: "約 8 分鐘",
+        difficulty: "非常簡單",
+        calories: 290,
+        avgLike: 4.4,
+        likeCount: 176,
+      },
+      {
+        keywords: ["過熟香蕉", "香蕉", "麵包"],
+        name: "香蕉吐司法式烤",
+        ingredients: ["過熟香蕉", "吐司或硬麵包", "雞蛋", "牛奶", "糖"],
+        highlight: "過熟香蕉搗泥塗抹，加上法式蛋液，讓老麵包重獲新生！",
+        steps: [
+          "香蕉壓成泥，均勻塗抹在吐司上。",
+          "蛋加牛奶、少許糖打勻成蛋液。",
+          "吐司兩面沾蛋液，靜置 30 秒讓麵包吸飽。",
+          "平底鍋熱油，中小火兩面各煎 2 分鐘至金黃。",
+          "起鍋後可撒糖粉或淋蜂蜜享用。",
+        ],
+        time: "約 12 分鐘",
+        difficulty: "簡單",
+        calories: 320,
+        avgLike: 4.6,
+        likeCount: 189,
+      },
+      {
+        keywords: ["剩米飯", "米飯"],
+        name: "韓式泡菜飯糰",
+        ingredients: ["剩米飯", "泡菜", "芝麻油", "海苔（可選）"],
+        highlight: "剩飯加泡菜拌炒，捏成飯糰方便帶著走，零廚餘又美味！",
+        steps: [
+          "剩米飯放入鍋中，加泡菜切碎後一起翻炒。",
+          "加少許芝麻油提香，炒至均勻。",
+          "待飯稍涼後，雙手沾少許鹽水，捏成三角形飯糰。",
+          "包上海苔或直接享用皆可。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "簡單",
+        calories: 260,
+        avgLike: 4.5,
+        likeCount: 155,
+      },
+      {
+        keywords: ["剩米飯", "米飯", "蛋"],
+        name: "蛋包飯",
+        ingredients: ["剩米飯", "雞蛋（2顆）", "番茄醬", "洋蔥丁", "鹽"],
+        highlight: "隔夜飯炒過更 Q 彈，薄蛋皮包裹，視覺與口感都滿分！",
+        steps: [
+          "洋蔥炒香，加剩飯翻炒，以番茄醬、鹽調味。",
+          "炒飯盛起備用，鍋中重新刷薄油。",
+          "蛋打散加少許鹽，倒入鍋中攤成薄蛋皮。",
+          "蛋皮半熟時放入炒飯，左右對折包起。",
+          "盛盤後淋番茄醬即完成。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "普通",
+        calories: 410,
+        avgLike: 4.7,
+        likeCount: 228,
+      },
+      {
+        keywords: ["菜梗", "蔬菜"],
+        name: "菜梗醃漬小菜",
+        ingredients: ["菜梗（各種皆可）", "鹽", "醋", "糖", "辣椒（可選）"],
+        highlight: "菜梗質地脆硬，最適合醃漬！短時間入味，下飯又開胃。",
+        steps: [
+          "菜梗洗淨，切成 0.5 公分薄片。",
+          "加 1 小匙鹽抓醃 10 分鐘，擠去多餘水分。",
+          "加醋 1 匙、糖半匙、辣椒絲，攪拌均勻。",
+          "靜置 15 分鐘讓味道融合，即可食用。",
+          "可冷藏保存 2–3 天。",
+        ],
+        time: "約 25 分鐘（含靜置）",
+        difficulty: "非常簡單",
+        calories: 40,
+        avgLike: 4.1,
+        likeCount: 88,
+      },
+      {
+        keywords: ["菜梗", "蔬菜", "蛋"],
+        name: "菜梗蛋花湯",
+        ingredients: ["菜梗", "雞蛋（1顆）", "高湯或水", "鹽", "薑絲"],
+        highlight: "菜梗熬湯清甜鮮美，蛋花增添滑嫩口感，5 分鐘完成暖胃湯！",
+        steps: [
+          "菜梗切小段，薑切絲備用。",
+          "鍋中高湯加薑絲煮滾，放入菜梗。",
+          "煮 3 分鐘至菜梗軟化，加鹽調味。",
+          "蛋打散，沿鍋邊緩緩倒入，輕輕攪拌成蛋花。",
+          "起鍋盛碗即完成。",
+        ],
+        time: "約 10 分鐘",
+        difficulty: "簡單",
+        calories: 70,
+        avgLike: 4.3,
+        likeCount: 112,
+      },
+      {
+        keywords: ["熟肉", "肉", "麵包"],
+        name: "鮮肉總匯三明治",
+        ingredients: ["熟肉（任意）", "吐司或麵包", "生菜", "美乃滋或芥末"],
+        highlight: "現成肉品切片或剝絲，夾入麵包即成豐盛三明治，快速又美味！",
+        steps: [
+          "熟肉切薄片或剝成絲狀。",
+          "吐司可直接使用或稍微烤過增加脆度。",
+          "一片吐司塗抹美乃滋或芥末醬。",
+          "依序疊上生菜、肉片，蓋上另一片吐司。",
+          "對角切開，盛盤即完成。",
+        ],
+        time: "約 5 分鐘",
+        difficulty: "非常簡單",
+        calories: 350,
+        avgLike: 4.5,
+        likeCount: 196,
+      },
+      {
+        keywords: ["熟肉", "肉"],
+        name: "鮮肉蔬菜炒烏龍",
+        ingredients: ["熟肉（任意）", "烏龍麵", "蔬菜", "醬油", "芝麻油"],
+        highlight: "現成肉品切絲加入炒麵，省去烹調時間，快速完成一碗料多又鮮美的麵！",
+        steps: [
+          "熟肉切絲或剝小塊，蔬菜切絲備用。",
+          "烏龍麵依包裝指示煮熟，撈起瀝乾。",
+          "鍋中熱油，先炒蔬菜至軟化。",
+          "加入肉絲與烏龍麵，倒醬油翻炒均勻。",
+          "起鍋前淋芝麻油增香，盛碗即完成。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "簡單",
+        calories: 480,
+        avgLike: 4.6,
+        likeCount: 167,
+      },
+      {
+        keywords: ["麵包"],
+        name: "麵包布丁",
+        ingredients: ["老麵包（2–3片）", "雞蛋（2顆）", "牛奶", "糖", "香草精（可選）"],
+        highlight: "硬掉的麵包吸滿蛋奶液後烤出軟嫩口感，變身甜點免浪費！",
+        steps: [
+          "麵包切成 2 公分方塊，鋪入烤盤。",
+          "蛋、牛奶、糖攪拌均勻成蛋奶液，加入香草精。",
+          "將蛋奶液倒入烤盤，靜置 15 分鐘讓麵包吸飽。",
+          "烤箱預熱 175°C，烤 25 分鐘至表面金黃。",
+          "取出放涼，撒糖粉或淋蜂蜜享用。",
+        ],
+        time: "約 45 分鐘（含靜置）",
+        difficulty: "普通",
+        calories: 290,
+        avgLike: 4.4,
+        likeCount: 143,
+      },
+      {
+        keywords: ["蛋", "蔬菜"],
+        name: "蔬菜烘蛋（Frittata）",
+        ingredients: ["雞蛋（3顆）", "剩餘蔬菜（任意）", "起司（可選）", "鹽", "黑胡椒"],
+        highlight: "任何剩餘蔬菜都能加進烘蛋，一鍋搞定，切片分享超有儀式感！",
+        steps: [
+          "蔬菜切小塊或切絲，平底鍋炒熟後鋪平。",
+          "蛋打散加鹽、黑胡椒攪拌均勻。",
+          "蛋液倒入鍋中，撒上起司，中小火加蓋燜煮。",
+          "待蛋液表面幾乎凝固，入烤箱 180°C 烤 5 分鐘。",
+          "取出切片，熱食冷食皆宜。",
+        ],
+        time: "約 20 分鐘",
+        difficulty: "普通",
+        calories: 230,
+        avgLike: 4.3,
+        likeCount: 119,
+      },
+      {
+        keywords: ["蛋", "剩米飯", "米飯"],
+        name: "日式茶碗蒸定食",
+        ingredients: ["雞蛋（2顆）", "高湯或水", "醬油", "味醂", "配料（任意）"],
+        highlight: "蛋液加高湯蒸出豆腐般嫩滑口感，搭配白飯就是精緻日式定食！",
+        steps: [
+          "蛋打散，加入 1.5 倍量的高湯攪拌均勻。",
+          "加醬油半匙、味醂少許，過篩去除氣泡。",
+          "倒入茶碗，加入喜歡的配料（蝦、香菇等）。",
+          "電鍋外鍋加半杯水，蒸約 12 分鐘。",
+          "取出後搭配剩飯一起享用。",
+        ],
+        time: "約 20 分鐘",
+        difficulty: "普通",
+        calories: 310,
+        avgLike: 4.5,
+        likeCount: 134,
+      },
+      {
+        keywords: ["蔬菜", "水果"],
+        name: "蔬果鮮榨冷湯",
+        ingredients: ["各種蔬菜水果", "檸檬汁", "鹽", "冰塊"],
+        highlight: "快熟透的蔬果最適合打成冷湯，保留全部營養又清爽解暑！",
+        steps: [
+          "蔬果洗淨，切成適合放入果汁機的大小。",
+          "放入果汁機，加少許水、鹽、檸檬汁。",
+          "攪打至滑順，試味道並調整鹹淡。",
+          "倒入杯中，加冰塊，即刻享用。",
+        ],
+        time: "約 8 分鐘",
+        difficulty: "非常簡單",
+        calories: 90,
+        avgLike: 4.2,
+        likeCount: 102,
+      },
+      {
+        keywords: ["水果"],
+        name: "水果果醬",
+        ingredients: ["熟透水果（任意）", "糖（水果重量的 50%）", "檸檬汁"],
+        highlight: "快過熟的水果煮成果醬，冷藏保存延長壽命，塗麵包超美味！",
+        steps: [
+          "水果去皮去籽，切成小丁或壓成粗泥。",
+          "加入糖與檸檬汁，靜置 30 分鐘出汁。",
+          "中火加熱，不斷攪拌避免燒焦，煮至濃稠。",
+          "倒入乾淨玻璃瓶，放涼後冷藏保存。",
+          "一週內食用完畢。",
+        ],
+        time: "約 40 分鐘",
+        difficulty: "普通",
+        calories: 180,
+        avgLike: 4.3,
+        likeCount: 98,
+      },
+      {
+        /* 通用備用食譜一：什錦蔬菜湯 */
+        keywords: ["__fallback__"],
+        name: "什錦蔬菜養生湯",
+        ingredients: ["各種剩餘蔬菜", "水或高湯", "鹽", "薑片（可選）"],
+        highlight: "任何剩餘蔬菜、根莖類都能入湯，零浪費的溫暖料理！",
+        steps: [
+          "將剩餘蔬菜洗淨，切成適口大小。",
+          "鍋中加水（約 600 ml），加薑片煮滾。",
+          "放入較硬的根莖類，煮 5 分鐘。",
+          "加入葉菜類，續煮 2–3 分鐘。",
+          "加鹽調味，盛碗即完成。",
+        ],
+        time: "約 20 分鐘",
+        difficulty: "簡單",
+        calories: 60,
+        avgLike: 4.0,
+        likeCount: 75,
+      },
+      {
+        /* 通用備用食譜二：剩食炒飯 */
+        keywords: ["__fallback__"],
+        name: "黃金萬用炒飯",
+        ingredients: ["任何剩餘食材", "白飯", "雞蛋", "醬油", "鹽"],
+        highlight: "冰箱裡任何食材都能下鍋，炒飯是最萬用的零浪費料理！",
+        steps: [
+          "將所有剩餘食材切成小丁。",
+          "鍋中熱油，先炒蛋液至半熟。",
+          "加入食材丁翻炒均勻。",
+          "放入白飯大火快炒，加醬油、鹽調味。",
+          "炒至飯粒均勻上色，盛盤即完成。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "簡單",
+        calories: 360,
+        avgLike: 4.4,
+        likeCount: 210,
+      },
+      {
+        /* 通用備用食譜三：雜炊粥 */
+        keywords: ["__fallback__"],
+        name: "暖心雜炊粥",
+        ingredients: ["任何剩餘食材", "白飯或剩飯", "水或高湯", "鹽", "薑"],
+        highlight: "任何剩餘食材都能加入粥中，養胃暖身，最適合清冰箱！",
+        steps: [
+          "剩飯加水（約 1:5 比例）放入鍋中。",
+          "加入薑片，中火煮至飯粒軟化成粥。",
+          "放入剩餘食材（肉、菜、蛋皆可）。",
+          "續煮 5 分鐘，加鹽調味。",
+          "盛碗後可加蔥花或芝麻油提香。",
+        ],
+        time: "約 25 分鐘",
+        difficulty: "非常簡單",
+        calories: 200,
+        avgLike: 4.2,
+        likeCount: 130,
+      },
+      /* ── 新增食譜：香蕉系列 ── */
+      {
+        keywords: ["過熟香蕉", "香蕉"],
+        name: "香蕉巧克力馬芬",
+        ingredients: ["過熟香蕉", "低筋麵粉", "可可粉", "雞蛋", "油"],
+        highlight: "熟透香蕉天然甜又濕潤，讓馬芬口感更鬆軟，不需額外奶油！",
+        steps: [
+          "烤箱預熱 180°C，馬芬模鋪紙杯。",
+          "香蕉壓泥，加蛋、油攪勻。",
+          "篩入麵粉、可可粉、泡打粉、鹽輕拌。",
+          "倒入模具八分滿，烤 20 分鐘。",
+          "牙籤插入不沾即完成，放涼享用。",
+        ],
+        time: "約 30 分鐘",
+        difficulty: "普通",
+        calories: 240,
+        avgLike: 4.7,
+        likeCount: 198,
+      },
+      {
+        keywords: ["過熟香蕉", "香蕉"],
+        name: "香蕉花生醬捲餅",
+        ingredients: ["過熟香蕉", "花生醬", "墨西哥餅皮或薄餅"],
+        highlight: "三種材料就搞定！熟香蕉甜度完全不需加糖，快速早餐首選。",
+        steps: [
+          "餅皮平鋪，均勻塗抹花生醬。",
+          "香蕉去皮放在餅皮一端。",
+          "緊緊捲起，切成 3–4 段。",
+          "可直接享用或平底鍋乾煎至微焦更香。",
+        ],
+        time: "約 5 分鐘",
+        difficulty: "非常簡單",
+        calories: 280,
+        avgLike: 4.5,
+        likeCount: 167,
+      },
+      /* ── 新增食譜：米飯系列 ── */
+      {
+        keywords: ["剩米飯", "米飯"],
+        name: "起司焗烤飯糰",
+        ingredients: ["剩米飯", "起司片", "鹽", "黑胡椒"],
+        highlight: "冷飯捏成糰再烤，外脆內Q，起司拉絲讓人一口接一口！",
+        steps: [
+          "剩飯加鹽、黑胡椒拌勻，捏成橢圓形飯糰。",
+          "放入烤盤，表面鋪起司片。",
+          "烤箱 200°C 烤 12 分鐘至起司金黃。",
+          "取出後可加醬油或海苔碎提味。",
+        ],
+        time: "約 18 分鐘",
+        difficulty: "簡單",
+        calories: 300,
+        avgLike: 4.8,
+        likeCount: 245,
+      },
+      {
+        keywords: ["剩米飯", "米飯", "水果"],
+        name: "芒果椰奶糯米飯",
+        ingredients: ["剩糯米飯或白飯", "椰奶", "糖", "芒果或熟透水果"],
+        highlight: "剩飯加椰奶微煮，搭配熟透水果，秒變泰式甜點！",
+        steps: [
+          "椰奶加糖小火加熱至融化。",
+          "剩飯倒入，攪拌煮至米粒吸收椰奶。",
+          "盛入碗中，旁邊擺切塊水果。",
+          "可熱食或冷藏後享用皆宜。",
+        ],
+        time: "約 12 分鐘",
+        difficulty: "簡單",
+        calories: 340,
+        avgLike: 4.6,
+        likeCount: 189,
+      },
+      /* ── 新增食譜：蔬菜/菜梗系列 ── */
+      {
+        keywords: ["菜梗", "蔬菜"],
+        name: "菜梗味噌湯",
+        ingredients: ["各種菜梗", "味噌醬", "豆腐", "海帶芽", "蔥花"],
+        highlight: "菜梗下湯清甜提鮮，搭配味噌一起喝，溫暖又有層次！",
+        steps: [
+          "菜梗切小段，豆腐切丁備用。",
+          "水煮滾後放入菜梗煮 3 分鐘。",
+          "加入豆腐、海帶芽再煮 2 分鐘。",
+          "關火，舀一瓢湯調入味噌醬（避免煮滾破壞酵素）。",
+          "撒蔥花，盛碗享用。",
+        ],
+        time: "約 12 分鐘",
+        difficulty: "簡單",
+        calories: 80,
+        avgLike: 4.4,
+        likeCount: 131,
+      },
+      {
+        keywords: ["蔬菜", "菜梗"],
+        name: "蔬菜天婦羅",
+        ingredients: ["各種蔬菜或菜梗", "低筋麵粉", "冰水", "鹽"],
+        highlight: "任何蔬菜裹薄麵衣下鍋炸，輕盈酥脆，完全吃不出是剩食！",
+        steps: [
+          "蔬菜洗淨切成適口大小或條狀。",
+          "麵粉加冰水攪拌至略有顆粒（不要過度攪拌）。",
+          "油鍋加熱至 170°C，蔬菜裹麵衣下鍋炸 2 分鐘。",
+          "撈起放在紙巾上吸油。",
+          "沾天婦羅醬或鹽享用。",
+        ],
+        time: "約 20 分鐘",
+        difficulty: "普通",
+        calories: 190,
+        avgLike: 4.5,
+        likeCount: 156,
+      },
+      /* ── 新增食譜：熟肉系列 ── */
+      {
+        keywords: ["熟肉", "肉", "蛋"],
+        name: "肉末蒸蛋",
+        ingredients: ["熟肉末", "雞蛋（2顆）", "高湯或水", "醬油", "蔥花"],
+        highlight: "剩肉末加蛋液一起蒸，省時省力，滑嫩口感媲美餐廳！",
+        steps: [
+          "熟肉切末或壓碎，鋪在碗底。",
+          "蛋打散加高湯（1:1.5）、醬油攪勻，過篩倒入碗中。",
+          "電鍋外鍋半杯水蒸 10 分鐘。",
+          "取出撒蔥花，淋少許芝麻油增香。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "簡單",
+        calories: 195,
+        avgLike: 4.6,
+        likeCount: 172,
+      },
+      {
+        keywords: ["熟肉", "肉", "麵包", "蔬菜"],
+        name: "番茄燉肉醬麵",
+        ingredients: ["熟肉（任意）", "義大利麵或麵條", "番茄醬", "洋蔥", "大蒜"],
+        highlight: "剩肉加番茄醬慢燉，醬汁濃郁入味，10 分鐘完成義式風味！",
+        steps: [
+          "洋蔥、大蒜炒香，加入剩肉翻炒。",
+          "倒入番茄醬（約 150 ml），加鹽、糖調味。",
+          "麵條煮熟撈起備用。",
+          "將醬汁淋在麵條上，撒起司粉。",
+        ],
+        time: "約 20 分鐘",
+        difficulty: "簡單",
+        calories: 520,
+        avgLike: 4.7,
+        likeCount: 214,
+      },
+      /* ── 新增食譜：麵包系列 ── */
+      {
+        keywords: ["麵包"],
+        name: "蒜香麵包脆片",
+        ingredients: ["硬麵包或吐司", "奶油或橄欖油", "大蒜末", "巴西里（可選）"],
+        highlight: "硬掉的麵包切薄片烤至酥脆，比餅乾還好吃的零嘴！",
+        steps: [
+          "麵包切成約 0.5 公分薄片。",
+          "奶油融化後加大蒜末混合，刷在麵包兩面。",
+          "放入烤箱 160°C 烤 12 分鐘至酥脆。",
+          "取出撒巴西里或鹽，放涼即變脆。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "非常簡單",
+        calories: 160,
+        avgLike: 4.5,
+        likeCount: 188,
+      },
+      {
+        keywords: ["麵包", "蛋"],
+        name: "麵包蛋捲",
+        ingredients: ["軟化麵包（去邊）", "雞蛋（1顆）", "起司絲", "火腿（可選）"],
+        highlight: "吐司擀薄捲起食材，烤後外酥內嫩，視覺與口感雙重驚喜！",
+        steps: [
+          "吐司去邊，用擀麵棍輕輕壓薄。",
+          "鋪上起司絲、火腿，從一端緊緊捲起。",
+          "表面刷蛋液，放入烤箱 180°C 烤 12 分鐘。",
+          "取出放涼切段，即可享用。",
+        ],
+        time: "約 18 分鐘",
+        difficulty: "簡單",
+        calories: 230,
+        avgLike: 4.6,
+        likeCount: 203,
+      },
+      /* ── 新增食譜：蛋系列 ── */
+      {
+        keywords: ["蛋", "蔬菜", "麵包"],
+        name: "蔬菜歐姆蛋",
+        ingredients: ["雞蛋（2顆）", "各種蔬菜丁", "起司（可選）", "鹽", "奶油"],
+        highlight: "5 分鐘完成！任何剩蔬菜包進蛋皮，滑嫩又飽足的完美早午餐。",
+        steps: [
+          "蔬菜切小丁，先炒熟備用。",
+          "蛋加鹽打散，平底鍋融奶油後倒入蛋液。",
+          "蛋液半凝固時放入蔬菜丁、起司。",
+          "從一側折起蛋皮包住餡料，盛盤即完成。",
+        ],
+        time: "約 8 分鐘",
+        difficulty: "普通",
+        calories: 210,
+        avgLike: 4.5,
+        likeCount: 178,
+      },
+      {
+        keywords: ["蛋"],
+        name: "滑蛋蓋飯",
+        ingredients: ["雞蛋（2顆）", "高湯", "醬油", "味醂", "白飯"],
+        highlight: "蛋液加高湯半熟凝固，淋在飯上滑順鮮甜，5 分鐘完成日式丼飯！",
+        steps: [
+          "高湯、醬油、味醂混合倒入小鍋煮滾。",
+          "蛋打散，緩緩倒入湯中，輕攪至半熟狀態。",
+          "立即關火，趁半熟狀態淋在白飯上。",
+          "撒蔥花或七味粉即完成。",
+        ],
+        time: "約 8 分鐘",
+        difficulty: "簡單",
+        calories: 370,
+        avgLike: 4.7,
+        likeCount: 267,
+      },
+      /* ── 新增食譜：水果系列 ── */
+      {
+        keywords: ["水果"],
+        name: "水果莎莎醬",
+        ingredients: ["熟透水果（芒果、鳳梨等）", "洋蔥末", "辣椒", "檸檬汁", "香菜"],
+        highlight: "快過熟的水果最甜！做成莎莎醬搭配餅乾或肉類，酸甜開胃！",
+        steps: [
+          "水果去皮切小丁，洋蔥切末。",
+          "辣椒去籽切碎，香菜切段。",
+          "所有材料混合，擠入檸檬汁攪勻。",
+          "靜置 10 分鐘入味，搭配墨西哥餅或烤肉享用。",
+        ],
+        time: "約 15 分鐘",
+        difficulty: "非常簡單",
+        calories: 70,
+        avgLike: 4.3,
+        likeCount: 115,
+      },
+      {
+        keywords: ["水果", "麵包"],
+        name: "水果奇亞籽布丁",
+        ingredients: ["熟透水果", "奇亞籽", "牛奶或植物奶", "蜂蜜"],
+        highlight: "熟透水果打成泥加入布丁，天然甜味無需加糖，健康早餐輕鬆完成！",
+        steps: [
+          "水果去皮打成泥或切小丁。",
+          "牛奶加奇亞籽攪拌均勻，靜置 10 分鐘。",
+          "再攪拌一次避免結塊，冷藏 4 小時以上。",
+          "食用前取出，鋪上水果泥及果粒享用。",
+        ],
+        time: "約 15 分鐘（需冷藏）",
+        difficulty: "非常簡單",
+        calories: 160,
+        avgLike: 4.4,
+        likeCount: 142,
+      },
     ];
 
+    /* ====================================================
+       SVG 插圖庫：依料理類型自動選圖
+       每個 SVG 都是純程式碼繪製，不需要外部圖片檔
+       ==================================================== */
+    const RECIPE_ILLUSTRATIONS = {
+      /* ── 煎餅、薄餅類：金黃疊層煎餅 ── */
+      pancake: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="pg1" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff8dc"/><stop offset="100%" stop-color="#e8b84b"/></radialGradient>
+          <radialGradient id="pg2" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff3a0"/><stop offset="100%" stop-color="#d4a017"/></radialGradient>
+        </defs>
+        <!-- 盤子 -->
+        <ellipse cx="100" cy="112" rx="82" ry="14" fill="#f0e8d0"/>
+        <ellipse cx="100" cy="110" rx="80" ry="12" fill="#faf5ea"/>
+        <!-- 煎餅三層 -->
+        <ellipse cx="100" cy="88" rx="68" ry="14" fill="url(#pg1)" stroke="#c8940a" stroke-width="1.5"/>
+        <ellipse cx="100" cy="74" rx="62" ry="13" fill="url(#pg2)" stroke="#c8940a" stroke-width="1.5"/>
+        <ellipse cx="100" cy="61" rx="56" ry="12" fill="url(#pg1)" stroke="#c8940a" stroke-width="1.5"/>
+        <!-- 香蕉片裝飾 -->
+        <ellipse cx="78"  cy="57" rx="9" ry="4" fill="#f7dc6f" stroke="#d4ac0d" stroke-width="1"/>
+        <ellipse cx="100" cy="55" rx="9" ry="4" fill="#f7dc6f" stroke="#d4ac0d" stroke-width="1"/>
+        <ellipse cx="122" cy="57" rx="9" ry="4" fill="#f7dc6f" stroke="#d4ac0d" stroke-width="1"/>
+        <!-- 蜂蜜流下 -->
+        <path d="M 112 55 Q 118 62 116 72" stroke="#f39c12" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="116" cy="74" r="3" fill="#f39c12"/>
+        <!-- 葉片 -->
+        <path d="M 72 52 Q 68 44 76 42 Q 74 50 72 52" fill="#27ae60"/>
+      </svg>`,
+
+      /* ── 炒飯類：鑊氣炒飯 ── */
+      friedrice: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bowl" cx="50%" cy="60%"><stop offset="0%" stop-color="#fff8e7"/><stop offset="100%" stop-color="#e8d080"/></radialGradient>
+        </defs>
+        <!-- 碗 -->
+        <path d="M 30 75 Q 100 115 170 75 L 162 58 Q 100 95 38 58 Z" fill="#c8922a"/>
+        <path d="M 38 58 Q 100 95 162 58 Q 100 24 38 58 Z" fill="url(#bowl)"/>
+        <!-- 飯粒 -->
+        <ellipse cx="72"  cy="52" rx="5" ry="3" fill="#fff9e0" opacity="0.9"/>
+        <ellipse cx="90"  cy="46" rx="5" ry="3" fill="#fff9e0" opacity="0.9"/>
+        <ellipse cx="110" cy="44" rx="5" ry="3" fill="#fff9e0" opacity="0.9"/>
+        <ellipse cx="128" cy="50" rx="5" ry="3" fill="#fff9e0" opacity="0.9"/>
+        <ellipse cx="82"  cy="60" rx="4" ry="2.5" fill="#fff9e0" opacity="0.8"/>
+        <ellipse cx="118" cy="58" rx="4" ry="2.5" fill="#fff9e0" opacity="0.8"/>
+        <!-- 配料 -->
+        <circle cx="80"  cy="50" r="5" fill="#e74c3c"/>
+        <circle cx="104" cy="47" r="4" fill="#27ae60"/>
+        <circle cx="122" cy="53" r="4.5" fill="#f39c12"/>
+        <circle cx="94"  cy="58" r="3.5" fill="#27ae60"/>
+        <circle cx="114" cy="60" r="3" fill="#f1c40f"/>
+        <!-- 蔥花 -->
+        <line x1="86" y1="42" x2="86" y2="32" stroke="#2ecc71" stroke-width="2"/>
+        <line x1="110" y1="40" x2="112" y2="30" stroke="#2ecc71" stroke-width="2"/>
+        <!-- 熱氣 -->
+        <path d="M 88 28 Q 92 20 88 12" stroke="#ddd" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+        <path d="M 112 26 Q 116 18 112 10" stroke="#ddd" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      </svg>`,
+
+      /* ── 炒蔬菜類：鮮炒時蔬 ── */
+      stirfry: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <!-- 炒鍋 -->
+        <path d="M 28 90 Q 100 118 172 90 L 165 65 Q 100 90 35 65 Z" fill="#5d4037"/>
+        <path d="M 35 65 Q 100 90 165 65 Q 100 42 35 65 Z" fill="#4e342e"/>
+        <rect x="165" y="58" width="30" height="8" rx="4" fill="#8d6e63"/>
+        <rect x="5" y="58" width="30" height="8" rx="4" fill="#8d6e63"/>
+        <!-- 蔬菜 -->
+        <ellipse cx="78"  cy="58" rx="16" ry="9" fill="#27ae60" transform="rotate(-15,78,58)"/>
+        <ellipse cx="100" cy="54" rx="16" ry="9" fill="#2ecc71" transform="rotate(5,100,54)"/>
+        <ellipse cx="122" cy="58" rx="14" ry="8" fill="#27ae60" transform="rotate(15,122,58)"/>
+        <!-- 蒜片 -->
+        <ellipse cx="88"  cy="68" rx="7" ry="4" fill="#f9e4b7" transform="rotate(-10,88,68)"/>
+        <ellipse cx="112" cy="65" rx="7" ry="4" fill="#f9e4b7" transform="rotate(10,112,65)"/>
+        <!-- 辣椒 -->
+        <path d="M 68 52 Q 60 44 65 38 Q 70 44 68 52" fill="#e74c3c"/>
+        <path d="M 132 52 Q 140 44 135 38 Q 130 44 132 52" fill="#e74c3c"/>
+        <!-- 熱氣 -->
+        <path d="M 90 38 Q 94 28 90 18" stroke="#f39c12" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 110 36 Q 114 26 110 16" stroke="#f39c12" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+      </svg>`,
+
+      /* ── 拌飯/蓋飯類：豐盛丼飯 ── */
+      ricebowl: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="rb1" cx="50%" cy="50%"><stop offset="0%" stop-color="#fff8e7"/><stop offset="100%" stop-color="#d4a017"/></radialGradient>
+        </defs>
+        <!-- 碗外形 -->
+        <path d="M 25 100 Q 100 124 175 100 L 168 72 Q 100 98 32 72 Z" fill="#b5651d"/>
+        <path d="M 32 72 Q 100 98 168 72 Q 100 48 32 72 Z" fill="url(#rb1)"/>
+        <!-- 白飯 -->
+        <ellipse cx="100" cy="66" rx="58" ry="16" fill="#fffef0"/>
+        <!-- 配料 -->
+        <path d="M 58 62 Q 80 50 100 62 Q 80 74 58 62" fill="#27ae60"/>
+        <path d="M 100 60 Q 122 48 142 60 Q 122 72 100 60" fill="#27ae60"/>
+        <circle cx="76"  cy="58" r="9" fill="#e74c3c" opacity="0.85"/>
+        <circle cx="124" cy="58" r="8" fill="#f39c12" opacity="0.85"/>
+        <circle cx="100" cy="68" r="7" fill="#f1c40f"/>
+        <!-- 醬油光澤 -->
+        <path d="M 60 70 Q 100 78 140 70" stroke="#8B4513" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <!-- 筷子 -->
+        <line x1="142" y1="40" x2="168" y2="80" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+        <line x1="150" y1="38" x2="174" y2="78" stroke="#c8a46e" stroke-width="3" stroke-linecap="round"/>
+      </svg>`,
+
+      /* ── 麵包/三明治類：厚切三明治 ── */
+      bread: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="br1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f9e4a0"/><stop offset="100%" stop-color="#d4a017"/></linearGradient>
+        </defs>
+        <!-- 底層麵包 -->
+        <rect x="28" y="88" width="144" height="26" rx="10" fill="url(#br1)" stroke="#b8860b" stroke-width="1.5"/>
+        <path d="M 38 88 Q 100 78 162 88" fill="#f9e47a" stroke="#d4a017" stroke-width="1"/>
+        <!-- 生菜 -->
+        <path d="M 32 84 Q 60 72 100 80 Q 140 72 168 84" fill="#27ae60" stroke="#1e8449" stroke-width="1"/>
+        <path d="M 36 80 Q 65 68 100 76 Q 135 68 164 80" fill="#2ecc71"/>
+        <!-- 番茄 -->
+        <ellipse cx="72"  cy="72" rx="18" ry="7" fill="#e74c3c"/>
+        <ellipse cx="128" cy="72" rx="18" ry="7" fill="#e74c3c"/>
+        <!-- 起司 -->
+        <path d="M 35 65 L 165 65 L 165 72 Q 100 78 35 72 Z" fill="#f4d03f" opacity="0.9"/>
+        <!-- 頂層麵包 -->
+        <rect x="28" y="38" width="144" height="28" rx="10" fill="url(#br1)" stroke="#b8860b" stroke-width="1.5"/>
+        <path d="M 38 38 Q 100 22 162 38" fill="#fff9dc" stroke="#d4a017" stroke-width="1.5"/>
+        <!-- 芝麻 -->
+        <ellipse cx="72"  cy="28" rx="3" ry="2" fill="#8B4513"/>
+        <ellipse cx="100" cy="24" rx="3" ry="2" fill="#8B4513"/>
+        <ellipse cx="128" cy="28" rx="3" ry="2" fill="#8B4513"/>
+      </svg>`,
+
+      /* ── 蛋類：太陽蛋 ── */
+      egg: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="eg1" cx="50%" cy="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="80%" stop-color="#f8f8f0"/><stop offset="100%" stop-color="#e8e0c8"/></radialGradient>
+          <radialGradient id="yolk" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff176"/><stop offset="60%" stop-color="#fdd835"/><stop offset="100%" stop-color="#f9a825"/></radialGradient>
+        </defs>
+        <!-- 平底鍋 -->
+        <ellipse cx="100" cy="108" rx="88" ry="16" fill="#5d4037"/>
+        <ellipse cx="100" cy="103" rx="85" ry="14" fill="#4e342e"/>
+        <!-- 蛋白 -->
+        <path d="M 28 85 Q 40 60 70 72 Q 80 55 100 58 Q 120 55 130 72 Q 160 60 172 85 Q 160 98 100 100 Q 40 98 28 85 Z" fill="url(#eg1)"/>
+        <!-- 蛋黃 -->
+        <circle cx="100" cy="78" r="24" fill="url(#yolk)"/>
+        <circle cx="100" cy="78" r="20" fill="#fdd835"/>
+        <!-- 光澤 -->
+        <circle cx="92" cy="70" r="6" fill="#fff9c4" opacity="0.7"/>
+        <circle cx="88" cy="68" r="3" fill="#ffffff" opacity="0.5"/>
+        <!-- 鹽粒 -->
+        <circle cx="62" cy="82" r="2" fill="#fff" opacity="0.8"/>
+        <circle cx="138" cy="80" r="2" fill="#fff" opacity="0.8"/>
+        <circle cx="70" cy="92" r="1.5" fill="#fff" opacity="0.8"/>
+        <!-- 把手 -->
+        <rect x="172" y="98" width="24" height="10" rx="5" fill="#8d6e63"/>
+      </svg>`,
+
+      /* ── 冰沙/飲料類：繽紛果昔 ── */
+      smoothie: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sm1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f9c74f"/>
+            <stop offset="50%" stop-color="#f4845f"/>
+            <stop offset="100%" stop-color="#e05c4b"/>
+          </linearGradient>
+        </defs>
+        <!-- 杯子 -->
+        <path d="M 62 22 L 52 116 Q 68 126 100 126 Q 132 126 148 116 L 138 22 Z" fill="url(#sm1)"/>
+        <!-- 杯口 -->
+        <rect x="62" y="18" width="76" height="10" rx="5" fill="#e0e0e0"/>
+        <!-- 氣泡/光澤 -->
+        <ellipse cx="86" cy="55" rx="14" ry="20" fill="#fff" opacity="0.12"/>
+        <circle cx="78" cy="80" r="8" fill="#fff" opacity="0.1"/>
+        <circle cx="116" cy="95" r="10" fill="#fff" opacity="0.08"/>
+        <!-- 吸管 -->
+        <rect x="105" y="4" width="8" height="80" rx="4" fill="#a5d6a7"/>
+        <rect x="105" y="4" width="4" height="80" rx="2" fill="#c8e6c9"/>
+        <!-- 水果裝飾 -->
+        <circle cx="74" cy="20" r="10" fill="#f06292"/>
+        <path d="M 74 10 Q 78 4 74 2 Q 70 4 74 10" fill="#4caf50"/>
+        <!-- 薄荷葉 -->
+        <path d="M 86 18 Q 80 10 86 6 Q 92 10 86 18" fill="#4caf50"/>
+        <path d="M 92 16 Q 86 8 92 4 Q 98 8 92 16" fill="#66bb6a"/>
+      </svg>`,
+
+      /* ── 湯類：熱騰騰湯碗 ── */
+      soup: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="sp1" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff8e1"/><stop offset="100%" stop-color="#e8b84b"/></radialGradient>
+        </defs>
+        <!-- 碗 -->
+        <path d="M 22 90 Q 100 118 178 90 L 170 64 Q 100 90 30 64 Z" fill="#a0522d"/>
+        <path d="M 30 64 Q 100 90 170 64 Q 100 38 30 64 Z" fill="url(#sp1)"/>
+        <!-- 湯面 -->
+        <ellipse cx="100" cy="62" rx="68" ry="18" fill="#f0b060" opacity="0.6"/>
+        <!-- 配料 -->
+        <circle cx="72"  cy="58" r="8" fill="#e74c3c" opacity="0.85"/>
+        <circle cx="100" cy="54" r="7" fill="#27ae60" opacity="0.9"/>
+        <circle cx="128" cy="58" r="8" fill="#f39c12" opacity="0.85"/>
+        <ellipse cx="86"  cy="65" rx="10" ry="5" fill="#f5cba7"/>
+        <ellipse cx="114" cy="63" rx="10" ry="5" fill="#f5cba7"/>
+        <!-- 蔥花 -->
+        <circle cx="72"  cy="50" r="3" fill="#2ecc71"/>
+        <circle cx="100" cy="46" r="3" fill="#2ecc71"/>
+        <circle cx="128" cy="50" r="3" fill="#2ecc71"/>
+        <!-- 熱氣 -->
+        <path d="M 72 38 Q 76 26 72 14" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 100 34 Q 104 22 100 10" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 128 38 Q 132 26 128 14" stroke="#ccc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- 碟子 -->
+        <ellipse cx="100" cy="106" rx="84" ry="12" fill="#f5e6d0"/>
+      </svg>`,
+
+      /* ── 沙拉類：繽紛蔬菜沙拉 ── */
+      salad: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <!-- 沙拉碗 -->
+        <path d="M 22 95 Q 100 120 178 95 L 170 65 Q 100 90 30 65 Z" fill="#8d6e63"/>
+        <path d="M 30 65 Q 100 90 170 65 Q 100 40 30 65 Z" fill="#fafaf5"/>
+        <!-- 生菜底 -->
+        <ellipse cx="76"  cy="58" rx="20" ry="12" fill="#27ae60" transform="rotate(-20,76,58)"/>
+        <ellipse cx="100" cy="52" rx="22" ry="12" fill="#2ecc71" transform="rotate(5,100,52)"/>
+        <ellipse cx="124" cy="58" rx="20" ry="11" fill="#27ae60" transform="rotate(20,124,58)"/>
+        <!-- 番茄 -->
+        <circle cx="80"  cy="60" r="10" fill="#e74c3c"/>
+        <circle cx="80"  cy="56" r="4" fill="#c0392b"/>
+        <circle cx="120" cy="60" r="10" fill="#e74c3c"/>
+        <!-- 玉米 -->
+        <ellipse cx="100" cy="62" rx="12" ry="7" fill="#f4d03f"/>
+        <ellipse cx="100" cy="61" rx="10" ry="6" fill="#f9e47a"/>
+        <!-- 起司碎 -->
+        <ellipse cx="68"  cy="68" rx="8" ry="4" fill="#f9e47a" transform="rotate(-15,68,68)"/>
+        <ellipse cx="130" cy="66" rx="8" ry="4" fill="#f9e47a" transform="rotate(15,130,66)"/>
+        <!-- 叉子 -->
+        <line x1="162" y1="38" x2="162" y2="75" stroke="#9e9e9e" stroke-width="3"/>
+        <line x1="158" y1="38" x2="158" y2="52" stroke="#9e9e9e" stroke-width="2"/>
+        <line x1="162" y1="38" x2="162" y2="52" stroke="#9e9e9e" stroke-width="2"/>
+        <line x1="166" y1="38" x2="166" y2="52" stroke="#9e9e9e" stroke-width="2"/>
+      </svg>`,
+
+      /* ── 甜點/馬芬類：草莓杯子蛋糕 ── */
+      dessert: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="dt1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f8bbd0"/><stop offset="100%" stop-color="#e91e8c" stop-opacity="0.3"/></linearGradient>
+        </defs>
+        <!-- 紙托 -->
+        <path d="M 58 125 L 50 80 Q 62 72 100 72 Q 138 72 150 80 L 142 125 Z" fill="#f3e0b5" stroke="#e0c870" stroke-width="1.5"/>
+        <line x1="62" y1="78" x2="58" y2="122" stroke="#e0c870" stroke-width="1"/>
+        <line x1="80" y1="74" x2="76" y2="122" stroke="#e0c870" stroke-width="1"/>
+        <line x1="100" y1="72" x2="100" y2="122" stroke="#e0c870" stroke-width="1"/>
+        <line x1="120" y1="74" x2="124" y2="122" stroke="#e0c870" stroke-width="1"/>
+        <line x1="138" y1="78" x2="142" y2="122" stroke="#e0c870" stroke-width="1"/>
+        <!-- 奶油霜 -->
+        <path d="M 50 78 Q 100 50 150 78 Q 138 64 124 58 Q 100 40 76 58 Q 62 64 50 78" fill="url(#dt1)"/>
+        <ellipse cx="100" cy="60" rx="38" ry="20" fill="#fce4ec"/>
+        <ellipse cx="100" cy="54" rx="30" ry="16" fill="#f8bbd0"/>
+        <ellipse cx="100" cy="48" rx="20" ry="12" fill="#fce4ec"/>
+        <!-- 草莓 -->
+        <path d="M 100 30 Q 92 36 92 44 Q 100 50 108 44 Q 108 36 100 30" fill="#e74c3c"/>
+        <circle cx="96"  cy="38" r="2" fill="#c0392b"/>
+        <circle cx="104" cy="40" r="2" fill="#c0392b"/>
+        <circle cx="100" cy="44" r="2" fill="#c0392b"/>
+        <path d="M 98 30 Q 96 22 100 18 Q 104 22 102 30" fill="#27ae60"/>
+        <!-- 糖珠裝飾 -->
+        <circle cx="78"  cy="55" r="3" fill="#9b59b6"/>
+        <circle cx="122" cy="55" r="3" fill="#3498db"/>
+        <circle cx="88"  cy="50" r="2.5" fill="#e74c3c"/>
+        <circle cx="112" cy="50" r="2.5" fill="#f39c12"/>
+      </svg>`,
+
+      /* ── 果醬/醃漬類：玻璃罐果醬 ── */
+      jam: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="jm1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#ff8a80"/><stop offset="100%" stop-color="#c62828"/></linearGradient>
+        </defs>
+        <!-- 罐子主體 -->
+        <rect x="56" y="42" width="88" height="76" rx="12" fill="#e8f5e9" stroke="#ccc" stroke-width="1.5"/>
+        <rect x="60" y="46" width="80" height="68" rx="10" fill="url(#jm1)" opacity="0.88"/>
+        <!-- 罐蓋 -->
+        <rect x="50" y="32" width="100" height="16" rx="8" fill="#d4a017"/>
+        <rect x="56" y="28" width="88" height="10" rx="5" fill="#b8860b"/>
+        <!-- 果醬光澤 -->
+        <ellipse cx="82" cy="72" rx="14" ry="22" fill="#fff" opacity="0.15"/>
+        <!-- 水果圖案 -->
+        <circle cx="100" cy="76" r="18" fill="#e53935" opacity="0.5"/>
+        <path d="M 88 68 Q 100 56 112 68 Q 100 80 88 68" fill="#ff8a80" opacity="0.6"/>
+        <!-- 標籤 -->
+        <rect x="66" y="82" width="68" height="26" rx="4" fill="#fff9e0" opacity="0.85"/>
+        <text x="100" y="92" text-anchor="middle" font-size="7" fill="#8B4513" font-weight="bold">Homemade</text>
+        <text x="100" y="102" text-anchor="middle" font-size="6" fill="#a0522d">果醬</text>
+        <!-- 湯匙 -->
+        <path d="M 152 50 Q 158 60 155 80 L 152 118" stroke="#9e9e9e" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="155" cy="46" rx="8" ry="6" fill="#bdbdbd"/>
+      </svg>`,
+
+      /* ── 通用/其他：精緻餐盤 ── */
+      default: `<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="df1" cx="50%" cy="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f0f0e8"/></radialGradient>
+        </defs>
+        <!-- 餐盤 -->
+        <ellipse cx="100" cy="75" rx="82" ry="50" fill="#e0e0d8" stroke="#ccc" stroke-width="1.5"/>
+        <ellipse cx="100" cy="73" rx="78" ry="47" fill="url(#df1)"/>
+        <ellipse cx="100" cy="72" rx="58" ry="35" fill="none" stroke="#ddd" stroke-width="1"/>
+        <!-- 食物 emoji 文字 -->
+        <text x="100" y="82" text-anchor="middle" font-size="38" fill="#2d6a4f">🍽️</text>
+        <!-- 刀叉 -->
+        <line x1="28" y1="42" x2="28" y2="108" stroke="#bbb" stroke-width="3" stroke-linecap="round"/>
+        <line x1="22" y1="42" x2="22" y2="60" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>
+        <line x1="28" y1="42" x2="28" y2="60" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>
+        <line x1="34" y1="42" x2="34" y2="60" stroke="#bbb" stroke-width="2" stroke-linecap="round"/>
+        <line x1="172" y1="42" x2="172" y2="108" stroke="#bbb" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 166 60 Q 178 68 166 76" stroke="#bbb" stroke-width="2" fill="none"/>
+      </svg>`,
+    };
+
+    /* 依料理名稱關鍵字決定使用哪張插圖 */
+    function getIllustration(recipeName) {
+      const n = recipeName;
+      if (/煎餅|法式烤|捲餅/.test(n))   return RECIPE_ILLUSTRATIONS.pancake;
+      if (/炒飯|飯糰|蛋包飯|雜炊/.test(n)) return RECIPE_ILLUSTRATIONS.friedrice;
+      if (/炒菜|炒烏龍|天婦羅/.test(n))  return RECIPE_ILLUSTRATIONS.stirfry;
+      if (/拌飯|蓋飯|滑蛋/.test(n))     return RECIPE_ILLUSTRATIONS.ricebowl;
+      if (/三明治|麵包丁|蒜香|蛋捲/.test(n)) return RECIPE_ILLUSTRATIONS.bread;
+      if (/玉子燒|茶碗蒸|烘蛋|歐姆蛋|蒸蛋/.test(n)) return RECIPE_ILLUSTRATIONS.egg;
+      if (/冰沙|布丁|椰奶/.test(n))     return RECIPE_ILLUSTRATIONS.smoothie;
+      if (/湯|清湯|味噌/.test(n))       return RECIPE_ILLUSTRATIONS.soup;
+      if (/沙拉|莎莎/.test(n))          return RECIPE_ILLUSTRATIONS.salad;
+      if (/馬芬|布丁|甜點|焗烤|起司飯/.test(n)) return RECIPE_ILLUSTRATIONS.dessert;
+      if (/果醬|醃漬/.test(n))          return RECIPE_ILLUSTRATIONS.jam;
+      return RECIPE_ILLUSTRATIONS.default;
+    }
+
+    /* ====================================================
+       狀態管理：用 Set 儲存已選食材，方便去重
+       ==================================================== */
     const selectedIngredients = new Set();
 
+    /* ====================================================
+       初始化：產生快速標籤按鈕
+       ==================================================== */
     function initQuickTags() {
       const container = document.getElementById("quick-tags");
       QUICK_INGREDIENTS.forEach(item => {
@@ -678,22 +1603,35 @@
         btn.className = "quick-tag";
         btn.setAttribute("type", "button");
         btn.setAttribute("aria-pressed", "false");
-        btn.dataset.name = item.name;
-        btn.addEventListener("click", () => toggleTag(btn, item.name));
+        /* dataset.name 儲存顯示名稱；dataset.keyword 儲存用於比對食譜的關鍵字 */
+        btn.dataset.name    = item.name;
+        btn.dataset.keyword = item.keyword || item.name;
+        btn.addEventListener("click", () => toggleTag(btn, item.name, item.keyword || item.name));
         btn.addEventListener("keydown", e => {
-          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleTag(btn, item.name); }
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleTag(btn, item.name, item.keyword || item.name);
+          }
         });
         container.appendChild(btn);
       });
     }
 
-    function toggleTag(btnEl, name) {
+    /* ====================================================
+       切換快速標籤的選取狀態
+       ==================================================== */
+    /* ingredientKeywords：Map，顯示名稱 → 食譜比對關鍵字 */
+    const ingredientKeywords = new Map();
+
+    function toggleTag(btnEl, name, keyword) {
       if (selectedIngredients.has(name)) {
         selectedIngredients.delete(name);
+        ingredientKeywords.delete(name);
         btnEl.classList.remove("selected");
         btnEl.setAttribute("aria-pressed", "false");
       } else {
         selectedIngredients.add(name);
+        ingredientKeywords.set(name, keyword);
         btnEl.classList.add("selected");
         btnEl.setAttribute("aria-pressed", "true");
       }
@@ -701,150 +1639,371 @@
       updateCarbonEstimate();
     }
 
+    /* ====================================================
+       新增自訂食材
+       ==================================================== */
     function addCustomIngredient() {
       const input = document.getElementById("custom-ingredient");
       const name = input.value.trim();
-      if (!name) return;
+      if (!name) return; /* 空輸入不處理 */
       selectedIngredients.add(name);
       input.value = "";
       renderSelectedList();
       updateCarbonEstimate();
+      /* 將焦點移回輸入框，方便連續輸入 */
       input.focus();
     }
 
-    document.getElementById("custom-ingredient").addEventListener("keydown", function(e) {
-      if (e.key === "Enter") { e.preventDefault(); addCustomIngredient(); }
-    });
+    /* ====================================================
+       Enter 鍵也能新增食材
+       ==================================================== */
+    document.getElementById("custom-ingredient")
+      .addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addCustomIngredient();
+        }
+      });
 
+    /* ====================================================
+       移除已選食材
+       ==================================================== */
     function removeIngredient(name) {
       selectedIngredients.delete(name);
+      /* 同步更新快速標籤的視覺狀態 */
       document.querySelectorAll(".quick-tag").forEach(btn => {
-        if (btn.dataset.name === name) { btn.classList.remove("selected"); btn.setAttribute("aria-pressed", "false"); }
+        if (btn.dataset.name === name) {
+          btn.classList.remove("selected");
+          btn.setAttribute("aria-pressed", "false");
+        }
       });
       renderSelectedList();
       updateCarbonEstimate();
     }
 
+    /* ====================================================
+       渲染已選食材清單
+       ==================================================== */
     function renderSelectedList() {
       const list = document.getElementById("selected-list");
       const countEl = document.getElementById("selected-count");
-      list.innerHTML = "";
+
+      list.innerHTML = ""; /* 清空再重繪 */
       countEl.textContent = selectedIngredients.size;
+
       selectedIngredients.forEach(name => {
         const item = document.createElement("div");
         item.className = "selected-item";
+
         const label = document.createElement("span");
         label.textContent = name;
+
         const removeBtn = document.createElement("button");
         removeBtn.className = "remove-btn";
         removeBtn.innerHTML = "✕";
         removeBtn.setAttribute("aria-label", `移除 ${name}`);
         removeBtn.setAttribute("type", "button");
         removeBtn.addEventListener("click", () => removeIngredient(name));
+
         item.appendChild(label);
         item.appendChild(removeBtn);
         list.appendChild(item);
       });
     }
 
+    /* ====================================================
+       更新展示用碳排估算
+       以每個食材 0.12 kg CO₂e 為基礎（示意數值）
+       ==================================================== */
     function updateCarbonEstimate() {
       const carbonEl = document.getElementById("carbon-number");
       const count = selectedIngredients.size;
-      if (count === 0) { carbonEl.textContent = "— kg CO₂e"; return; }
+
+      if (count === 0) {
+        carbonEl.textContent = "— kg CO₂e";
+        return;
+      }
+
+      /* 計算：先查快速食材的個別係數，其餘用預設值 */
       let total = 0;
       selectedIngredients.forEach(name => {
         const found = QUICK_INGREDIENTS.find(i => i.name === name);
-        total += found ? found.carbon : 0.12;
+        total += found ? found.carbon : 0.12; /* 自訂食材用預設值 */
       });
+
       carbonEl.textContent = `約 ${total.toFixed(2)} kg CO₂e`;
     }
 
+    /* ====================================================
+       生成食譜推薦
+       ==================================================== */
     function generateRecipes() {
       const container = document.getElementById("recipes-container");
+
+      /* 若無食材，顯示友善提醒 */
       if (selectedIngredients.size === 0) {
         const warn = document.getElementById("warning-msg");
         warn.classList.add("show");
+        /* 捲動到提醒訊息，方便使用者看到 */
         warn.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
+
+      /* 隱藏提醒 */
       document.getElementById("warning-msg").classList.remove("show");
-      const selectedArr = Array.from(selectedIngredients);
-      let matched = RECIPES.filter(recipe =>
-        recipe.keywords.some(kw => selectedArr.some(sel => sel.includes(kw) || kw.includes(sel)))
+
+      /* 找出符合的食譜：使用 keyword 對應值（或直接用顯示名稱）比對 */
+      const selectedArr = Array.from(selectedIngredients).map(name =>
+        ingredientKeywords.get(name) || name
       );
+      let matched = RECIPES.filter(recipe =>
+        recipe.keywords.some(kw =>
+          selectedArr.some(sel =>
+            sel.includes(kw) || kw.includes(sel)
+          )
+        )
+      );
+
+      /* 排除 fallback 備用食譜（只有在沒有其他結果時才用） */
       const nonFallback = matched.filter(r => !r.keywords.includes("__fallback__"));
-      if (nonFallback.length > 0) { matched = nonFallback; }
-      else { matched = RECIPES.filter(r => r.keywords.includes("__fallback__")); }
+      if (nonFallback.length > 0) {
+        matched = nonFallback;
+      } else {
+        /* 沒有任何匹配時，使用備用食譜 */
+        matched = RECIPES.filter(r => r.keywords.includes("__fallback__"));
+      }
+
+      /* 最多推薦 3 道，隨機挑選保持趣味性 */
       const shuffled = matched.sort(() => Math.random() - 0.5);
       const toShow = shuffled.slice(0, 3);
+
+      /* 清空並插入新卡片 */
       container.innerHTML = "";
+
+      /* 加入區塊標題 */
       const header = document.createElement("div");
-      header.innerHTML = `<h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦（共 ${toShow.length} 道）</h2><p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>`;
+      header.innerHTML = `
+        <h2 class="section-title" style="padding-top:8px;">🍽️ 料理靈感推薦（共 ${toShow.length} 道）</h2>
+        <p class="section-desc">以下為靈感示範，請依實際食材與口味調整食譜。</p>
+      `;
       container.appendChild(header);
+
+      /* 安全提醒橫幅 */
       const safety = document.createElement("div");
       safety.className = "safety-notice";
       safety.setAttribute("role", "note");
-      safety.innerHTML = `<strong>🔔 食材安全提醒</strong>若食材出現異味、發黴、黏液或保存時間不明，請勿食用。`;
+      safety.innerHTML = `
+        <strong>🔔 食材安全提醒</strong>
+        若食材出現異味、發黴、黏液或保存時間不明，請勿食用。
+      `;
       container.appendChild(safety);
-      toShow.forEach((recipe, index) => { container.appendChild(createRecipeCard(recipe, index)); });
+
+      /* 逐一渲染食譜卡片 */
+      toShow.forEach((recipe, index) => {
+        const card = createRecipeCard(recipe, index);
+        container.appendChild(card);
+      });
+
+      /* 平滑捲動到食譜區 */
       container.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+    /* ====================================================
+       建立單一食譜卡片 DOM 元素
+       ==================================================== */
     function createRecipeCard(recipe, index) {
       const card = document.createElement("article");
       card.className = "card recipe-card-anim";
+      /* 加入動畫延遲，讓多張卡片依序出現 */
       card.style.animationDelay = `${index * 0.12}s`;
       card.setAttribute("aria-label", `食譜卡片：${recipe.name}`);
-      const ingredientTags = recipe.ingredients.map(i => `<span>${i}</span>`).join("");
-      const stepItems = recipe.steps.map(s => `<li>${s}</li>`).join("");
-      const difficultyIcon = {"非常簡單":"🟢","簡單":"🟡","普通":"🟠","稍難":"🔴"}[recipe.difficulty] || "🟡";
+
+      /* 食材標籤 HTML */
+      const ingredientTags = recipe.ingredients
+        .map(i => `<span>${i}</span>`)
+        .join("");
+
+      /* 步驟列表 HTML */
+      const stepItems = recipe.steps
+        .map(s => `<li>${s}</li>`)
+        .join("");
+
+      /* 難度對應顏色（文字說明為主，顏色為輔） */
+      const difficultyIcon = {
+        "非常簡單": "🟢",
+        "簡單": "🟡",
+        "普通": "🟠",
+        "稍難": "🔴",
+      }[recipe.difficulty] || "🟡";
+
+      /* 產生平均喜好度星星圖示（實心★ 與 空心☆） */
+      const avgLike = recipe.avgLike || 0;
+      const fullStars = Math.floor(avgLike);
+      const halfStar  = avgLike - fullStars >= 0.5 ? 1 : 0;
+      const emptyStars = 5 - fullStars - halfStar;
+      const avgStarHTML =
+        "★".repeat(fullStars) +
+        (halfStar ? "✦" : "") +
+        "☆".repeat(emptyStars);
+
+      /* 取得對應插圖 SVG */
+      const illustrationSVG = getIllustration(recipe.name);
+
       card.innerHTML = `
+        <!-- 插圖區塊 -->
+        <div class="recipe-illustration" aria-hidden="true">
+          ${illustrationSVG}
+        </div>
         <span class="ai-badge">💡 靈感示範</span>
         <h3 class="recipe-name">${recipe.name}</h3>
+
+        <!-- 時間、難度、卡路里徽章 -->
         <div class="meta-row">
           <span class="meta-badge badge-time">⏱ ${recipe.time}</span>
           <span class="meta-badge badge-difficulty">${difficultyIcon} 難度：${recipe.difficulty}</span>
+          <span class="meta-badge badge-calories">🔥 約 ${recipe.calories} 大卡</span>
         </div>
-        <p style="font-size:0.85rem; color:var(--text-mid); margin-bottom:6px; font-weight:600;">建議使用食材</p>
+
+        <!-- 平均喜好度 -->
+        <div class="avg-like-row">
+          <span class="avg-like-label">平均喜好度：</span>
+          <span class="avg-like-stars" id="avg-stars-${index}">${avgStarHTML}</span>
+          <span class="avg-like-score" id="avg-score-${index}">${avgLike.toFixed(1)}</span>
+          <span class="avg-like-count" id="avg-count-${index}">（${recipe.likeCount} 人評分）</span>
+        </div>
+
+        <!-- 使用食材 -->
+        <p class="ingredients-label">建議使用食材</p>
         <div class="recipe-ingredients">${ingredientTags}</div>
-        <div class="highlight-box"><strong>✨ 食材改造亮點</strong><br>${recipe.highlight}</div>
+
+        <!-- 食材改造亮點 -->
+        <div class="highlight-box">
+          <strong>✨ 食材改造亮點</strong><br>
+          ${recipe.highlight}
+        </div>
+
+        <!-- 料理步驟 -->
         <p class="steps-title">📋 簡易料理步驟</p>
         <ol class="steps-list">${stepItems}</ol>
+
+        <!-- 分隔線 -->
         <hr class="card-divider">
+
+        <!-- 四、互動回饋區 -->
+        <!-- 星級評分（使用者自己打分） -->
         <div class="rating-row">
           <span class="rating-label">為這道食譜評分：</span>
-          <div class="stars" role="group" aria-label="星級評分">
-            ${[1,2,3,4,5].map(n => `<button class="star-btn" type="button" data-rating="${n}" aria-label="${n} 顆星" onclick="setRating(this, ${n})">★</button>`).join("")}
+          <div class="stars" role="group" aria-label="星級評分"
+               data-recipe-index="${index}"
+               data-avg="${avgLike}"
+               data-count="${recipe.likeCount}">
+            ${[1,2,3,4,5].map(n => `
+              <button
+                class="star-btn"
+                type="button"
+                data-rating="${n}"
+                aria-label="${n} 顆星"
+                onclick="setRating(this, ${n})"
+              >★</button>
+            `).join("")}
           </div>
           <span class="rating-text" aria-live="polite"></span>
         </div>
+
+        <!-- 回饋按鈕 -->
         <div class="feedback-row">
-          <button class="feedback-btn" type="button" onclick="submitFeedback(this)">這道菜對我有幫助！</button>
+          <button
+            class="feedback-btn"
+            type="button"
+            onclick="submitFeedback(this)"
+          >這道菜對我有幫助！</button>
           <span class="feedback-count" aria-live="polite">回饋次數：0</span>
-        </div>`;
+        </div>
+      `;
+
       return card;
     }
 
+    /* ====================================================
+       星級評分互動
+       ==================================================== */
     function setRating(clickedStar, rating) {
+      /* 找到同一評分列裡的所有星星 */
       const starsContainer = clickedStar.closest(".stars");
       const allStars = starsContainer.querySelectorAll(".star-btn");
-      const ratingText = starsContainer.closest(".rating-row").querySelector(".rating-text");
-      allStars.forEach(star => { parseInt(star.dataset.rating, 10) <= rating ? star.classList.add("active") : star.classList.remove("active"); });
+      const ratingText = starsContainer.closest(".rating-row")
+                                       .querySelector(".rating-text");
+
+      /* 更新每顆星的 active 狀態（active = 金色星） */
+      allStars.forEach(star => {
+        const n = parseInt(star.dataset.rating, 10);
+        if (n <= rating) {
+          star.classList.add("active");
+        } else {
+          star.classList.remove("active");
+        }
+      });
+
+      /* 顯示使用者評分結果文字 */
       const labels = ["", "非常不滿意", "不太滿意", "還可以", "滿意", "非常滿意！"];
-      ratingText.textContent = `${rating} 顆星 — ${labels[rating]}`;
+      ratingText.textContent = `我的評分：${rating} 顆星 — ${labels[rating]}`;
+
+      /* ====================================================
+         即時更新平均喜好度（加入使用者新評分後重算）
+         ==================================================== */
+      const recipeIndex = starsContainer.dataset.recipeIndex;
+      const oldAvg   = parseFloat(starsContainer.dataset.avg);
+      const oldCount = parseInt(starsContainer.dataset.count, 10);
+
+      /* 用加權平均計算新平均分 */
+      const newCount = oldCount + 1;
+      const newAvg   = ((oldAvg * oldCount) + rating) / newCount;
+
+      /* 更新 data 屬性，避免重複評分時疊加 */
+      starsContainer.dataset.avg   = newAvg.toFixed(2);
+      starsContainer.dataset.count = newCount;
+
+      /* 重新產生平均星星圖示 */
+      const fullStars  = Math.floor(newAvg);
+      const halfStar   = newAvg - fullStars >= 0.5 ? 1 : 0;
+      const emptyStars = 5 - fullStars - halfStar;
+      const newStarHTML =
+        "★".repeat(fullStars) +
+        (halfStar ? "✦" : "") +
+        "☆".repeat(emptyStars);
+
+      /* 更新頁面上的平均分顯示 */
+      const avgStarsEl = document.getElementById(`avg-stars-${recipeIndex}`);
+      const avgScoreEl = document.getElementById(`avg-score-${recipeIndex}`);
+      const avgCountEl = document.getElementById(`avg-count-${recipeIndex}`);
+      if (avgStarsEl) avgStarsEl.textContent = newStarHTML;
+      if (avgScoreEl) avgScoreEl.textContent = newAvg.toFixed(1);
+      if (avgCountEl) avgCountEl.textContent = `（${newCount} 人評分）`;
     }
 
+    /* ====================================================
+       回饋按鈕互動
+       ==================================================== */
     function submitFeedback(btn) {
+      /* 若已回饋，不重複處理 */
       if (btn.classList.contains("done")) return;
+
       btn.textContent = "✅ 已收到你的回饋";
       btn.classList.add("done");
       btn.setAttribute("aria-disabled", "true");
-      const countEl = btn.closest(".feedback-row").querySelector(".feedback-count");
+
+      /* 更新回饋次數（只在當前畫面模擬，非資料庫） */
+      const countEl = btn.closest(".feedback-row")
+                         .querySelector(".feedback-count");
       const current = parseInt(countEl.textContent.replace(/[^0-9]/g, ""), 10) || 0;
       countEl.textContent = `回饋次數：${current + 1}`;
     }
 
+    /* ====================================================
+       頁面初始化
+       ==================================================== */
     initQuickTags();
-</script>
+
+  </script>
 </body>
 </html>

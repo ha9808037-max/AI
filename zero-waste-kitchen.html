@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>零浪費廚房 | 剩食變美味</title>
+<style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f7f9f6;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #4a7c59;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .filter-section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .tags-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .tag-btn {
+            background-color: #eaf0ec;
+            border: 1px solid #c2d6c7;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .tag-btn.active {
+            background-color: #4a7c59;
+            color: white;
+            border-color: #4a7c59;
+        }
+
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .recipe-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .recipe-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .recipe-info {
+            padding: 1.2rem;
+        }
+
+        .recipe-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .ingredient-list {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: #f39c12;
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 4px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #888;
+            grid-column: 1 / -1;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+<header>
+<h1>🌱 零浪費廚房 Zero Waste Kitchen</h1>
+<p>勾選你冰箱剩下的食材，秒變美味料理！</p>
+</header>
+<div class="container">
+<section class="filter-section">
+<h2>勾選你手邊現有的食材：</h2>
+<div class="tags-group" id="ingredient-tags">
+<button class="tag-btn" onclick="toggleIngredient('剩米飯')">剩米飯</button>
+<button class="tag-btn" onclick="toggleIngredient('雞蛋')">雞蛋</button>
+<button class="tag-btn" onclick="toggleIngredient('高麗菜')">高麗菜</button>
+<button class="tag-btn" onclick="toggleIngredient('吐司邊')">吐司邊</button>
+<button class="tag-btn" onclick="toggleIngredient('剩肉/熟肉')">剩肉/熟肉</button>
+<button class="tag-btn" onclick="toggleIngredient('番茄')">番茄</button>
+</div>
+</section>
+<section class="recipes-grid" id="recipe-list"></section>
+</div>
+<script>
+        const recipes = [
+            {
+                id: 1,
+                title: "黃金蛋炒飯",
+                ingredients: ["剩米飯", "雞蛋"],
+                tag: "快速省時",
+                img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop"
+            },
+            {
+                id: 2,
+                title: "日式清冰箱什錦煎餅",
+                ingredients: ["高麗菜", "雞蛋", "剩肉/熟肉"],
+                tag: "消清高麗菜必備",
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                title: "香酥蒜香吐司條",
+                ingredients: ["吐司邊"],
+                tag: "甜點/零食",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                title: "蕃茄炒蛋炊飯",
+                ingredients: ["剩米飯", "雞蛋", "番茄"],
+                tag: "一鍋搞定",
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop"
+            }
+        ];
+
+        let selectedIngredients = [];
+
+        function toggleIngredient(ingredient) {
+            const index = selectedIngredients.indexOf(ingredient);
+            if (index > -1) {
+                selectedIngredients.splice(index, 1);
+            } else {
+                selectedIngredients.push(ingredient);
+            }
+            const buttons = document.querySelectorAll('.tag-btn');
+            buttons.forEach(btn => {
+                if (selectedIngredients.includes(btn.innerText)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            renderRecipes();
+        }
+
+        function renderRecipes() {
+            const container = document.getElementById('recipe-list');
+            container.innerHTML = '';
+            const filtered = recipes.filter(recipe => {
+                if (selectedIngredients.length === 0) return true;
+                return recipe.ingredients.some(item => selectedIngredients.includes(item));
+            });
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="no-results">沒有找到符合的食譜，試著勾選其他食材吧！</div>`;
+                return;
+            }
+            filtered.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.innerHTML = `
+                    <img src="${recipe.img}" alt="${recipe.title}">
+                    <div class="recipe-info">
+                        <span class="badge">${recipe.tag}</span>
+                        <div class="recipe-title">${recipe.title}</div>
+                        <div class="ingredient-list">需要的剩食：${recipe.ingredients.join('、')}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        renderRecipes();
+    </script>
+</body>
+</html>
