@@ -1,0 +1,23 @@
+{
+  "name": "zero-waste-cooking",
+  "version": "1.0.0",
+  "private": true,
+  "description": "剩食料理推薦 App — 減少食物浪費，AI 生成創意食譜",
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend",
+    "packages/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w apps/backend\" \"npm run dev -w apps/frontend\"",
+    "build": "npm run build -w packages/shared && npm run build -w apps/backend && npm run build -w apps/frontend",
+    "lint": "npm run lint -w apps/frontend && npm run lint -w apps/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true
+  }
+}

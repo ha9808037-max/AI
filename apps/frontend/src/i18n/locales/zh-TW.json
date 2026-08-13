@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "剩食廚房",
+    "tagline": "讓剩食變美食，讓地球更美好"
+  },
+  "nav": {
+    "dashboard": "儀表板",
+    "ingredients": "我的食材",
+    "recipes": "生成食譜",
+    "history": "料理紀錄",
+    "stats": "環保貢獻",
+    "logout": "登出"
+  },
+  "auth": {
+    "login": "登入",
+    "register": "註冊",
+    "email": "電子郵件",
+    "password": "密碼",
+    "displayName": "顯示名稱",
+    "loginTitle": "歡迎回來！",
+    "registerTitle": "加入剩食廚房",
+    "noAccount": "還沒有帳號？",
+    "hasAccount": "已有帳號？",
+    "loginNow": "立即登入",
+    "registerNow": "立即註冊"
+  },
+  "ingredients": {
+    "title": "我的食材",
+    "add": "新增食材",
+    "name": "食材名稱",
+    "category": "分類",
+    "quantity": "數量",
+    "unit": "單位",
+    "expiryDate": "到期日",
+    "expiringSoon": "即將到期",
+    "expired": "已過期",
+    "generateRecipe": "用選中食材生成食譜",
+    "selectAll": "全選",
+    "categories": {
+      "vegetable": "蔬菜",
+      "fruit": "水果",
+      "meat": "肉類",
+      "seafood": "海鮮",
+      "grain": "穀物",
+      "dairy": "乳製品",
+      "condiment": "調味料",
+      "other": "其他"
+    }
+  },
+  "recipes": {
+    "title": "AI 食譜生成",
+    "generate": "生成食譜",
+    "generating": "AI 正在發揮創意...",
+    "provider": "AI 引擎",
+    "favorite": "收藏",
+    "unfavorite": "取消收藏",
+    "cooked": "我完成了這道料理！",
+    "steps": "料理步驟",
+    "ingredientsUsed": "使用食材",
+    "wasteReductionTips": "零廢棄小技巧",
+    "co2Saved": "預估節省 CO₂",
+    "foodSaved": "預估節省食物"
+  },
+  "carbon": {
+    "title": "環保貢獻",
+    "totalCo2Saved": "累計節省 CO₂",
+    "totalFoodSaved": "累計節省食物",
+    "recipesCooked": "完成料理次數",
+    "treesEquivalent": "等同種了",
+    "trees": "棵樹",
+    "grams": "克",
+    "kg": "公斤"
+  },
+  "common": {
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "loading": "載入中...",
+    "error": "發生錯誤",
+    "success": "成功",
+    "confirm": "確認"
+  }
+}

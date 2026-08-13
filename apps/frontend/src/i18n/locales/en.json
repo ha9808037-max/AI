@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "Zero Waste Kitchen",
+    "tagline": "Turn leftovers into delicious meals, make the planet better"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "ingredients": "My Ingredients",
+    "recipes": "Generate Recipe",
+    "history": "Cooking History",
+    "stats": "Eco Impact",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Display Name",
+    "loginTitle": "Welcome back!",
+    "registerTitle": "Join Zero Waste Kitchen",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginNow": "Login now",
+    "registerNow": "Register now"
+  },
+  "ingredients": {
+    "title": "My Ingredients",
+    "add": "Add Ingredient",
+    "name": "Name",
+    "category": "Category",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "expiryDate": "Expiry Date",
+    "expiringSoon": "Expiring Soon",
+    "expired": "Expired",
+    "generateRecipe": "Generate Recipe with Selected",
+    "selectAll": "Select All",
+    "categories": {
+      "vegetable": "Vegetable",
+      "fruit": "Fruit",
+      "meat": "Meat",
+      "seafood": "Seafood",
+      "grain": "Grain",
+      "dairy": "Dairy",
+      "condiment": "Condiment",
+      "other": "Other"
+    }
+  },
+  "recipes": {
+    "title": "AI Recipe Generator",
+    "generate": "Generate Recipe",
+    "generating": "AI is being creative...",
+    "provider": "AI Engine",
+    "favorite": "Favorite",
+    "unfavorite": "Unfavorite",
+    "cooked": "I cooked this!",
+    "steps": "Steps",
+    "ingredientsUsed": "Ingredients Used",
+    "wasteReductionTips": "Zero Waste Tips",
+    "co2Saved": "Est. CO₂ Saved",
+    "foodSaved": "Est. Food Saved"
+  },
+  "carbon": {
+    "title": "Eco Impact",
+    "totalCo2Saved": "Total CO₂ Saved",
+    "totalFoodSaved": "Total Food Saved",
+    "recipesCooked": "Meals Cooked",
+    "treesEquivalent": "Equivalent to planting",
+    "trees": "trees",
+    "grams": "g",
+    "kg": "kg"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Confirm"
+  }
+}
